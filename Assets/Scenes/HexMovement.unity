@@ -837,7 +837,7 @@ MonoBehaviour:
   selected: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
   currentYIndex: 1
   currentXIndex: 1
-  movementSpeed: 1
+  movementSpeed: 2
 --- !u!1 &1092611520
 GameObject:
   m_ObjectHideFlags: 0
