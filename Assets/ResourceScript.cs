@@ -6,6 +6,7 @@ public class ResourceScript : MonoBehaviour
 {
 
     int manaCount;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,25 +19,19 @@ public class ResourceScript : MonoBehaviour
         
     }
 
-    public void roundStart(int roundCount)
+    public int roundStart(int roundCount)
     {
         manaCount = 10 + roundCount*10;
         if (manaCount > 100)
         {
             manaCount = 100;
         }
+        return manaCount;
     }
 
     public bool abilityUseCheck(int currentMana, int manaCost)
     {
-        if (manaCost > manaCount)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return manaCost <= currentMana;
     }
 
     public int abilityUseManaUpdate(int currentMana, int manaCost)
