@@ -49,10 +49,18 @@ public class AiMovementLogic : MonoBehaviour
 
         if (aspirant.position.y > enemy_position.y) {
             transform.position += moveY;
+
+            if (aspirant.position.x < enemy_position.x) {
+                transform.position -= moveX;
+            }
         }
 
         else if (aspirant.position.y < enemy_position.y) {
             transform.position -= moveY;
+
+            if (aspirant.position.x > enemy_position.x) {
+                transform.position += moveX;
+            }
         }
 
         else if (aspirant.position.x > enemy_position.x) {
@@ -62,6 +70,7 @@ public class AiMovementLogic : MonoBehaviour
         else if (aspirant.position.x < enemy_position.x) {
             transform.position -= moveX;
         }
+
 
         Debug.Log("moving...");
         // aspirant.transform.position;
