@@ -15,6 +15,9 @@ public class PhaseHandler : MonoBehaviour
     public PhaseRoundEnd roundEnd = new PhaseRoundEnd();
     public int currentRound;
 
+    public TestPlayer player;
+    public TestPlayer enemy;
+    public ResourceScript rs;
 
     //This text field is meant only to test the funcitonality of the state machine
     [SerializeField] public TextMeshProUGUI stateText;
