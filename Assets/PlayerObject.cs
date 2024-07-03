@@ -35,8 +35,6 @@ public class PlayerObject : MonoBehaviour
     {
         level = 1;
         vision = 2;
-
-        isDead = false;
     }
 
     // Update is called once per frame
