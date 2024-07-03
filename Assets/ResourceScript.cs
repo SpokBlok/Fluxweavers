@@ -27,7 +27,7 @@ public class ResourceScript : MonoBehaviour
         }
     }
 
-    public bool abilityUse(int manaCost)
+    public bool abilityUseCheck(int currentMana, int manaCost)
     {
         if (manaCost > manaCount)
         {
@@ -35,8 +35,12 @@ public class ResourceScript : MonoBehaviour
         }
         else
         {
-            manaCount -= manaCost;
             return true;
         }
+    }
+
+    public int abilityUseManaUpdate(int currentMana, int manaCost)
+    {
+        return currentMana - manaCost;
     }
 }
