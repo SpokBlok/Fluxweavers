@@ -30,7 +30,8 @@ public class PlayerObject : MonoBehaviour
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
 
-    //Mana
+    //Mana & Resource Script
+    public ResourceScript rs;
     public int mana;
 
     // Start is called before the first frame update
@@ -43,5 +44,9 @@ public class PlayerObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+    public void manaRoundStart(int newMana)
+    {
+        mana = newMana;
     }
 }
