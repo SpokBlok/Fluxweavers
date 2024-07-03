@@ -30,6 +30,9 @@ public class PlayerObject : MonoBehaviour
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
 
+    //Mana
+    public int mana;
+
     // Start is called before the first frame update
     void Start()
     {
