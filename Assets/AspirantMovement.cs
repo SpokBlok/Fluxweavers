@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,12 +13,17 @@ public class AspirantMovement : MonoBehaviour
 
     private bool isSelected;
 
+    [SerializeField] private GameObject ParentOfTiles;
+
     private const int rowCount = 3;
     private const int colCount = 4;
     private GameObject[,] Tiles = new GameObject[rowCount,colCount];
 
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
+
+    private int movementStat = 1; // placeholder for player.movement
+    private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -29,9 +35,7 @@ public class AspirantMovement : MonoBehaviour
 
         isSelected = false;
 
-        // sample tiles
-        // to be changed with only tiles accessible to the aspirant
-        Transform mapTransform = GameObject.Find("SampleMap").transform;
+        Transform mapTransform = ParentOfTiles.transform;
 
         // format them into a grid
         int rowNumber = -1;
@@ -53,6 +57,9 @@ public class AspirantMovement : MonoBehaviour
 
         // position aspirant on current specified tile
         aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position;
+
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -79,9 +86,6 @@ public class AspirantMovement : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
-
-                // if (Path.Count == 0)
-                    //player.hasMoved = true;
             }
         }
 
@@ -89,7 +93,7 @@ public class AspirantMovement : MonoBehaviour
         {    
             if(isMouseOnObject(mouseX, mouseY, this.gameObject))
             {
-                Debug.Log("Click was on " + this.gameObject.name);
+                // Debug.Log("Click was on " + this.gameObject.name);
                 isSelected = !isSelected;
 
                 SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -103,6 +107,17 @@ public class AspirantMovement : MonoBehaviour
                 targetTile = GetTargetTile(mouseX, mouseY);
                 CreatePathToTarget(targetTile);
             }
+        }
+
+        else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
+        {
+            Debug.Log("Move Locked In! Make Your Next Move..");
+
+            AvailableTiles.Clear();
+            AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+            AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+            
+            // player.hasMoved = true;
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
@@ -143,11 +158,16 @@ public class AspirantMovement : MonoBehaviour
                     if (Tiles[i,j] == null)
                         continue;
 
-                    // ISSUE: since this assumes tile is rectangular but it is hexagonal
+                    // POSSIBLE ISSUE: since this assumes tile is rectangular but it is hexagonal
                     if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
                     {
-                        Debug.Log("Hovering over " + Tiles[i,j].name);
                         isHoveringOnTile = true;
+
+                        if(AvailableTiles.Contains(new Vector2Int(i,j)))
+                            Debug.Log("Aspirant can traverse on " + Tiles[i,j].name);
+                        else
+                            Debug.Log("Hovering over " + Tiles[i,j].name);
+
                         break;
                     }
                 }
@@ -171,22 +191,70 @@ public class AspirantMovement : MonoBehaviour
                 // ISSUE: since this assumes tile is rectangular but it is hexagonal
                 if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
                 {
-                    isSelected = false;
-                    GetComponent<SpriteRenderer>().sprite = normal;
+                    if(AvailableTiles.Contains(new Vector2Int(i,j)))
+                    {
+                        isSelected = false;
+                        GetComponent<SpriteRenderer>().sprite = normal;
 
-                    Debug.Log("Click was on " + Tiles[i,j].name);
-                    return new Vector2Int(j,i);
+                        // Debug.Log("Click was on " + Tiles[i,j].name);
+                        return new Vector2Int(j,i);
+                    }
+                    else
+                        break;
                 }
             }
         }
 
         // if none were, the target tile is the current tile, which is the current position of the aspirant
-        return new Vector2Int(currentYIndex, currentXIndex);
+        return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    List<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex)
+    HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
-        List<Vector2Int> AdjacentTiles = new List<Vector2Int>();
+        HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
+
+        List<Vector2Int> Steps = new List<Vector2Int>
+        {
+            new Vector2Int(0, -1), new Vector2Int(0, 1),
+            new Vector2Int(-1, 0), new Vector2Int(1, 0)
+        };
+
+        if (yIndex > (rowCount-1)/2)
+        {
+            Steps.Add(new Vector2Int(1, -1));
+            Steps.Add(new Vector2Int(-1, 1));
+        }
+        else if (yIndex < (rowCount-1)/2)
+        {
+            Steps.Add(new Vector2Int(-1, -1));
+            Steps.Add(new Vector2Int(1, 1));
+        }
+        else
+        {
+            Steps.Add(new Vector2Int(-1, -1));
+            Steps.Add(new Vector2Int(-1, 1));
+        }
+
+        foreach (Vector2Int step in Steps)
+        {
+            int x = xIndex + step.x;
+            int y = yIndex + step.y;
+
+            try
+            {
+                if (Tiles[y,x] != null)
+                    AdjacentTiles.Add(new Vector2Int(y,x));
+            }
+            catch (Exception e){}
+        }
+
+        if (range > 1)
+        {
+            foreach (Vector2Int Tile in AdjacentTiles)
+            {
+                AdjacentTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1));
+            }
+        }
 
         return AdjacentTiles;
     }
