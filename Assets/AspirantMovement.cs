@@ -466,12 +466,10 @@ public class AspirantMovement : MonoBehaviour
 
                     else if (!DifferentLayerTiles.Contains(new Vector2Int(y,x)))
                     {
-                        if(Math.Abs(currentZ-Tiles[y,x].transform.position.z) < range)
+                        if(Math.Round(Math.Abs(currentZ-Tiles[y,x].transform.position.z)) < range)
                         {
                             DifferentLayerTiles.Add(new Vector2Int(y,x));
-                            RequiredExtraMovement.Add((int) Math.Abs(currentZ-Tiles[y,x].transform.position.z));
-
-
+                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ-Tiles[y,x].transform.position.z)));
                         }
                     }
                 }

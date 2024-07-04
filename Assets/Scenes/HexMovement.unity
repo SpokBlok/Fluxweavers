@@ -1614,7 +1614,7 @@ MonoBehaviour:
   selected: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
   ParentOfTiles: {fileID: 1076646487}
   currentYIndex: 3
-  currentXIndex: 9
+  currentXIndex: 10
   movementSpeed: 2
   isAvailableHighlighted: 1
   isErrorIgnored: 1
@@ -1631,11 +1631,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
-  damageResist: 0
-  fluxResist: 0
+  armor: 0
+  armorPenetration: 0
+  magicResistance: 0
+  magicPenetration: 0
   attackStat: 0
   movement: 2
-  vision: 0
+  control: 0
+  healthBar: {fileID: 0}
+  health: 0
   basicAttackDamage: 0
   basicAttackMana: 0
   basicAttackRange: 0
@@ -1646,7 +1650,7 @@ MonoBehaviour:
   signatureMoveMana: 0
   signatureMoveRange: 0
   hasMoved: 0
-  rs: {fileID: 0}
+  resourceScript: {fileID: 0}
   mana: 0
 --- !u!1 &845150228
 GameObject:
@@ -2680,9 +2684,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1076646488}
     m_Modifications:
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.17478818
+      objectReference: {fileID: 0}
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.37780103
+      objectReference: {fileID: 0}
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6301887
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.17478818
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.37780103
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6301887
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (14)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4278057382372678646, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4808044549084910649, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684135379628236223, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7041822677842112887, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.17478818
+      objectReference: {fileID: 0}
+    - target: {fileID: 7041822677842112887, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.37780103
+      objectReference: {fileID: 0}
+    - target: {fileID: 7041822677842112887, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6301887
       objectReference: {fileID: 0}
     - target: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_LocalPosition.x
