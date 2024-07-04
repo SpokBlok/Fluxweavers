@@ -5,11 +5,9 @@ using UnityEngine;
 public class HealthBar : MonoBehaviour
 {
     public float totalDamage;
-    public bool isDead;
 
     void Start()
     {
-        isDead = false;
     }
 
     // Update is called once per frame

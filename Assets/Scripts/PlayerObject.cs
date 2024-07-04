@@ -18,7 +18,6 @@ public class PlayerObject : MonoBehaviour
     // Health Related Stuff
     public HealthBar healthBar;
     public float health;
-    public bool isDead;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -51,7 +50,6 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
-        isDead = false;
     }
 
     // Update is called once per frame
@@ -66,20 +64,16 @@ public class PlayerObject : MonoBehaviour
     {
         if (health <= 0)
         {
-            isDead = true;
-        }
-        else
-        {
-            isDead = false;
+            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
         }
     }
 
-    public void IsAttacked(float opponentDamage, int opponentAttackStat, int opponentArmorPenetration, int opponentMagicPenetration)
+    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration)
     {
         if (isPhysical)
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
-        if (!isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentArmorPenetration);
+        else
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
         IsDead();
     }
 }
