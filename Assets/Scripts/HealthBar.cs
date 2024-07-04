@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HealthBar : MonoBehaviour
 {
-    public int health;
+    public int totalDamage;
     public bool isDead;
 
     void Start()
@@ -17,15 +17,11 @@ public class HealthBar : MonoBehaviour
     {
     }
 
-    public void SetHealth(int setHealth)
-    {
-        health = setHealth;
-    }
-
-    public void TotalDamageReceived(int damage, int attackStat, int resistStat, int penetrationStat) // How much damage the player receives. ResistStat comes from you, and the other stats come from the damage dealer.
+    public int TotalDamageReceived(int damage, int attackStat, int resistStat, int penetrationStat) // How much damage the player receives. ResistStat comes from you, and the other stats come from the damage dealer.
     {
         damage = damage / 100; //Converting damage to be multiplied by percentage of attack as seen in the aspirant stats
         int totalResist = resistStat - penetrationStat; 
-        health -= (damage * attackStat) / totalResist;
+        totalDamage -= (damage * attackStat) / totalResist;
+        return totalDamage;
     }
 }

@@ -45,7 +45,6 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
-        healthBar.SetHealth(playerHealth);
         isDead = false;
     }
 
@@ -59,7 +58,7 @@ public class PlayerObject : MonoBehaviour
     }
     public void IsDead()
     {
-        if (healthBar.health <= 0)
+        if (playerHealth <= 0)
         {
             isDead = true;
         }
@@ -68,12 +67,12 @@ public class PlayerObject : MonoBehaviour
             isDead = false;
         }
     }
-    public void IsAttacked()
+    /*public void IsAttacked(opponent.damage, opponent.attackStat, opponent.ArmorPenetration, opponent.magicPenetration)
     {
-        /*if (opponent attack is physical)
-            healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, armor, opponent.armorPenetration)
+        if (opponent attack is physical)
+            playerHealth = playerHealth - healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, armor, opponent.armorPenetration)
         if (opponent attack is magic)
-            healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, magicResistance, opponent.magicPenetration)*/
+            playerHealth = playerHealth - healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, magicResistance, opponent.magicPenetration)
         IsDead();
-    }
+    }*/
 }
