@@ -1252,6 +1252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 760522794}
   - component: {fileID: 760522793}
+  - component: {fileID: 760522795}
   - component: {fileID: 760522792}
   m_Layer: 0
   m_Name: SampleAspirant 2
@@ -1277,9 +1278,8 @@ MonoBehaviour:
   ParentOfTiles: {fileID: 1092611520}
   currentYIndex: 1
   currentXIndex: 2
-  movementStat: 1
   movementSpeed: 2
-  isAvailableHighlighted: 0
+  isAvailableHighlighted: 1
   isErrorIgnored: 1
 --- !u!212 &760522793
 SpriteRenderer:
@@ -1348,6 +1348,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &760522795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760522791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71cb0e714708b624eac049ece10c32cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  damageResist: 0
+  fluxResist: 0
+  attackStat: 0
+  movement: 1
+  vision: 0
+  basicAttackDamage: 0
+  basicAttackMana: 0
+  basicAttackRange: 0
+  skillDamage: 0
+  skillMana: 0
+  skillRange: 0
+  signatureMoveDamage: 0
+  signatureMoveMana: 0
+  signatureMoveRange: 0
+  hasMoved: 0
+  rs: {fileID: 0}
+  mana: 0
 --- !u!1 &790569563
 GameObject:
   m_ObjectHideFlags: 0
@@ -1442,6 +1472,7 @@ GameObject:
   m_Component:
   - component: {fileID: 804779101}
   - component: {fileID: 804779100}
+  - component: {fileID: 804779103}
   - component: {fileID: 804779102}
   m_Layer: 0
   m_Name: SampleAspirant
@@ -1534,10 +1565,39 @@ MonoBehaviour:
   ParentOfTiles: {fileID: 1092611520}
   currentYIndex: 3
   currentXIndex: 2
-  movementStat: 2
   movementSpeed: 2
-  isAvailableHighlighted: 0
+  isAvailableHighlighted: 1
   isErrorIgnored: 1
+--- !u!114 &804779103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804779099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71cb0e714708b624eac049ece10c32cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  damageResist: 0
+  fluxResist: 0
+  attackStat: 0
+  movement: 2
+  vision: 0
+  basicAttackDamage: 0
+  basicAttackMana: 0
+  basicAttackRange: 0
+  skillDamage: 0
+  skillMana: 0
+  skillRange: 0
+  signatureMoveDamage: 0
+  signatureMoveMana: 0
+  signatureMoveRange: 0
+  hasMoved: 0
+  rs: {fileID: 0}
+  mana: 0
 --- !u!1 &845150228
 GameObject:
   m_ObjectHideFlags: 0
