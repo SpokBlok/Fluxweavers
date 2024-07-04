@@ -22,8 +22,10 @@ public class AspirantMovement : MonoBehaviour
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
 
-    private int movementStat;
+    private List<Vector2Int> DifferentLayerTiles;
+    private List<int> RequiredExtraMovement;
 
+    private int movementStat;
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -50,13 +52,14 @@ public class AspirantMovement : MonoBehaviour
         {
             foreach (Transform tile in row)
             {
-                if (tile.position.y != previousY)
+                if (Math.Abs(tile.position.y - previousY) > 0.15f)
                 {
                     previousY = tile.position.y;
                     rowNumber++;
                     colNumber = 0;
                 }
-    
+
+                previousY = tile.position.y;    
                 Tiles[rowNumber,colNumber] = tile.gameObject;
                 colNumber++;
             }
@@ -64,6 +67,9 @@ public class AspirantMovement : MonoBehaviour
 
         // position aspirant on current specified tile
         aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position;
+
+        DifferentLayerTiles = new List<Vector2Int>();
+        RequiredExtraMovement = new List<int>();
 
         movementStat = GetComponent<PlayerObject>().movement;
 
@@ -234,6 +240,24 @@ public class AspirantMovement : MonoBehaviour
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
 
+        for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
+        {
+            RequiredExtraMovement[i]--;
+
+            if (RequiredExtraMovement[i] == 0)
+            {
+                Vector2Int tile = DifferentLayerTiles[i];
+                AdjacentTiles.Add(new Vector2Int(tile.x, tile.y));
+
+                // indicating adjacent tiles by making them yellow
+                if(isAvailableHighlighted)
+                    Tiles[tile.x,tile.y].GetComponent<SpriteRenderer>().color = Color.yellow;
+
+                DifferentLayerTiles.RemoveAt(i);
+                RequiredExtraMovement.RemoveAt(i);
+            }
+        }
+
         List<Vector2Int> Steps = new List<Vector2Int>
         {
             new Vector2Int(0, -1), new Vector2Int(0, 1),
@@ -256,6 +280,8 @@ public class AspirantMovement : MonoBehaviour
             Steps.Add(new Vector2Int(-1, 1));
         }
 
+        float currentZ = Tiles[yIndex,xIndex].transform.position.z; // temp to determine mountain
+
         foreach (Vector2Int step in Steps)
         {
             int x = xIndex + step.x;
@@ -263,13 +289,35 @@ public class AspirantMovement : MonoBehaviour
 
             try
             {
-                if (Tiles[y,x] != null)
+                if (Tiles[y,x] != null && !AdjacentTiles.Contains(new Vector2Int(y,x)))
                 {
-                    AdjacentTiles.Add(new Vector2Int(y,x));
-                    
-                    // indicating adjacent tiles by making them yellow
-                    if(isAvailableHighlighted)
-                        Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
+                    if(Tiles[y,x].transform.position.z == currentZ)
+                    {
+                        AdjacentTiles.Add(new Vector2Int(y,x));
+
+                        if (DifferentLayerTiles.Contains(new Vector2Int(y,x)))
+                        {
+                            int index = DifferentLayerTiles.IndexOf(new Vector2Int(y,x));
+
+                            DifferentLayerTiles.RemoveAt(index);
+                            RequiredExtraMovement.RemoveAt(index);
+                        }
+                        
+                        // indicating adjacent tiles by making them yellow
+                        if(isAvailableHighlighted)
+                            Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
+                    }
+
+                    else if (!DifferentLayerTiles.Contains(new Vector2Int(y,x)))
+                    {
+                        if(Math.Abs(currentZ-Tiles[y,x].transform.position.z) < range)
+                        {
+                            DifferentLayerTiles.Add(new Vector2Int(y,x));
+                            RequiredExtraMovement.Add((int) Math.Abs(currentZ-Tiles[y,x].transform.position.z));
+
+
+                        }
+                    }
                 }
             }
             catch(Exception e)
