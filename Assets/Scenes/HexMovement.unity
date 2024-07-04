@@ -1279,7 +1279,7 @@ MonoBehaviour:
   currentXIndex: 2
   movementStat: 1
   movementSpeed: 2
-  isAvailableHighlighted: 1
+  isAvailableHighlighted: 0
   isErrorIgnored: 1
 --- !u!212 &760522793
 SpriteRenderer:
@@ -1536,7 +1536,7 @@ MonoBehaviour:
   currentXIndex: 2
   movementStat: 2
   movementSpeed: 2
-  isAvailableHighlighted: 1
+  isAvailableHighlighted: 0
   isErrorIgnored: 1
 --- !u!1 &845150228
 GameObject:

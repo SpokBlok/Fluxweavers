@@ -22,7 +22,8 @@ public class AspirantMovement : MonoBehaviour
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
 
-    [SerializeField] private int movementStat; // placeholder for player.movement
+    private int movementStat;
+
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -63,6 +64,8 @@ public class AspirantMovement : MonoBehaviour
 
         // position aspirant on current specified tile
         aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position;
+
+        movementStat = GetComponent<PlayerObject>().movement;
 
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
