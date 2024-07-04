@@ -126,7 +126,7 @@ public class AspirantMovement : MonoBehaviour
             else if(isSelected)
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
-                CreatePathToTarget(targetTile);
+                Path = CreatePathToTarget(targetTile);
             }
         }
 
@@ -494,8 +494,10 @@ public class AspirantMovement : MonoBehaviour
         return AdjacentTiles;
     }
 
-    void CreatePathToTarget(Vector2Int target)
+    Queue<Vector2Int> CreatePathToTarget(Vector2Int target)
     {
+        Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
+
         int currentY = currentYIndex;
         int currentX = currentXIndex;
 
@@ -528,8 +530,10 @@ public class AspirantMovement : MonoBehaviour
             currentY += stepY;
             currentX += stepX;
 
-            Path.Enqueue(new Vector2Int(currentX, currentY));
+            Pathway.Enqueue(new Vector2Int(currentX, currentY));
         }
+
+        return Pathway;
     }
 
 }
