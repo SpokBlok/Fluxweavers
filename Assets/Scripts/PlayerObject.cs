@@ -11,14 +11,13 @@ public class PlayerObject : MonoBehaviour
     public float armorPenetration;
     public float magicResistance;
     public float magicPenetration;
-    public float fluxResist;
     public float attackStat;
     public int movement;
     public int control; // All players have control over 2 hexes
 
     // Health Related Stuff
     public HealthBar healthBar;
-    public int playerHealth;
+    public int health;
     public bool isDead;
 
     //Attack Stats
@@ -41,6 +40,13 @@ public class PlayerObject : MonoBehaviour
     public ResourceScript rs;
     public int mana;
 
+    //Opponent stats
+    public int opponentDamage;
+    public int opponentArmorPenetration;
+    public int opponentMagicPenetration;
+    public int opponentAttackStat;
+    public bool isPhysical;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,7 +64,7 @@ public class PlayerObject : MonoBehaviour
     }
     public void IsDead()
     {
-        if (playerHealth <= 0)
+        if (health <= 0)
         {
             isDead = true;
         }
@@ -67,12 +73,13 @@ public class PlayerObject : MonoBehaviour
             isDead = false;
         }
     }
-    /*public void IsAttacked(opponent.damage, opponent.attackStat, opponent.ArmorPenetration, opponent.magicPenetration)
+
+    public void IsAttacked(int opponentDamage, int opponentAttackStat, int opponentArmorPenetration, int opponentMagicPenetration, int myArmor, int myMagicResistance)
     {
-        if (opponent attack is physical)
-            playerHealth = playerHealth - healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, armor, opponent.armorPenetration)
-        if (opponent attack is magic)
-            playerHealth = playerHealth - healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, magicResistance, opponent.magicPenetration)
+        if (isPhysical)
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, myArmor, opponentArmorPenetration);
+        if (!isPhysical)
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, myMagicResistance, opponentArmorPenetration);
         IsDead();
-    }*/
+    }
 }
