@@ -29,6 +29,9 @@ public class AspirantMovement : MonoBehaviour
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
+    [SerializeField] private bool isAvailableHighlighted; // for testing
+    [SerializeField] private bool isErrorIgnored;       // to ignore error message in try-catch
+
     void Start()
     {
         aspirantTransform = GetComponent<Transform>();
@@ -63,7 +66,9 @@ public class AspirantMovement : MonoBehaviour
 
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
-        Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+
+        if (isAvailableHighlighted)
+            Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -118,13 +123,17 @@ public class AspirantMovement : MonoBehaviour
             Debug.Log("Move Locked In! Make Your Next Move..");
 
             // changing all back to white
-            foreach(Vector2Int Tile in AvailableTiles)
-                Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+            if (isAvailableHighlighted)
+            {
+                foreach(Vector2Int Tile in AvailableTiles)
+                    Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+
+                Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+            }
 
             AvailableTiles.Clear();
             AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
             AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
-            Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
             
             // player.hasMoved = true;
         }
@@ -256,10 +265,15 @@ public class AspirantMovement : MonoBehaviour
                     AdjacentTiles.Add(new Vector2Int(y,x));
                     
                     // indicating adjacent tiles by making them yellow
-                    Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
+                    if(isAvailableHighlighted)
+                        Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
                 }
             }
-            catch (Exception e){}
+            catch(Exception e)
+            {
+                if(!isErrorIgnored)
+                    Debug.Log("Ignorable Error: " + e.Message);
+            }
         }
 
         if (range > 1)
