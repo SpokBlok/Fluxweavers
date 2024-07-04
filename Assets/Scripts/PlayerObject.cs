@@ -36,15 +36,8 @@ public class PlayerObject : MonoBehaviour
     public bool hasMoved; // Check if the player has moved in that turn
 
     //Mana & Resource Script
-    public ResourceScript rs;
+    public ResourceScript resourceScript;
     public int mana;
-
-    //Opponent stats
-    public float opponentDamage;
-    public float opponentArmorPenetration;
-    public float opponentMagicPenetration;
-    public float opponentAttackStat;
-    public bool isPhysical;
 
     // Start is called before the first frame update
     void Start()
@@ -68,7 +61,7 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration)
+    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
     {
         if (isPhysical)
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
