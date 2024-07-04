@@ -7,12 +7,17 @@ public class PlayerObject : MonoBehaviour
 {
     //Player Stats
     public int level;
-    //public health Health;
-    public float damageResist;
-    public float fluxResist;
-    public int attackStat;
+    public float armor;
+    public float armorPenetration;
+    public float magicResistance;
+    public float magicPenetration;
+    public float attackStat;
     public int movement;
-    public int vision; // All players have a vision of 2 hexes
+    public int control; // All players have control over 2 hexes
+
+    // Health Related Stuff
+    public HealthBar healthBar;
+    public float health;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -31,14 +36,13 @@ public class PlayerObject : MonoBehaviour
     public bool hasMoved; // Check if the player has moved in that turn
 
     //Mana & Resource Script
-    public ResourceScript rs;
+    public ResourceScript resourceScript;
     public int mana;
 
     // Start is called before the first frame update
     void Start()
     {
         level = 1;
-        vision = 2;
     }
 
     // Update is called once per frame
@@ -48,5 +52,21 @@ public class PlayerObject : MonoBehaviour
     public void manaRoundStart(int newMana)
     {
         mana = newMana;
+    }
+    public void IsDead()
+    {
+        if (health <= 0)
+        {
+            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
+        }
+    }
+
+    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
+    {
+        if (isPhysical)
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
+        else
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
+        IsDead();
     }
 }
