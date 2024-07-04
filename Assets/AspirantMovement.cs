@@ -15,12 +15,13 @@ public class AspirantMovement : MonoBehaviour
 
     [SerializeField] private GameObject ParentOfTiles;
 
-    private const int rowCount = 7;
-    private const int colCount = 6;
+    private const int rowCount = 11;
+    private const int colCount = 25; // 19 + 2 * 3
     private GameObject[,] Tiles = new GameObject[rowCount,colCount];
 
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
+    private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;
     private List<int> RequiredExtraMovement;
@@ -46,27 +47,29 @@ public class AspirantMovement : MonoBehaviour
         // format them into a grid
         int rowNumber = -1;
         int colNumber = 0;
-        float previousY = 99.9f;
 
         foreach (Transform row in mapTransform)
         {
-            foreach (Transform tile in row)
-            {
-                if (Math.Abs(tile.position.y - previousY) > 0.15f)
-                {
-                    previousY = tile.position.y;
-                    rowNumber++;
-                    colNumber = 0;
-                }
+            if(row.gameObject.name.Equals("Left Edge") || row.gameObject.name.Equals("Right Edge"))
+                break;
 
-                previousY = tile.position.y;    
+            rowNumber++;
+            colNumber = AddLeftEdgeTiles(rowNumber);
+
+            for(int i = row.childCount-1; i > -1; i--)
+            {
+                Transform tile = row.GetChild(i);
+ 
                 Tiles[rowNumber,colNumber] = tile.gameObject;
                 colNumber++;
             }
+
+            AddRightEdgeTiles(rowNumber, colNumber);
         }
 
-        // position aspirant on current specified tile
-        aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position;
+        // position aspirant on current specified tile, with an offset to make it stand on top of it
+        offset = new Vector3(0.0f, 0.22f, 0.0f); 
+        aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position + offset;
 
         DifferentLayerTiles = new List<Vector2Int>();
         RequiredExtraMovement = new List<int>();
@@ -95,7 +98,7 @@ public class AspirantMovement : MonoBehaviour
         if (Path.Count > 0)
         {
             Vector2Int nextTile = Path.Peek();
-            Vector3 nextPosition = Tiles[nextTile.y, nextTile.x].transform.position;
+            Vector3 nextPosition = Tiles[nextTile.y, nextTile.x].transform.position + offset;
             
             aspirantTransform.position = Vector3.MoveTowards(aspirantTransform.position, nextPosition, movementSpeed * Time.deltaTime);
 
@@ -152,15 +155,168 @@ public class AspirantMovement : MonoBehaviour
         //     CheckHoverOverAllElements(mouseX, mouseY);
     }
 
+    int AddLeftEdgeTiles(int rowNumber)
+    {
+        if (rowNumber > 0 && rowNumber < 10)
+        {
+            Transform LeftEdge = GameObject.Find("Left Edge").transform;
+
+            int colNumber = 0;
+
+            if (rowNumber == 1)
+            {
+                Tiles[1,0] = LeftEdge.GetChild(0).gameObject;
+                colNumber = 1;
+            }
+
+            else if (rowNumber == 2)
+            {
+                Tiles[2,0] = LeftEdge.GetChild(5).gameObject;
+                colNumber = 1;
+            }
+
+            else if (rowNumber == 3)
+            {
+                Tiles[3,0] = LeftEdge.GetChild(9).gameObject;
+                Tiles[3,1] = LeftEdge.GetChild(1).gameObject;
+                colNumber = 2;
+            }
+
+            else if (rowNumber == 4)
+            {
+                Tiles[4,0] = LeftEdge.GetChild(12).gameObject;
+                Tiles[4,1] = LeftEdge.GetChild(6).gameObject;
+                colNumber = 2;
+            }
+
+            else if (rowNumber == 5)
+            {
+                Tiles[5,0] = LeftEdge.GetChild(14).gameObject;
+                Tiles[5,1] = LeftEdge.GetChild(10).gameObject;
+                Tiles[5,2] = LeftEdge.GetChild(2).gameObject;
+                colNumber = 3;
+            }
+
+            else if (rowNumber == 6)
+            {
+                Tiles[6,0] = LeftEdge.GetChild(13).gameObject;
+                Tiles[6,1] = LeftEdge.GetChild(7).gameObject;
+                colNumber = 2;
+            }
+            
+            else if (rowNumber == 7)
+            {
+                Tiles[7,0] = LeftEdge.GetChild(11).gameObject;
+                Tiles[7,1] = LeftEdge.GetChild(3).gameObject;
+                colNumber = 2;
+            }
+            
+            else if (rowNumber == 8)
+            {
+                Tiles[8,0] = LeftEdge.GetChild(8).gameObject;
+                colNumber = 1;
+            }
+
+            else if (rowNumber == 9)
+            {
+                Tiles[9,0] = LeftEdge.GetChild(4).gameObject;
+                colNumber = 1;
+            }
+
+            return colNumber;
+        }
+
+        return 0;
+    }
+
+    void AddRightEdgeTiles(int rowNumber, int colNumber)
+    {
+        Transform RightEdge = GameObject.Find("Right Edge").transform;
+
+        if (rowNumber == 0)
+            Tiles[0, colNumber] = RightEdge.GetChild(0).gameObject;
+
+        else if (rowNumber == 1)
+            Tiles[1,colNumber] = RightEdge.GetChild(6).gameObject;
+
+        else if (rowNumber == 2)
+        {    
+            Tiles[2,colNumber] = RightEdge.GetChild(1).gameObject;
+            Tiles[2,colNumber] = RightEdge.GetChild(11).gameObject;
+        }
+
+        else if (rowNumber == 3)
+        {
+            Tiles[3,colNumber] = RightEdge.GetChild(7).gameObject;
+            Tiles[3,colNumber+1] = RightEdge.GetChild(15).gameObject;
+        }
+
+        else if (rowNumber == 4)
+        {
+            Tiles[4,colNumber] = RightEdge.GetChild(2).gameObject;
+            Tiles[4,colNumber+1] = RightEdge.GetChild(12).gameObject;
+            Tiles[4,colNumber+1] = RightEdge.GetChild(18).gameObject;
+        }
+
+        else if (rowNumber == 5)
+        {
+            Tiles[5,colNumber] = RightEdge.GetChild(8).gameObject;
+            Tiles[5,colNumber+1] = RightEdge.GetChild(16).gameObject;
+            Tiles[5,colNumber+2] = RightEdge.GetChild(20).gameObject;
+        }
+
+        else if (rowNumber == 6)
+        {
+            Tiles[6,colNumber] = RightEdge.GetChild(3).gameObject;
+            Tiles[6,colNumber+1] = RightEdge.GetChild(13).gameObject;
+            Tiles[6,colNumber+1] = RightEdge.GetChild(19).gameObject;
+        }
+        
+        else if (rowNumber == 7)
+        {
+            Tiles[7,colNumber] = RightEdge.GetChild(9).gameObject;
+            Tiles[7,colNumber+1] = RightEdge.GetChild(17).gameObject;
+        }
+        
+        else if (rowNumber == 8)
+        {
+            Tiles[8,colNumber] = RightEdge.GetChild(4).gameObject;
+            Tiles[8,colNumber] = RightEdge.GetChild(14).gameObject;
+        }
+
+        else if (rowNumber == 9)
+            Tiles[9,colNumber] = RightEdge.GetChild(10).gameObject;
+
+        else if (rowNumber == 10)
+            Tiles[10,colNumber] = RightEdge.GetChild(5).gameObject;
+    }
+
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
     {
         Transform objTransform = obj.GetComponent<Transform>();
+
+        float multiplier;
+
+        try
+        {
+            if (obj.name.Substring(0,7).Equals("HexTile"))
+                multiplier = 0.66f;
+            else
+                multiplier = 1.0f;
+        }
+        catch(Exception e)
+        {
+            multiplier = 1.0f;
+
+            if(!isErrorIgnored)
+                Debug.Log("Ignorable Error: " + e.Message);
+        }
 
         // get object position and dimensions
         float x = objTransform.position.x;
         float y = objTransform.position.y;
         float width = objTransform.lossyScale.x;
-        float height = objTransform.lossyScale.y;
+        float height = objTransform.lossyScale.y * multiplier;
 
         // check if click was on object
         if(mouseX >= x - width / 2 && mouseY >= y - height / 2 &&
@@ -185,7 +341,7 @@ public class AspirantMovement : MonoBehaviour
                     if (Tiles[i,j] == null)
                         continue;
 
-                    // POSSIBLE ISSUE: since this assumes tile is rectangular but it is hexagonal
+                    // POSSIBLE ISSUE: since this only checks a portion of the hexagon
                     if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
                     {
                         isHoveringOnTile = true;
