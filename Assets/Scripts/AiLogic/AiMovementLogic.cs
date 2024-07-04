@@ -12,7 +12,7 @@ public class AiMovementLogic : MonoBehaviour
     private Vector3 moveX;
     private Vector3 moveY;
     [SerializeField] private int remainingMoves; // For debugging. Don't remove me yet >_>
-    private Vector3[] adjancentTiles;
+    private Vector3[] adjacentTiles;
 
     // Start is called before the first frame update
     void Start()
@@ -21,7 +21,7 @@ public class AiMovementLogic : MonoBehaviour
         moveY = new Vector3(0.5f, 0.9f, 0f); // Change depending on hex size and dimensions
         remainingMoves = 0; // Don't move at start
 
-        adjancentTiles = new Vector3[] { // Arranged in counter-clockwise order
+        adjacentTiles = new Vector3[] { // Arranged in counter-clockwise order
             moveX, moveY, -moveX + moveY, -moveX, -moveY, moveX - moveY
         };
     }
@@ -81,7 +81,7 @@ public class AiMovementLogic : MonoBehaviour
     }
 
     private bool AdjancentTo (Transform targetAspirant) {
-        foreach (Vector3 tile in adjancentTiles) {
+        foreach (Vector3 tile in adjacentTiles) {
             if (targetAspirant.position == gameObject.transform.position + tile) {
                 return true;
             }
