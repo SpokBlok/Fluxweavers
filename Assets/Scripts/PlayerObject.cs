@@ -8,11 +8,14 @@ public class PlayerObject : MonoBehaviour
     //Player Stats
     public int level;
     //public health Health;
-    public float damageResist;
+    public float armor;
+    public float armorPenetration;
+    public float magicResistance;
+    public float magicPenetration;
     public float fluxResist;
-    public int attackStat;
+    public float attackStat;
     public int movement;
-    public int vision; // All players have a vision of 2 hexes
+    public int control; // All players have control over 2 hexes
 
     //Attack Stats
     public float basicAttackDamage;
@@ -38,7 +41,6 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
-        vision = 2;
     }
 
     // Update is called once per frame
