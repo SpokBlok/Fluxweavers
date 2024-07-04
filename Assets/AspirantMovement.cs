@@ -13,11 +13,7 @@ public class AspirantMovement : MonoBehaviour
 
     private bool isSelected;
 
-    [SerializeField] private GameObject ParentOfTiles;
-
-    private const int rowCount = 11;
-    private const int colCount = 25; // 19 + 2 * 3
-    private GameObject[,] Tiles = new GameObject[rowCount,colCount];
+    public TilesCreationScript Tiles;
 
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
@@ -42,34 +38,9 @@ public class AspirantMovement : MonoBehaviour
 
         isSelected = false;
 
-        Transform mapTransform = ParentOfTiles.transform;
-
-        // format them into a grid
-        int rowNumber = -1;
-        int colNumber = 0;
-
-        foreach (Transform row in mapTransform)
-        {
-            if(row.gameObject.name.Equals("Left Edge") || row.gameObject.name.Equals("Right Edge"))
-                break;
-
-            rowNumber++;
-            colNumber = AddLeftEdgeTiles(rowNumber);
-
-            for(int i = row.childCount-1; i > -1; i--)
-            {
-                Transform tile = row.GetChild(i);
- 
-                Tiles[rowNumber,colNumber] = tile.gameObject;
-                colNumber++;
-            }
-
-            AddRightEdgeTiles(rowNumber, colNumber);
-        }
-
         // position aspirant on current specified tile, with an offset to make it stand on top of it
         offset = new Vector3(0.0f, 0.22f, 0.0f); 
-        aspirantTransform.position = Tiles[currentYIndex,currentXIndex].transform.position + offset;
+        aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
 
         DifferentLayerTiles = new List<Vector2Int>();
         RequiredExtraMovement = new List<int>();
@@ -80,7 +51,7 @@ public class AspirantMovement : MonoBehaviour
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         if (isAvailableHighlighted)
-            Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+            Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -98,7 +69,7 @@ public class AspirantMovement : MonoBehaviour
         if (Path.Count > 0)
         {
             Vector2Int nextTile = Path.Peek();
-            Vector3 nextPosition = Tiles[nextTile.y, nextTile.x].transform.position + offset;
+            Vector3 nextPosition = Tiles.Tiles[nextTile.y, nextTile.x].transform.position + offset;
             
             aspirantTransform.position = Vector3.MoveTowards(aspirantTransform.position, nextPosition, movementSpeed * Time.deltaTime);
 
@@ -138,9 +109,9 @@ public class AspirantMovement : MonoBehaviour
             if (isAvailableHighlighted)
             {
                 foreach(Vector2Int Tile in AvailableTiles)
-                    Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+                    Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
 
-                Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+                Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
             }
 
             AvailableTiles.Clear();
@@ -153,142 +124,6 @@ public class AspirantMovement : MonoBehaviour
         // might want some UI stuff to happen when hovering over aspirant / tile
         // else
         //     CheckHoverOverAllElements(mouseX, mouseY);
-    }
-
-    int AddLeftEdgeTiles(int rowNumber)
-    {
-        if (rowNumber > 0 && rowNumber < 10)
-        {
-            Transform LeftEdge = GameObject.Find("Left Edge").transform;
-
-            int colNumber = 0;
-
-            if (rowNumber == 1)
-            {
-                Tiles[1,0] = LeftEdge.GetChild(0).gameObject;
-                colNumber = 1;
-            }
-
-            else if (rowNumber == 2)
-            {
-                Tiles[2,0] = LeftEdge.GetChild(5).gameObject;
-                colNumber = 1;
-            }
-
-            else if (rowNumber == 3)
-            {
-                Tiles[3,0] = LeftEdge.GetChild(9).gameObject;
-                Tiles[3,1] = LeftEdge.GetChild(1).gameObject;
-                colNumber = 2;
-            }
-
-            else if (rowNumber == 4)
-            {
-                Tiles[4,0] = LeftEdge.GetChild(12).gameObject;
-                Tiles[4,1] = LeftEdge.GetChild(6).gameObject;
-                colNumber = 2;
-            }
-
-            else if (rowNumber == 5)
-            {
-                Tiles[5,0] = LeftEdge.GetChild(14).gameObject;
-                Tiles[5,1] = LeftEdge.GetChild(10).gameObject;
-                Tiles[5,2] = LeftEdge.GetChild(2).gameObject;
-                colNumber = 3;
-            }
-
-            else if (rowNumber == 6)
-            {
-                Tiles[6,0] = LeftEdge.GetChild(13).gameObject;
-                Tiles[6,1] = LeftEdge.GetChild(7).gameObject;
-                colNumber = 2;
-            }
-            
-            else if (rowNumber == 7)
-            {
-                Tiles[7,0] = LeftEdge.GetChild(11).gameObject;
-                Tiles[7,1] = LeftEdge.GetChild(3).gameObject;
-                colNumber = 2;
-            }
-            
-            else if (rowNumber == 8)
-            {
-                Tiles[8,0] = LeftEdge.GetChild(8).gameObject;
-                colNumber = 1;
-            }
-
-            else if (rowNumber == 9)
-            {
-                Tiles[9,0] = LeftEdge.GetChild(4).gameObject;
-                colNumber = 1;
-            }
-
-            return colNumber;
-        }
-
-        return 0;
-    }
-
-    void AddRightEdgeTiles(int rowNumber, int colNumber)
-    {
-        Transform RightEdge = GameObject.Find("Right Edge").transform;
-
-        if (rowNumber == 0)
-            Tiles[0, colNumber] = RightEdge.GetChild(0).gameObject;
-
-        else if (rowNumber == 1)
-            Tiles[1,colNumber] = RightEdge.GetChild(6).gameObject;
-
-        else if (rowNumber == 2)
-        {    
-            Tiles[2,colNumber] = RightEdge.GetChild(1).gameObject;
-            Tiles[2,colNumber] = RightEdge.GetChild(11).gameObject;
-        }
-
-        else if (rowNumber == 3)
-        {
-            Tiles[3,colNumber] = RightEdge.GetChild(7).gameObject;
-            Tiles[3,colNumber+1] = RightEdge.GetChild(15).gameObject;
-        }
-
-        else if (rowNumber == 4)
-        {
-            Tiles[4,colNumber] = RightEdge.GetChild(2).gameObject;
-            Tiles[4,colNumber+1] = RightEdge.GetChild(12).gameObject;
-            Tiles[4,colNumber+1] = RightEdge.GetChild(18).gameObject;
-        }
-
-        else if (rowNumber == 5)
-        {
-            Tiles[5,colNumber] = RightEdge.GetChild(8).gameObject;
-            Tiles[5,colNumber+1] = RightEdge.GetChild(16).gameObject;
-            Tiles[5,colNumber+2] = RightEdge.GetChild(20).gameObject;
-        }
-
-        else if (rowNumber == 6)
-        {
-            Tiles[6,colNumber] = RightEdge.GetChild(3).gameObject;
-            Tiles[6,colNumber+1] = RightEdge.GetChild(13).gameObject;
-            Tiles[6,colNumber+1] = RightEdge.GetChild(19).gameObject;
-        }
-        
-        else if (rowNumber == 7)
-        {
-            Tiles[7,colNumber] = RightEdge.GetChild(9).gameObject;
-            Tiles[7,colNumber+1] = RightEdge.GetChild(17).gameObject;
-        }
-        
-        else if (rowNumber == 8)
-        {
-            Tiles[8,colNumber] = RightEdge.GetChild(4).gameObject;
-            Tiles[8,colNumber] = RightEdge.GetChild(14).gameObject;
-        }
-
-        else if (rowNumber == 9)
-            Tiles[9,colNumber] = RightEdge.GetChild(10).gameObject;
-
-        else if (rowNumber == 10)
-            Tiles[10,colNumber] = RightEdge.GetChild(5).gameObject;
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -334,22 +169,22 @@ public class AspirantMovement : MonoBehaviour
         {
             bool isHoveringOnTile = false;
 
-            for(int i = 0; i < rowCount; i++)
+            for(int i = 0; i < Tiles.returnRowCount(); i++)
             {
-                for(int j = 0; j < colCount; j++)
+                for(int j = 0; j < Tiles.returnColCount(); j++)
                 {
-                    if (Tiles[i,j] == null)
+                    if (Tiles.Tiles[i,j] == null)
                         continue;
 
                     // POSSIBLE ISSUE: since this only checks a portion of the hexagon
-                    if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
+                    if(isMouseOnObject(mouseX, mouseY, Tiles.Tiles[i,j]))
                     {
                         isHoveringOnTile = true;
 
                         if(AvailableTiles.Contains(new Vector2Int(i,j)))
-                            Debug.Log("Aspirant can traverse on " + Tiles[i,j].name);
+                            Debug.Log("Aspirant can traverse on " + Tiles.Tiles[i,j].name);
                         else
-                            Debug.Log("Hovering over " + Tiles[i,j].name);
+                            Debug.Log("Hovering over " + Tiles.Tiles[i,j].name);
 
                         break;
                     }
@@ -364,15 +199,15 @@ public class AspirantMovement : MonoBehaviour
     Vector2Int GetTargetTile(float mouseX, float mouseY)
     {
         // check each tile if they were clicked on
-        for(int i = 0; i < rowCount; i++)
+        for(int i = 0; i < Tiles.returnRowCount(); i++)
         {
-            for(int j = 0; j < colCount; j++)
+            for(int j = 0; j < Tiles.returnColCount(); j++)
             {
-                if (Tiles[i,j] == null)
+                if (Tiles.Tiles[i,j] == null)
                     continue;
 
                 // ISSUE: since this assumes tile is rectangular but it is hexagonal
-                if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
+                if(isMouseOnObject(mouseX, mouseY, Tiles.Tiles[i,j]))
                 {
                     if(AvailableTiles.Contains(new Vector2Int(i,j)))
                     {
@@ -392,7 +227,7 @@ public class AspirantMovement : MonoBehaviour
         return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
+    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
 
@@ -407,7 +242,7 @@ public class AspirantMovement : MonoBehaviour
 
                 // indicating adjacent tiles by making them yellow
                 if(isAvailableHighlighted)
-                    Tiles[tile.x,tile.y].GetComponent<SpriteRenderer>().color = Color.yellow;
+                    Tiles.Tiles[tile.x,tile.y].GetComponent<SpriteRenderer>().color = Color.yellow;
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
@@ -420,12 +255,12 @@ public class AspirantMovement : MonoBehaviour
             new Vector2Int(-1, 0), new Vector2Int(1, 0)
         };
 
-        if (yIndex > (rowCount-1)/2)
+        if (yIndex > (Tiles.returnRowCount() - 1)/2)
         {
             Steps.Add(new Vector2Int(1, -1));
             Steps.Add(new Vector2Int(-1, 1));
         }
-        else if (yIndex < (rowCount-1)/2)
+        else if (yIndex < (Tiles.returnRowCount() - 1)/2)
         {
             Steps.Add(new Vector2Int(-1, -1));
             Steps.Add(new Vector2Int(1, 1));
@@ -436,7 +271,7 @@ public class AspirantMovement : MonoBehaviour
             Steps.Add(new Vector2Int(-1, 1));
         }
 
-        float currentZ = Tiles[yIndex,xIndex].transform.position.z; // temp to determine mountain
+        float currentZ = Tiles.Tiles[yIndex,xIndex].transform.position.z; // temp to determine mountain
 
         foreach (Vector2Int step in Steps)
         {
@@ -445,9 +280,9 @@ public class AspirantMovement : MonoBehaviour
 
             try
             {
-                if (Tiles[y,x] != null && !AdjacentTiles.Contains(new Vector2Int(y,x)))
+                if (Tiles.Tiles[y,x] != null && !AdjacentTiles.Contains(new Vector2Int(y,x)))
                 {
-                    if(Tiles[y,x].transform.position.z == currentZ)
+                    if(Tiles.Tiles[y,x].transform.position.z == currentZ)
                     {
                         AdjacentTiles.Add(new Vector2Int(y,x));
 
@@ -461,15 +296,15 @@ public class AspirantMovement : MonoBehaviour
                         
                         // indicating adjacent tiles by making them yellow
                         if(isAvailableHighlighted)
-                            Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
+                            Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
                     }
 
                     else if (!DifferentLayerTiles.Contains(new Vector2Int(y,x)))
                     {
-                        if(Math.Round(Math.Abs(currentZ-Tiles[y,x].transform.position.z)) < range)
+                        if(Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)) < range)
                         {
                             DifferentLayerTiles.Add(new Vector2Int(y,x));
-                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ-Tiles[y,x].transform.position.z)));
+                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)));
                         }
                     }
                 }
@@ -494,7 +329,7 @@ public class AspirantMovement : MonoBehaviour
         return AdjacentTiles;
     }
 
-    Queue<Vector2Int> CreatePathToTarget(Vector2Int target)
+    public Queue<Vector2Int> CreatePathToTarget(Vector2Int target)
     {
         Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
 
@@ -514,15 +349,15 @@ public class AspirantMovement : MonoBehaviour
 
             if (currentX < target.x)
             {
-                if ((stepY ==  1 && currentY < (rowCount-1)/2) ||
-                    (stepY == -1 && currentY > (rowCount-1)/2) ||
+                if ((stepY ==  1 && currentY < (Tiles.returnRowCount() -1)/2) ||
+                    (stepY == -1 && currentY > (Tiles.returnRowCount() -1)/2) ||
                      stepY ==  0)
                     stepX = 1;
             }
             else if (currentX > target.x)
             {
-                if ((stepY == -1 && currentY <= (rowCount-1)/2) ||
-                    (stepY ==  1 && currentY >= (rowCount-1)/2) ||
+                if ((stepY == -1 && currentY <= (Tiles.returnRowCount() -1)/2) ||
+                    (stepY ==  1 && currentY >= (Tiles.returnRowCount() -1)/2) ||
                      stepY ==  0)
                     stepX = -1;
             }

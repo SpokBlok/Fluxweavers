@@ -9,10 +9,15 @@ public class AiMovementLogic : MonoBehaviour
     [SerializeField] int movement;
     [SerializeField] int moveSpeed;
 
+    [SerializeField] private int currentYIndex;
+    [SerializeField] private int currentXIndex;
+
     private Vector3 moveX;
     private Vector3 moveY;
     [SerializeField] private int remainingMoves; // For debugging. Don't remove me yet >_>
     private Vector3[] adjacentTiles;
+
+    public AspirantMovement movementScript;
 
     // Start is called before the first frame update
     void Start()
@@ -81,11 +86,11 @@ public class AiMovementLogic : MonoBehaviour
     }
 
     private bool AdjancentTo (Transform targetAspirant) {
-        foreach (Vector3 tile in adjacentTiles) {
+        /*foreach (Vector3 tile in movementScript.GetAdjacentTiles(movementScript.Tiles.)) {
             if (targetAspirant.position == gameObject.transform.position + tile) {
                 return true;
             }
-        }
+        }*/
 
         return false;
     }
