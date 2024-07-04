@@ -19,7 +19,7 @@ public class AiMovementLogic : MonoBehaviour
     {
         moveX = new Vector3(1f, 0f, 0f); // Change depending on hex size and dimensions
         moveY = new Vector3(0.5f, 0.9f, 0f); // Change depending on hex size and dimensions
-        remainingMoves = movement;
+        remainingMoves = 0; // Don't move at start
 
         adjancenctTiles = new Vector3[6];
 
@@ -35,16 +35,17 @@ public class AiMovementLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (remainingMoves > 0) {
+            // StartCoroutine(Move(moveSpeed * Time.deltaTime));
             Move(moveSpeed * Time.deltaTime);
         }
 
-        // if ( && remainingMoves < 1) {
-        //     remainingMoves = movement;
-        // }
+        if (Input.GetKeyDown(KeyCode.Space) && remainingMoves < 1) {
+            remainingMoves = movement;
+        }
     }
 
-    void Move(float speed) {
+    private void Move(float speed) {
         Vector3 enemy_position = gameObject.transform.position;
 
         if (aspirant.position.y > enemy_position.y) {
@@ -71,9 +72,11 @@ public class AiMovementLogic : MonoBehaviour
             transform.position -= moveX;
         }
 
-
+        remainingMoves--;
         Debug.Log("moving...");
         // aspirant.transform.position;
+
+        // yield return new WaitForSeconds(1);
     }
 
 }
