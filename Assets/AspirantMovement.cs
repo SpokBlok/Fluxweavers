@@ -300,7 +300,7 @@ public class AspirantMovement : MonoBehaviour
         try
         {
             if (obj.name.Substring(0,7).Equals("HexTile"))
-                multiplier = 0.66f;
+                multiplier = 0.35f;
             else
                 multiplier = 1.0f;
         }
