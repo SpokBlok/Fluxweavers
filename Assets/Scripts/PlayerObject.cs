@@ -7,7 +7,6 @@ public class PlayerObject : MonoBehaviour
 {
     //Player Stats
     public int level;
-    //public health Health;
     public float armor;
     public float armorPenetration;
     public float magicResistance;
@@ -16,6 +15,11 @@ public class PlayerObject : MonoBehaviour
     public float attackStat;
     public int movement;
     public int control; // All players have control over 2 hexes
+
+    // Health Related Stuff
+    public HealthBar healthBar;
+    public int playerHealth;
+    public bool isDead;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -41,6 +45,8 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
+        healthBar.SetHealth(playerHealth);
+        isDead = false;
     }
 
     // Update is called once per frame
@@ -50,5 +56,24 @@ public class PlayerObject : MonoBehaviour
     public void manaRoundStart(int newMana)
     {
         mana = newMana;
+    }
+    public void IsDead()
+    {
+        if (healthBar.health <= 0)
+        {
+            isDead = true;
+        }
+        else
+        {
+            isDead = false;
+        }
+    }
+    public void IsAttacked()
+    {
+        /*if (opponent attack is physical)
+            healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, armor, opponent.armorPenetration)
+        if (opponent attack is magic)
+            healthBar.TotalDamageReceived(opponent.damage, opponent.attackStat, magicResistance, opponent.magicPenetration)*/
+        IsDead();
     }
 }
