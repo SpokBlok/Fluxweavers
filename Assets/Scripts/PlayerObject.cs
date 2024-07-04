@@ -17,7 +17,7 @@ public class PlayerObject : MonoBehaviour
 
     // Health Related Stuff
     public HealthBar healthBar;
-    public int health;
+    public float health;
     public bool isDead;
 
     //Attack Stats
@@ -41,10 +41,10 @@ public class PlayerObject : MonoBehaviour
     public int mana;
 
     //Opponent stats
-    public int opponentDamage;
-    public int opponentArmorPenetration;
-    public int opponentMagicPenetration;
-    public int opponentAttackStat;
+    public float opponentDamage;
+    public float opponentArmorPenetration;
+    public float opponentMagicPenetration;
+    public float opponentAttackStat;
     public bool isPhysical;
 
     // Start is called before the first frame update
@@ -74,12 +74,12 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void IsAttacked(int opponentDamage, int opponentAttackStat, int opponentArmorPenetration, int opponentMagicPenetration, int myArmor, int myMagicResistance)
+    public void IsAttacked(float opponentDamage, int opponentAttackStat, int opponentArmorPenetration, int opponentMagicPenetration)
     {
         if (isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, myArmor, opponentArmorPenetration);
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
         if (!isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, myMagicResistance, opponentArmorPenetration);
+            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentArmorPenetration);
         IsDead();
     }
 }
