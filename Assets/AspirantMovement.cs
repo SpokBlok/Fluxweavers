@@ -22,7 +22,7 @@ public class AspirantMovement : MonoBehaviour
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
 
-    private int movementStat = 2; // placeholder for player.movement
+    [SerializeField] private int movementStat; // placeholder for player.movement
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -63,6 +63,7 @@ public class AspirantMovement : MonoBehaviour
 
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+        Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -123,6 +124,7 @@ public class AspirantMovement : MonoBehaviour
             AvailableTiles.Clear();
             AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
             AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+            Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
             
             // player.hasMoved = true;
         }
