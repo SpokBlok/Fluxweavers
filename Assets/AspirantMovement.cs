@@ -15,14 +15,14 @@ public class AspirantMovement : MonoBehaviour
 
     [SerializeField] private GameObject ParentOfTiles;
 
-    private const int rowCount = 3;
-    private const int colCount = 4;
+    private const int rowCount = 7;
+    private const int colCount = 6;
     private GameObject[,] Tiles = new GameObject[rowCount,colCount];
 
     [SerializeField] private int currentYIndex;
     [SerializeField] private int currentXIndex;
 
-    private int movementStat = 1; // placeholder for player.movement
+    private int movementStat = 2; // placeholder for player.movement
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -42,17 +42,20 @@ public class AspirantMovement : MonoBehaviour
         int colNumber = 0;
         float previousY = 99.9f;
 
-        foreach (Transform child in mapTransform)
+        foreach (Transform row in mapTransform)
         {
-            if (child.position.y != previousY)
+            foreach (Transform tile in row)
             {
-                previousY = child.position.y;
-                rowNumber++;
-                colNumber = 0;
+                if (tile.position.y != previousY)
+                {
+                    previousY = tile.position.y;
+                    rowNumber++;
+                    colNumber = 0;
+                }
+    
+                Tiles[rowNumber,colNumber] = tile.gameObject;
+                colNumber++;
             }
-
-            Tiles[rowNumber,colNumber] = child.gameObject;
-            colNumber += 1;
         }
 
         // position aspirant on current specified tile
@@ -112,6 +115,10 @@ public class AspirantMovement : MonoBehaviour
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
             Debug.Log("Move Locked In! Make Your Next Move..");
+
+            // changing all back to white
+            foreach(Vector2Int Tile in AvailableTiles)
+                Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
 
             AvailableTiles.Clear();
             AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
@@ -243,17 +250,24 @@ public class AspirantMovement : MonoBehaviour
             try
             {
                 if (Tiles[y,x] != null)
+                {
                     AdjacentTiles.Add(new Vector2Int(y,x));
+                    
+                    // indicating adjacent tiles by making them yellow
+                    Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
             }
             catch (Exception e){}
         }
 
         if (range > 1)
         {
+            HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
+
             foreach (Vector2Int Tile in AdjacentTiles)
-            {
-                AdjacentTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1));
-            }
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1));
+
+            AdjacentTiles.UnionWith(NewTiles);
         }
 
         return AdjacentTiles;
