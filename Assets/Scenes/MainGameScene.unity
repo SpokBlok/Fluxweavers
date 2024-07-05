@@ -188,7 +188,7 @@ MonoBehaviour:
   attackStat: 0
   movement: 2
   control: 0
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 2082557026}
   health: 0
   basicAttackDamage: 0
   basicAttackMana: 0
@@ -200,7 +200,7 @@ MonoBehaviour:
   signatureMoveMana: 0
   signatureMoveRange: 0
   hasMoved: 0
-  resourceScript: {fileID: 0}
+  resourceScript: {fileID: 1753433710}
   mana: 0
 --- !u!212 &47848816
 SpriteRenderer:
@@ -976,9 +976,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1612473141}
     m_Modifications:
+    - target: {fileID: 87354415174141776, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87354415174141776, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.31764707
+      objectReference: {fileID: 0}
+    - target: {fileID: 87354415174141776, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5176471
+      objectReference: {fileID: 0}
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.043137256
+      objectReference: {fileID: 0}
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.28627452
+      objectReference: {fileID: 0}
+    - target: {fileID: 737291467726107885, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.43921572
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.043137256
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.28627452
+      objectReference: {fileID: 0}
+    - target: {fileID: 974313593729535491, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.43921572
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (19)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4808044549084910649, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5151643111002573738, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684135379628236223, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1469,7 +1517,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85fad85fcf2a5d942b3adc88213ba948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ParentOfTiles: {fileID: 1612473140}
 --- !u!4 &1698533209 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
