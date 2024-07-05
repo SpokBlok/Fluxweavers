@@ -5,7 +5,7 @@ using UnityEngine;
 public class ResourceScript : MonoBehaviour
 {
 
-    int manaCount;
+    public int manaCount;
 
     // Start is called before the first frame update
     void Start()

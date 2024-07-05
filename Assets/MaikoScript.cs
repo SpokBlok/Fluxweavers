@@ -21,12 +21,13 @@ public class MaikoScript : MonoBehaviour
 
     //Attack Stats
     public float basicAttackDamage;
-    public float basicAttackMana;
-    public float basicAttackRange;
+    public float basicAttackMana = 4;
+    public float basicAttackRange = 1;
 
     public float skillDamage;
     public float skillMana;
     public float skillRange;
+    public bool inAquaHex; // For Maiko Passive
 
     public float signatureMoveDamage;
     public float signatureMoveMana;
@@ -42,6 +43,7 @@ public class MaikoScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        basicAttackDamage = (health * 0.08f) + ((armor + magicResistance) * 0.7f); // 8% of Maiko HP + 70% of armor + magic resistance
     }
 
     // Update is called once per frame
@@ -71,12 +73,12 @@ public class MaikoScript : MonoBehaviour
 
     public void basicAttack()
     {
-        //code here
+        
     }
 
     public void skillAttack()
     {
-        //code here
+        
     }
 
     public void signatureMove()
