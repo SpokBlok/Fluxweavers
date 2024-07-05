@@ -15,8 +15,8 @@ public class AspirantMovement : MonoBehaviour
 
     public TilesCreationScript Tiles;
 
-    [SerializeField] private int currentYIndex;
-    [SerializeField] private int currentXIndex;
+    [SerializeField] public int currentYIndex;
+    [SerializeField] public int currentXIndex;
     private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;
