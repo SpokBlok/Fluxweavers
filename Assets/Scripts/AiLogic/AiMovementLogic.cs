@@ -5,11 +5,8 @@ using UnityEngine;
 
 public class AiMovementLogic : MonoBehaviour
 {
-
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
-
     private Transform aiTransform;
+    private AiAttackLogic attackLogic;
 
     public TilesCreationScript Tiles;
     [SerializeField] private AspirantMovement aspirant;
@@ -34,6 +31,7 @@ public class AiMovementLogic : MonoBehaviour
     void Start()
     {
         aiTransform = GetComponent<Transform>();
+        attackLogic = new AiAttackLogic();
 
         // position aspirant on current specified tile, with an offset to make it stand on top of it
         offset = new Vector3(0.0f, 0.22f, 0.0f); 
@@ -55,6 +53,19 @@ public class AiMovementLogic : MonoBehaviour
 
     void Update()
     {
+        HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentXIndex, currentYIndex, attackRange);
+        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
+
+        
+        // Call attack script first if already in range
+        if (neighbors.Contains(new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex))) {
+            attackLogic.attack();
+        }
+        if (Input.GetKeyDown(KeyCode.C)) { // Path handling
+            attackLogic.canAttack = true; // Change this
+            CreatePathToTarget(target, movementStat, attackRange);
+        }
+
         if (Path.Count > 0) // Handles movement
         {
             Vector2Int nextTile = Path.Peek();
@@ -70,10 +81,7 @@ public class AiMovementLogic : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.Space)) // Handles path finding
-        {   
-            CreatePathToTarget(new Vector2Int(aspirant.currentXIndex, aspirant.currentYIndex), movementStat, attackRange);
-        }
+        
     }
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {

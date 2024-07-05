@@ -1160,12 +1160,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40a656458451b84284a46f63261ab46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normal: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  selected: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
   Tiles: {fileID: 1612473142}
   aspirant: {fileID: 66446162}
   currentYIndex: 5
   currentXIndex: 12
+  attackRange: 2
   movementSpeed: 2
   isAvailableHighlighted: 0
   isErrorIgnored: 1
