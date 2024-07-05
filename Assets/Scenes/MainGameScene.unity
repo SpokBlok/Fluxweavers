@@ -176,6 +176,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &180556571 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5449534775431675315, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+  m_PrefabInstance: {fileID: 209244618}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a40a656458451b84284a46f63261ab46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &208641511
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1488,6 +1499,14 @@ PrefabInstance:
       propertyPath: Tiles
       value: 
       objectReference: {fileID: 1612473142}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: Enemies.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: Enemies.Array.data[0]
+      value: 
+      objectReference: {fileID: 180556571}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.0310929

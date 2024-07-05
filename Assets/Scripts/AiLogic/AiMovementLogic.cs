@@ -67,6 +67,9 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
+
+                if (Path.Count == 0)
+                    aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
             }
         }
 
@@ -216,5 +219,15 @@ public class AiMovementLogic : MonoBehaviour
             Path.Enqueue(new Vector2Int(currentX, currentY));
             neighbors = GetAdjacentTiles(currentX, currentY, range);
         }
+    }
+
+    public int GetYIndex()
+    {
+        return currentYIndex;
+    }
+
+    public int GetXIndex()
+    {
+        return currentXIndex;
     }
 }
