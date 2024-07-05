@@ -14,6 +14,8 @@ public class PhaseHandler : MonoBehaviour
     public PhaseMatchStart matchStart = new PhaseMatchStart();
     public PhaseRoundEnd roundEnd = new PhaseRoundEnd();
     public int currentRound;
+    public int playerManaCount;
+    public int enemyManaCount;
 
     public PlayerObject player;
     public PlayerObject enemy;
