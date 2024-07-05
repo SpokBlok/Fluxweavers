@@ -11,8 +11,6 @@ public class AiMovementLogic : MonoBehaviour
 
     private Transform aiTransform;
 
-    private bool isSelected;
-
     public TilesCreationScript Tiles;
     [SerializeField] private AspirantMovement aspirant;
 
@@ -24,9 +22,9 @@ public class AiMovementLogic : MonoBehaviour
     private List<int> RequiredExtraMovement;
 
     private int movementStat;
+    [SerializeField] public int attackRange;
     private HashSet<Vector2Int> AvailableTiles;
 
-    private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
@@ -52,9 +50,6 @@ public class AiMovementLogic : MonoBehaviour
         if (isAvailableHighlighted)
             Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
 
-        // target is the current tile for now
-        targetTile = new Vector2Int(currentYIndex, currentXIndex);
-
         Path = new Queue<Vector2Int>();
     }
 
@@ -77,7 +72,7 @@ public class AiMovementLogic : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space)) // Handles path finding
         {   
-            CreatePathToTarget(new Vector2Int(aspirant.currentXIndex, aspirant.currentYIndex), movementStat);
+            CreatePathToTarget(new Vector2Int(aspirant.currentXIndex, aspirant.currentYIndex), movementStat, attackRange);
         }
     }
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
@@ -158,8 +153,6 @@ public class AiMovementLogic : MonoBehaviour
                         {
                             DifferentLayerTiles.Add(new Vector2Int(y,x));
                             RequiredExtraMovement.Add((int) Math.Abs(currentZ-Tiles.Tiles[y,x].transform.position.z));
-
-
                         }
                     }
                 }
@@ -184,12 +177,12 @@ public class AiMovementLogic : MonoBehaviour
         return AdjacentTiles;
     }
 
-    void CreatePathToTarget(Vector2Int target, int movement)
+    void CreatePathToTarget(Vector2Int target, int movement, int range)
     {
         int currentY = currentYIndex;
         int currentX = currentXIndex;
 
-        HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentX, currentY, 1);
+        HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentX, currentY, range);
 
         while (!neighbors.Contains(new Vector2Int(target.y, target.x)) && Path.Count < movement)
         {
@@ -221,7 +214,7 @@ public class AiMovementLogic : MonoBehaviour
             currentX += stepX;
 
             Path.Enqueue(new Vector2Int(currentX, currentY));
-            neighbors = GetAdjacentTiles(currentX, currentY, 1);
+            neighbors = GetAdjacentTiles(currentX, currentY, range);
         }
     }
 }
