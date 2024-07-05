@@ -197,9 +197,6 @@ public class AiMovementLogic : MonoBehaviour
 
         Vector2Int aspirantPosition = new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex);
 
-        if (neighbors.Contains(aspirantPosition))
-            neighbors.Remove(aspirantPosition);
-
         while (!neighbors.Contains(new Vector2Int(target.y, target.x)) && Path.Count < movement)
         {
             int stepY = 0;
