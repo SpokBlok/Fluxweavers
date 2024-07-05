@@ -91,21 +91,12 @@ public class AiMovementLogic : MonoBehaviour
 
     void Update()
     {
-        // get mouse position accdg. to transform coords
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float mouseX = mousePosition.x;
-        float mouseY = mousePosition.y;
-
-        if (Path.Count > 0)
+        if (Path.Count > 0) // Handles movement
         {
             Vector2Int nextTile = Path.Peek();
             Vector3 nextPosition = Tiles[nextTile.y, nextTile.x].transform.position + offset;
             
             aiTransform.position = Vector3.MoveTowards(aiTransform.position, nextPosition, movementSpeed * Time.deltaTime);
-
-            // if (nextTile.x == aspirant.currentXIndex && nextTile.y == aspirant.currentYIndex) {
-            //     Path.Clear(); // Stop moving on adjancent
-            // }
 
             if (aiTransform.position == nextPosition)
             {
@@ -115,37 +106,10 @@ public class AiMovementLogic : MonoBehaviour
             }
         }
 
-        else if (Input.GetKey(KeyCode.Space))
-        {    
+        if (Input.GetKey(KeyCode.Space)) // Handles path finding
+        {   
             CreatePathToTarget(new Vector2Int(aspirant.currentXIndex, aspirant.currentYIndex), movementStat);
-            Debug.Log(Path.Count);
         }
-
-        /***
-        // else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
-        // {
-        //     Debug.Log("Move Locked In! Make Your Next Move..");
-
-        //     // changing all back to white
-        //     if (isAvailableHighlighted)
-        //     {
-        //         foreach(Vector2Int Tile in AvailableTiles)
-        //             Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
-
-        //         Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
-        //     }
-
-        //     AvailableTiles.Clear();
-        //     AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
-        //     AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
-            
-        //     // player.hasMoved = true;
-        // }
-
-        // // might want some UI stuff to happen when hovering over aspirant / tile
-        // // else
-        // //     CheckHoverOverAllElements(mouseX, mouseY);
-        ***/
     }
 
     int AddLeftEdgeTiles(int rowNumber)
@@ -284,107 +248,6 @@ public class AiMovementLogic : MonoBehaviour
             Tiles[10,colNumber] = RightEdge.GetChild(5).gameObject;
     }
 
-    bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
-    {
-        Transform objTransform = obj.GetComponent<Transform>();
-
-        float multiplier;
-
-        try
-        {
-            if (obj.name.Substring(0,7).Equals("HexTile"))
-                multiplier = 0.35f;
-            else
-                multiplier = 1.0f;
-        }
-        catch(Exception e)
-        {
-            multiplier = 1.0f;
-
-            if(!isErrorIgnored)
-                Debug.Log("Ignorable Error: " + e.Message);
-        }
-
-        // get object position and dimensions
-        float x = objTransform.position.x;
-        float y = objTransform.position.y;
-        float width = objTransform.lossyScale.x;
-        float height = objTransform.lossyScale.y * multiplier;
-
-        // check if click was on object
-        if(mouseX >= x - width / 2 && mouseY >= y - height / 2 &&
-            mouseX <= x + width / 2  && mouseY <= y + height / 2)
-            return true;
-        
-        return false;
-    }
-
-    void CheckHoverOverAllElements(float mouseX, float mouseY)
-    {
-        if(isMouseOnObject(mouseX, mouseY, this.gameObject))
-            Debug.Log("Hovering over " + this.gameObject.name);
-        else
-        {
-            bool isHoveringOnTile = false;
-
-            for(int i = 0; i < rowCount; i++)
-            {
-                for(int j = 0; j < colCount; j++)
-                {
-                    if (Tiles[i,j] == null)
-                        continue;
-
-                    // POSSIBLE ISSUE: since this only checks a portion of the hexagon
-                    if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
-                    {
-                        isHoveringOnTile = true;
-
-                        if(AvailableTiles.Contains(new Vector2Int(i,j)))
-                            Debug.Log("Aspirant can traverse on " + Tiles[i,j].name);
-                        else
-                            Debug.Log("Hovering over " + Tiles[i,j].name);
-
-                        break;
-                    }
-                }
-            }
-
-            if (!isHoveringOnTile)
-                Debug.Log("");
-        }
-    }
-
-    Vector2Int GetTargetTile(float mouseX, float mouseY)
-    {
-        // check each tile if they were clicked on
-        for(int i = 0; i < rowCount; i++)
-        {
-            for(int j = 0; j < colCount; j++)
-            {
-                if (Tiles[i,j] == null)
-                    continue;
-
-                // ISSUE: since this assumes tile is rectangular but it is hexagonal
-                if(isMouseOnObject(mouseX, mouseY, Tiles[i,j]))
-                {
-                    if(AvailableTiles.Contains(new Vector2Int(i,j)))
-                    {
-                        isSelected = false;
-                        GetComponent<SpriteRenderer>().sprite = normal;
-
-                        // Debug.Log("Click was on " + Tiles[i,j].name);
-                        return new Vector2Int(j,i);
-                    }
-                    else
-                        break;
-                }
-            }
-        }
-
-        // if none were, the target tile is the current tile, which is the current position of the aspirant
-        return new Vector2Int(currentXIndex, currentYIndex);
-    }
-
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
@@ -495,17 +358,6 @@ public class AiMovementLogic : MonoBehaviour
         int currentX = currentXIndex;
 
         HashSet<Vector2Int> neighbors = GetAdjacentTiles(target.x, target.y, 1);
-
-        // foreach (Vector2Int neighbor in neighbors)
-        // {
-        //     Debug.Log(neighbor);
-        // }
-        // Debug.Log(new Vector2Int(currentX, currentY));
-
-        //     if (Path.Count > movement) {
-        //         break;
-        //     }
-        // Debug.Log("Paths: ");
 
         while (!neighbors.Contains(new Vector2Int(currentY, currentX)) && Path.Count < movement)
         {
