@@ -159,26 +159,33 @@ public class AspirantMovement : MonoBehaviour
 
         Vector2Int previousEnemyPosition = new Vector2Int(EnemyIndices[index].y,EnemyIndices[index].x);
 
+        // get path to previous enemy position to see distance
         Queue<Vector2Int> path = CreatePathToTarget(previousEnemyPosition);
 
+        // if distance <= movement range
         if (path.Count <= movementStat)
         {
+            // add to available tiles
             AvailableTiles.Add(EnemyIndices[index]);
 
-            int x = EnemyIndices[index].x;
-            int y = EnemyIndices[index].y;
+            int y = previousEnemyPosition.y;
+            int x = previousEnemyPosition.x;
 
             if(isAvailableHighlighted)
-                Tiles.Tiles[x,y].GetComponent<SpriteRenderer>().color = Color.yellow;
+                Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
         }
 
+        // get new enemy position
         int enemyY = Enemy.GetYIndex();
         int enemyX = Enemy.GetXIndex();
 
+        // update running list
         EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
 
+        // if current tile that the enemy is on is within movement range
         if (AvailableTiles.Contains(new Vector2Int(enemyY,enemyX)))
         {
+            // remove it
             AvailableTiles.Remove(new Vector2Int(enemyY,enemyX));
 
             if(isAvailableHighlighted)
