@@ -28,6 +28,7 @@ public class FluxInterface : MonoBehaviour
     };
 
     public enum FluxNames {
+        None,
         Singe,
         Blaze,
         Scald,
@@ -53,13 +54,15 @@ public class FluxInterface : MonoBehaviour
     private List<Elements> currentElements = new List<Elements>();
     
     void Start() {
-        currentElements.Clear();
+        Clear();
     }
 
     void Update() {
+        GetCombination();
+        castSpellText.text = castedSpell == FluxNames.None ? "" : castedSpell.ToString() ?? "" ;
+
         currentElement1Text.text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
         currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
-
     }
 
     void AddElement(Elements element) {
@@ -69,6 +72,34 @@ public class FluxInterface : MonoBehaviour
     }
     
     public void Cast(){
+    }
+    
+    public void Clear(){
+        currentElements.Clear();
+        castSpellText.text = "";
+    }
+    
+    public void AddIgnis(){
+        AddElement(Elements.Ignis);
+    }
+    
+    public void AddAqua(){
+        AddElement(Elements.Aqua);
+    }
+    
+    public void AddFolia(){
+        AddElement(Elements.Folia);
+    }
+    
+    public void AddTerra(){
+        AddElement(Elements.Terra);
+    }
+    
+    public void AddVentus(){
+        AddElement(Elements.Ventus);
+    }
+
+    private void GetCombination() {
         switch(currentElements.Count) {
             case 1:
                 switch(currentElements[0]) {
@@ -197,37 +228,9 @@ public class FluxInterface : MonoBehaviour
                 }
                 break;
             default:
+                castedSpell = FluxNames.None;
                 break;
         }
-
-        // Replace with actual spell code
-      
-        currentElements.Clear();
-        castSpellText.text = castedSpell.ToString() ?? "";
-    }
-    
-    public void Clear(){
-        currentElements.Clear();
-    }
-    
-    public void AddIgnis(){
-        AddElement(Elements.Ignis);
-    }
-    
-    public void AddAqua(){
-        AddElement(Elements.Aqua);
-    }
-    
-    public void AddFolia(){
-        AddElement(Elements.Folia);
-    }
-    
-    public void AddTerra(){
-        AddElement(Elements.Terra);
-    }
-    
-    public void AddVentus(){
-        AddElement(Elements.Ventus);
     }
 }
 
