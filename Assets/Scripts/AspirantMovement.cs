@@ -157,24 +157,6 @@ public class AspirantMovement : MonoBehaviour
     {
         int index = Enemies.IndexOf(Enemy);
 
-        Vector2Int previousEnemyPosition = new Vector2Int(EnemyIndices[index].y,EnemyIndices[index].x);
-
-        // get path to previous enemy position to see distance
-        Queue<Vector2Int> path = CreatePathToTarget(previousEnemyPosition);
-
-        // if distance <= movement range
-        if (path.Count <= movementStat)
-        {
-            // add to available tiles
-            AvailableTiles.Add(EnemyIndices[index]);
-
-            int y = previousEnemyPosition.y;
-            int x = previousEnemyPosition.x;
-
-            if(isAvailableHighlighted)
-                Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
-        }
-
         // get new enemy position
         int enemyY = Enemy.GetYIndex();
         int enemyX = Enemy.GetXIndex();
@@ -182,15 +164,17 @@ public class AspirantMovement : MonoBehaviour
         // update running list
         EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
 
-        // if current tile that the enemy is on is within movement range
-        if (AvailableTiles.Contains(new Vector2Int(enemyY,enemyX)))
+        if (isAvailableHighlighted)
         {
-            // remove it
-            AvailableTiles.Remove(new Vector2Int(enemyY,enemyX));
+            foreach(Vector2Int Tile in AvailableTiles)
+                Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
 
-            if(isAvailableHighlighted)
-                Tiles.Tiles[enemyY,enemyX].GetComponent<SpriteRenderer>().color = Color.white;
+            Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
         }
+
+        AvailableTiles.Clear();
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
