@@ -19,8 +19,8 @@ public class AspirantMovement : MonoBehaviour
     private const int colCount = 25; // 19 + 2 * 3
     private GameObject[,] Tiles = new GameObject[rowCount,colCount];
 
-    [SerializeField] private int currentYIndex;
-    [SerializeField] private int currentXIndex;
+    [SerializeField] public int currentYIndex;
+    [SerializeField] public int currentXIndex;
     private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;
