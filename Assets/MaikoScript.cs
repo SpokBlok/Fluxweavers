@@ -21,20 +21,20 @@ public class MaikoScript : MonoBehaviour
 
     //Attack Stats
     public float basicAttackDamage;
-    public float basicAttackMana = 4;
+    public int basicAttackMana = 4;
     public float basicAttackRange = 1;
 
     public float skillDamage;
-    public float skillMana;
+    public int skillMana = 10;
     public float skillRange;
-    public bool inAquaHex; // For Maiko Passive
 
     public float signatureMoveDamage;
-    public float signatureMoveMana;
-    public float signatureMoveRange;
+    public int signatureMoveMana = 16;
+    public float signatureMoveRange = 2;
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool inAquaHex; // For Maiko Passive and Ultimate Check
 
     //Mana & Resource Script
     public ResourceScript resourceScript;
@@ -44,6 +44,7 @@ public class MaikoScript : MonoBehaviour
     void Start()
     {
         basicAttackDamage = (health * 0.08f) + ((armor + magicResistance) * 0.7f); // 8% of Maiko HP + 70% of armor + magic resistance
+        skillDamage = (health * 0.18f) + (attackStat); // 18% of Maiko HP + attackStat
     }
 
     // Update is called once per frame
@@ -73,16 +74,50 @@ public class MaikoScript : MonoBehaviour
 
     public void basicAttack()
     {
-        
+        // Mana Portion
+        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, basicAttackMana) == true)
+        {
+            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, basicAttackMana);
+            //Deal Damage code here
+            //range code here when implemented
+        }
+        else
+        {
+            //Message here not enough mana
+        }
     }
 
     public void skillAttack()
     {
-        
+        // Mana Portion
+        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, skillMana) == true)
+        {
+            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, skillMana);
+            //Deal Damage code here
+            //Range code here when implemented
+        }
+        else
+        {
+            //Message here not enough mana
+        }
+        //reduce target movement by 1 for 1 round here.
     }
 
     public void signatureMove()
     {
-        //code here
+        // Mana Portion
+        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, signatureMoveMana) == true)
+        {
+            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, signatureMoveMana);
+            armor += armor * 0.45f;
+            magicResistance += magicResistance * 0.45f;
+            //Deal Damage code here
+            //Range code here when implemented
+        }
+        else
+        {
+            //Message here not enough mana
+        }
+        //range code here when implemented
     }
 }
