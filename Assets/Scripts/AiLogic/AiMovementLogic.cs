@@ -78,6 +78,9 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
+
+                if (Path.Count == 0)
+                    aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
             }
         }
 
@@ -192,6 +195,11 @@ public class AiMovementLogic : MonoBehaviour
 
         HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentX, currentY, range);
 
+        Vector2Int aspirantPosition = new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex);
+
+        if (neighbors.Contains(aspirantPosition))
+            neighbors.Remove(aspirantPosition);
+
         while (!neighbors.Contains(new Vector2Int(target.y, target.x)) && Path.Count < movement)
         {
             int stepY = 0;
@@ -224,5 +232,15 @@ public class AiMovementLogic : MonoBehaviour
             Path.Enqueue(new Vector2Int(currentX, currentY));
             neighbors = GetAdjacentTiles(currentX, currentY, range);
         }
+    }
+
+    public int GetYIndex()
+    {
+        return currentYIndex;
+    }
+
+    public int GetXIndex()
+    {
+        return currentXIndex;
     }
 }

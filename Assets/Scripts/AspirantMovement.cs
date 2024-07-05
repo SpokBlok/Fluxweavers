@@ -24,6 +24,10 @@ public class AspirantMovement : MonoBehaviour
 
     private PlayerObject aspirant;
     private int movementStat;
+
+    [SerializeField] private List<AiMovementLogic> Enemies;
+    private List<Vector2Int> EnemyIndices;
+
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -48,6 +52,8 @@ public class AspirantMovement : MonoBehaviour
 
         aspirant = GetComponent<PlayerObject>();
         movementStat = GetComponent<PlayerObject>().movement;
+
+        SetUpEnemyIndices();
 
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
@@ -132,6 +138,43 @@ public class AspirantMovement : MonoBehaviour
         // might want some UI stuff to happen when hovering over aspirant / tile
         // else
         //     CheckHoverOverAllElements(mouseX, mouseY);
+    }
+
+    void SetUpEnemyIndices()
+    {
+        EnemyIndices = new List<Vector2Int>();
+
+        foreach (AiMovementLogic Enemy in Enemies)
+        {
+            int y = Enemy.GetYIndex();
+            int x = Enemy.GetXIndex();
+
+            EnemyIndices.Add(new Vector2Int(y,x));
+        }
+    }
+
+    public void UpdateEnemyIndex(AiMovementLogic Enemy)
+    {
+        int index = Enemies.IndexOf(Enemy);
+
+        // get new enemy position
+        int enemyY = Enemy.GetYIndex();
+        int enemyX = Enemy.GetXIndex();
+
+        // update running list
+        EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
+
+        if (isAvailableHighlighted)
+        {
+            foreach(Vector2Int Tile in AvailableTiles)
+                Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+
+            Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+        }
+
+        AvailableTiles.Clear();
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -239,6 +282,7 @@ public class AspirantMovement : MonoBehaviour
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
 
+        // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
         {
             RequiredExtraMovement[i]--;
@@ -257,12 +301,14 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
+        // setting up steps from current tile to adjacent tiles (up, down, left, right in that order)
         List<Vector2Int> Steps = new List<Vector2Int>
         {
             new Vector2Int(0, -1), new Vector2Int(0, 1),
             new Vector2Int(-1, 0), new Vector2Int(1, 0)
         };
 
+        // setting up the other two adjacent tiles (upper-left & lower-left, or upper-right & lower-right)
         if (yIndex > (Tiles.returnRowCount() - 1)/2)
         {
             Steps.Add(new Vector2Int(1, -1));
@@ -279,25 +325,36 @@ public class AspirantMovement : MonoBehaviour
             Steps.Add(new Vector2Int(-1, 1));
         }
 
-        float currentZ = Tiles.Tiles[yIndex,xIndex].transform.position.z; // temp to determine mountain
+        float currentZ = Tiles.Tiles[yIndex,xIndex].transform.position.z; // TEMP to determine mountain
 
+        // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
         {
+            // getting the indices of an adjacent tile
             int x = xIndex + step.x;
             int y = yIndex + step.y;
 
             try
             {
-                if (Tiles.Tiles[y,x] != null && !AdjacentTiles.Contains(new Vector2Int(y,x)))
+                // if it is inside the hex map,
+                // if it was not yet determined to be an adjacent tile, and
+                // if it is not occupied by any enemy
+                if (Tiles.Tiles[y,x] != null
+                    && !AdjacentTiles.Contains(new Vector2Int(y,x))
+                    && !EnemyIndices.Contains(new Vector2Int(y,x)))
                 {
+                    // if same layer
                     if(Tiles.Tiles[y,x].transform.position.z == currentZ)
                     {
+                        // add to collection of adjacent tiles
                         AdjacentTiles.Add(new Vector2Int(y,x));
 
+                        // if it was determined as a tile from a different layer before,
                         if (DifferentLayerTiles.Contains(new Vector2Int(y,x)))
                         {
                             int index = DifferentLayerTiles.IndexOf(new Vector2Int(y,x));
 
+                            // remove it from that list
                             DifferentLayerTiles.RemoveAt(index);
                             RequiredExtraMovement.RemoveAt(index);
                         }
@@ -307,30 +364,37 @@ public class AspirantMovement : MonoBehaviour
                             Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
                     }
 
+                    // else (different layer)
+                    // if it was not yet considered to be a tile on a different layer
                     else if (!DifferentLayerTiles.Contains(new Vector2Int(y,x)))
                     {
+                        // check if it can be traversed given the "movement" left, if yes:
                         if(Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)) < range)
                         {
+                            // add to collection of tiles on a different layer
                             DifferentLayerTiles.Add(new Vector2Int(y,x));
                             RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)));
                         }
                     }
                 }
             }
-            catch(Exception e)
+            catch(Exception e) // index out of bounds (outside of 2d array)
             {
                 if(!isErrorIgnored)
                     Debug.Log("Ignorable Error: " + e.Message);
             }
         }
 
+        // if there is more "movement" left,
         if (range > 1)
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
 
+            // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
                 NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1));
 
+            // then add them to the current running list of adjacent tiles
             AdjacentTiles.UnionWith(NewTiles);
         }
 
@@ -372,6 +436,13 @@ public class AspirantMovement : MonoBehaviour
 
             currentY += stepY;
             currentX += stepX;
+
+            if(EnemyIndices.Contains(new Vector2Int(currentY, currentX)))
+            {
+                Pathway = new Queue<Vector2Int>();
+                Debug.Log("This path will pass through an enemy\nTry clicking on each tile in the path to the destination");
+                break;
+            }
 
             Pathway.Enqueue(new Vector2Int(currentX, currentY));
         }
