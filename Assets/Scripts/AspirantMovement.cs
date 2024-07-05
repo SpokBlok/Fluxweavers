@@ -157,17 +157,32 @@ public class AspirantMovement : MonoBehaviour
     {
         int index = Enemies.IndexOf(Enemy);
 
-        int y = Enemy.GetYIndex();
-        int x = Enemy.GetXIndex();
+        Vector2Int previousEnemyPosition = new Vector2Int(EnemyIndices[index].y,EnemyIndices[index].x);
 
-        EnemyIndices[index] = new Vector2Int(y,x);
+        Queue<Vector2Int> path = CreatePathToTarget(previousEnemyPosition);
 
-        if (AvailableTiles.Contains(new Vector2Int(y,x)))
+        if (path.Count <= movementStat)
         {
-            AvailableTiles.Remove(new Vector2Int(y,x));
+            AvailableTiles.Add(EnemyIndices[index]);
+
+            int x = EnemyIndices[index].x;
+            int y = EnemyIndices[index].y;
 
             if(isAvailableHighlighted)
-                Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.white;
+                Tiles.Tiles[x,y].GetComponent<SpriteRenderer>().color = Color.yellow;
+        }
+
+        int enemyY = Enemy.GetYIndex();
+        int enemyX = Enemy.GetXIndex();
+
+        EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
+
+        if (AvailableTiles.Contains(new Vector2Int(enemyY,enemyX)))
+        {
+            AvailableTiles.Remove(new Vector2Int(enemyY,enemyX));
+
+            if(isAvailableHighlighted)
+                Tiles.Tiles[enemyY,enemyX].GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 
