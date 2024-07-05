@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class TilesCreationScript : MonoBehaviour
 {
-
-    [SerializeField] private GameObject ParentOfTiles;
-
     public const int rowCount = 11;
     public const int colCount = 25; // 19 + 2 * 3
     public GameObject[,] Tiles = new GameObject[rowCount, colCount];
@@ -14,7 +11,7 @@ public class TilesCreationScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Transform mapTransform = ParentOfTiles.transform;
+        Transform mapTransform = this.gameObject.transform;
 
         // format them into a grid
         int rowNumber = -1;
