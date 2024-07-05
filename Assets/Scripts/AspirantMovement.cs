@@ -437,6 +437,13 @@ public class AspirantMovement : MonoBehaviour
             currentY += stepY;
             currentX += stepX;
 
+            if(EnemyIndices.Contains(new Vector2Int(currentY, currentX)))
+            {
+                Pathway = new Queue<Vector2Int>();
+                Debug.Log("This path will pass through an enemy\nTry clicking on each tile in the path to the destination");
+                break;
+            }
+
             Pathway.Enqueue(new Vector2Int(currentX, currentY));
         }
 
