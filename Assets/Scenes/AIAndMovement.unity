@@ -998,7 +998,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normal: {fileID: 0}
   selected: {fileID: 0}
-  Tiles: {fileID: 1612473142}
+  Tiles: {fileID: 0}
   currentYIndex: 0
   currentXIndex: 0
   movementSpeed: 0
@@ -1126,7 +1126,6 @@ GameObject:
   - component: {fileID: 989505746}
   - component: {fileID: 989505745}
   - component: {fileID: 989505744}
-  - component: {fileID: 989505743}
   - component: {fileID: 989505747}
   m_Layer: 0
   m_Name: Enemy
@@ -1135,26 +1134,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &989505743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989505742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  normal: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  selected: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
-  Tiles: {fileID: 1612473142}
-  currentYIndex: 5
-  currentXIndex: 12
-  movementSpeed: 2
-  isAvailableHighlighted: 1
-  isErrorIgnored: 1
 --- !u!114 &989505744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1268,13 +1247,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40a656458451b84284a46f63261ab46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspirant: {fileID: 871112942}
-  movement: 0
-  moveSpeed: 0
-  currentYIndex: 0
-  currentXIndex: 0
-  remainingMoves: 0
-  movementScript: {fileID: 66446162}
+  normal: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  selected: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
+  Tiles: {fileID: 1612473142}
+  aspirant: {fileID: 66446162}
+  currentYIndex: 5
+  currentXIndex: 12
+  movementSpeed: 2
+  isAvailableHighlighted: 0
+  isErrorIgnored: 1
 --- !u!1 &1046412609
 GameObject:
   m_ObjectHideFlags: 0
