@@ -22,6 +22,7 @@ public class AspirantMovement : MonoBehaviour
     private List<Vector2Int> DifferentLayerTiles;
     private List<int> RequiredExtraMovement;
 
+    private PlayerObject aspirant;
     private int movementStat;
     private HashSet<Vector2Int> AvailableTiles;
 
@@ -45,6 +46,7 @@ public class AspirantMovement : MonoBehaviour
         DifferentLayerTiles = new List<Vector2Int>();
         RequiredExtraMovement = new List<int>();
 
+        aspirant = GetComponent<PlayerObject>();
         movementStat = GetComponent<PlayerObject>().movement;
 
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
@@ -81,7 +83,7 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
-        else if (Input.GetMouseButtonDown(0))
+        else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
             if(isMouseOnObject(mouseX, mouseY, this.gameObject))
             {
@@ -103,22 +105,28 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
-            Debug.Log("Move Locked In! Make Your Next Move..");
+            if (aspirant.hasMoved)
+                Debug.Log("Make Your Next Move..");
 
-            // changing all back to white
-            if (isAvailableHighlighted)
+            else
             {
-                foreach(Vector2Int Tile in AvailableTiles)
-                    Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+                Debug.Log("Move Locked In!");
 
-                Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+                // changing all back to white
+                if (isAvailableHighlighted)
+                {
+                    foreach(Vector2Int Tile in AvailableTiles)
+                        Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
+
+                    Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
+
+                AvailableTiles.Clear();
+                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+                AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
             }
 
-            AvailableTiles.Clear();
-            AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
-            AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
-            
-            // player.hasMoved = true;
+            aspirant.hasMoved = !aspirant.hasMoved;
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
