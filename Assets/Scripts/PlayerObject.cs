@@ -21,15 +21,15 @@ public class PlayerObject : MonoBehaviour
 
     //Attack Stats
     public float basicAttackDamage;
-    public float basicAttackMana;
+    public int basicAttackMana;
     public float basicAttackRange;
 
     public float skillDamage;
-    public float skillMana;
+    public int skillMana;
     public float skillRange;
 
     public float signatureMoveDamage;
-    public float signatureMoveMana;
+    public int signatureMoveMana;
     public float signatureMoveRange;
 
     // Checkers

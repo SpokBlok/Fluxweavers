@@ -18,7 +18,7 @@ public class PhaseHandler : MonoBehaviour
     public int playerManaCount;
     public int enemyManaCount;
 
-    public GameObject[] player;
+    public PlayerObject player;
     public GameObject[] enemy;
     public ResourceScript rs;
 
@@ -27,7 +27,7 @@ public class PhaseHandler : MonoBehaviour
     
     void Start()
     {
-        player = GameObject.FindGameObjectsWithTag("Player");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerObject>();
         enemy = GameObject.FindGameObjectsWithTag("Enemy");
         rs = GameObject.FindObjectOfType<ResourceScript>();
         
