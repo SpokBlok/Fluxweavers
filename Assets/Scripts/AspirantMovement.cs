@@ -25,7 +25,7 @@ public class AspirantMovement : MonoBehaviour
     private PlayerObject aspirant;
     private int movementStat;
 
-    [SerializeField] private List<AiMovementLogic> Enemies;
+    private List<AiMovementLogic> Enemies;
     private List<Vector2Int> EnemyIndices;
 
     private bool isMovementSkillActivated;
@@ -53,6 +53,11 @@ public class AspirantMovement : MonoBehaviour
 
         aspirant = GetComponent<PlayerObject>();
         movementStat = GetComponent<PlayerObject>().movement;
+
+        Enemies = new List<AiMovementLogic>();
+
+        foreach (GameObject Enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            Enemies.Add(Enemy.GetComponent<AiMovementLogic>());
 
         SetUpEnemyIndices();
 
@@ -125,13 +130,6 @@ public class AspirantMovement : MonoBehaviour
                     Tiles.HighlightAdjacentTiles(false);
                 }
             }
-            else
-            {
-                GetComponent<SpriteRenderer>().sprite = normal;
-                isSelected = false;
-                isMovementSkillActivated = false;
-                Tiles.HighlightAdjacentTiles(false);
-            }
         }
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
@@ -147,10 +145,12 @@ public class AspirantMovement : MonoBehaviour
                 AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
             }
 
-            aspirant.hasMoved = !aspirant.hasMoved;
+            aspirant.hasMoved = true;
 
+            GetComponent<SpriteRenderer>().sprite = normal;
             isSelected = false;
             isMovementSkillActivated = false;
+            Tiles.HighlightAdjacentTiles(false);
         }
 
         else if (Input.GetKeyDown(KeyCode.H) && isSelected)
@@ -307,7 +307,7 @@ public class AspirantMovement : MonoBehaviour
             if (RequiredExtraMovement[i] == 0)
             {
                 Vector2Int tile = DifferentLayerTiles[i];
-                AdjacentTiles.Add(new Vector2Int(tile.x, tile.y));
+                AdjacentTiles.Add(tile);
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
@@ -347,25 +347,27 @@ public class AspirantMovement : MonoBehaviour
             int x = xIndex + step.x;
             int y = yIndex + step.y;
 
+            Vector2Int tile = new Vector2Int(y,x);
+
             try
             {
                 // if it is inside the hex map,
                 // if it was not yet determined to be an adjacent tile, and
                 // if it is not occupied by any enemy
                 if (Tiles.Tiles[y,x] != null
-                    && !AdjacentTiles.Contains(new Vector2Int(y,x))
-                    && !EnemyIndices.Contains(new Vector2Int(y,x)))
+                    && !AdjacentTiles.Contains(tile)
+                    && !EnemyIndices.Contains(tile))
                 {
                     // if same layer
                     if(Tiles.Tiles[y,x].transform.position.z == currentZ)
                     {
                         // add to collection of adjacent tiles
-                        AdjacentTiles.Add(new Vector2Int(y,x));
+                        AdjacentTiles.Add(tile);
 
                         // if it was determined as a tile from a different layer before,
-                        if (DifferentLayerTiles.Contains(new Vector2Int(y,x)))
+                        if (DifferentLayerTiles.Contains(tile))
                         {
-                            int index = DifferentLayerTiles.IndexOf(new Vector2Int(y,x));
+                            int index = DifferentLayerTiles.IndexOf(tile);
 
                             // remove it from that list
                             DifferentLayerTiles.RemoveAt(index);
@@ -375,13 +377,13 @@ public class AspirantMovement : MonoBehaviour
 
                     // else (different layer)
                     // if it was not yet considered to be a tile on a different layer
-                    else if (!DifferentLayerTiles.Contains(new Vector2Int(y,x)))
+                    else if (!DifferentLayerTiles.Contains(tile))
                     {
                         // check if it can be traversed given the "movement" left, if yes:
                         if(Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)) < range)
                         {
                             // add to collection of tiles on a different layer
-                            DifferentLayerTiles.Add(new Vector2Int(y,x));
+                            DifferentLayerTiles.Add(tile);
                             RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)));
                         }
                     }
