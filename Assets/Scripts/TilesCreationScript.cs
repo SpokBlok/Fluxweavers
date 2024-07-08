@@ -8,6 +8,8 @@ public class TilesCreationScript : MonoBehaviour
     public const int colCount = 25; // 19 + 2 * 3
     public GameObject[,] Tiles = new GameObject[rowCount, colCount];
 
+    private HashSet<Vector2Int> AdjacentTiles;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,8 @@ public class TilesCreationScript : MonoBehaviour
 
             AddRightEdgeTiles(rowNumber, colNumber);
         }
+
+        AdjacentTiles = new HashSet<Vector2Int>();
     }
 
     // Update is called once per frame
@@ -187,5 +191,28 @@ public class TilesCreationScript : MonoBehaviour
     public int returnColCount()
     {
         return colCount;
+    }
+
+    public void SetAdjacentTiles(HashSet<Vector2Int> AdjacentTiles)
+    {
+        this.AdjacentTiles = AdjacentTiles;
+    }
+
+    public int GetAdjacentTilesCount()
+    {
+        return AdjacentTiles.Count;
+    }
+
+    public void HighlightAdjacentTiles(bool isHighlighted)
+    {
+        Color newColor;
+
+        if(isHighlighted)
+            newColor = Color.yellow;
+        else
+            newColor = Color.white;
+
+        foreach (Vector2Int tile in AdjacentTiles)
+            Tiles[tile.x, tile.y].GetComponent<SpriteRenderer>().color = newColor;
     }
 }

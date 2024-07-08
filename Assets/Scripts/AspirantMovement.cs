@@ -28,13 +28,14 @@ public class AspirantMovement : MonoBehaviour
     [SerializeField] private List<AiMovementLogic> Enemies;
     private List<Vector2Int> EnemyIndices;
 
+    private bool isMovementSkillActivated;
+
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
-    [SerializeField] private bool isAvailableHighlighted; // for testing
     [SerializeField] private bool isErrorIgnored;       // to ignore error message in try-catch
 
     void Start()
@@ -55,11 +56,9 @@ public class AspirantMovement : MonoBehaviour
 
         SetUpEnemyIndices();
 
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
-        AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+        isMovementSkillActivated = false;
 
-        if (isAvailableHighlighted)
-            Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -98,14 +97,40 @@ public class AspirantMovement : MonoBehaviour
 
                 SpriteRenderer sr = GetComponent<SpriteRenderer>();
                 if(isSelected)
+                {
                     sr.sprite = selected;
+
+                    if(Tiles.GetAdjacentTilesCount() > 0)
+                        Tiles.HighlightAdjacentTiles(false);
+
+                    Tiles.SetAdjacentTiles(AvailableTiles);
+                }
                 else
+                {
                     sr.sprite = normal;
+                    isMovementSkillActivated = false;
+                    Tiles.HighlightAdjacentTiles(false);
+                }
             }
-            else if(isSelected)
+            else if(isSelected && isMovementSkillActivated)
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
                 Path = CreatePathToTarget(targetTile);
+
+                if (Path.Count == 0)
+                {
+                    GetComponent<SpriteRenderer>().sprite = normal;
+                    isSelected = false;
+                    isMovementSkillActivated = false;
+                    Tiles.HighlightAdjacentTiles(false);
+                }
+            }
+            else
+            {
+                GetComponent<SpriteRenderer>().sprite = normal;
+                isSelected = false;
+                isMovementSkillActivated = false;
+                Tiles.HighlightAdjacentTiles(false);
             }
         }
 
@@ -118,21 +143,24 @@ public class AspirantMovement : MonoBehaviour
             {
                 Debug.Log("Move Locked In!");
 
-                // changing all back to white
-                if (isAvailableHighlighted)
-                {
-                    foreach(Vector2Int Tile in AvailableTiles)
-                        Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
-
-                    Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
-                }
-
                 AvailableTiles.Clear();
                 AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
-                AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
             }
 
             aspirant.hasMoved = !aspirant.hasMoved;
+
+            isSelected = false;
+            isMovementSkillActivated = false;
+        }
+
+        else if (Input.GetKeyDown(KeyCode.H) && isSelected)
+        {
+            isMovementSkillActivated = !isMovementSkillActivated;
+
+            if(isMovementSkillActivated)
+                Tiles.HighlightAdjacentTiles(true);
+            else
+                Tiles.HighlightAdjacentTiles(false);
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
@@ -164,17 +192,8 @@ public class AspirantMovement : MonoBehaviour
         // update running list
         EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
 
-        if (isAvailableHighlighted)
-        {
-            foreach(Vector2Int Tile in AvailableTiles)
-                Tiles.Tiles[Tile.x, Tile.y].GetComponent<SpriteRenderer>().color = Color.white;
-
-            Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
-        }
-
         AvailableTiles.Clear();
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
-        AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -262,9 +281,6 @@ public class AspirantMovement : MonoBehaviour
                 {
                     if(AvailableTiles.Contains(new Vector2Int(i,j)))
                     {
-                        isSelected = false;
-                        GetComponent<SpriteRenderer>().sprite = normal;
-
                         // Debug.Log("Click was on " + Tiles[i,j].name);
                         return new Vector2Int(j,i);
                     }
@@ -281,6 +297,7 @@ public class AspirantMovement : MonoBehaviour
     public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
+        AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
@@ -291,10 +308,6 @@ public class AspirantMovement : MonoBehaviour
             {
                 Vector2Int tile = DifferentLayerTiles[i];
                 AdjacentTiles.Add(new Vector2Int(tile.x, tile.y));
-
-                // indicating adjacent tiles by making them yellow
-                if(isAvailableHighlighted)
-                    Tiles.Tiles[tile.x,tile.y].GetComponent<SpriteRenderer>().color = Color.yellow;
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
@@ -358,10 +371,6 @@ public class AspirantMovement : MonoBehaviour
                             DifferentLayerTiles.RemoveAt(index);
                             RequiredExtraMovement.RemoveAt(index);
                         }
-                        
-                        // indicating adjacent tiles by making them yellow
-                        if(isAvailableHighlighted)
-                            Tiles.Tiles[y,x].GetComponent<SpriteRenderer>().color = Color.yellow;
                     }
 
                     // else (different layer)
