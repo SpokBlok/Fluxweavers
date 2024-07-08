@@ -17,6 +17,10 @@ public class AspirantMovement : MonoBehaviour
 
     [SerializeField] public int currentYIndex;
     [SerializeField] public int currentXIndex;
+
+    private int originalYIndex;
+    private int originalXIndex;
+
     private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;
@@ -33,16 +37,20 @@ public class AspirantMovement : MonoBehaviour
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
-    private Queue<Vector2Int> Path;
-    [SerializeField] private float movementSpeed;
+    private List<Vector2Int> Path;
+    private int pathIndex;
+    private bool isMoving;
 
-    [SerializeField] private bool isErrorIgnored;       // to ignore error message in try-catch
+    [SerializeField] private float movementSpeed;
 
     void Start()
     {
         aspirantTransform = GetComponent<Transform>();
 
         isSelected = false;
+
+        originalYIndex = currentYIndex;
+        originalXIndex = currentXIndex;
 
         // position aspirant on current specified tile, with an offset to make it stand on top of it
         offset = new Vector3(0.0f, 0.22f, 0.0f); 
@@ -68,7 +76,9 @@ public class AspirantMovement : MonoBehaviour
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
 
-        Path = new Queue<Vector2Int>();
+        Path = new List<Vector2Int>();
+        pathIndex = 0;
+        isMoving = false;
     }
 
     void Update()
@@ -78,18 +88,22 @@ public class AspirantMovement : MonoBehaviour
         float mouseX = mousePosition.x;
         float mouseY = mousePosition.y;
 
-        if (Path.Count > 0)
+        if (isMoving)
         {
-            Vector2Int nextTile = Path.Peek();
-            Vector3 nextPosition = Tiles.Tiles[nextTile.y, nextTile.x].transform.position + offset;
+            Vector2Int nextTile = Path[pathIndex];
+            Vector3 nextPosition = Tiles.Tiles[nextTile.x, nextTile.y].transform.position + offset;
             
             aspirantTransform.position = Vector3.MoveTowards(aspirantTransform.position, nextPosition, movementSpeed * Time.deltaTime);
 
             if (aspirantTransform.position == nextPosition)
             {
-                currentYIndex = nextTile.y;
-                currentXIndex = nextTile.x;
-                Path.Dequeue();
+                currentYIndex = nextTile.x;
+                currentXIndex = nextTile.y;
+
+                pathIndex++;
+
+                if (pathIndex == Path.Count)
+                    isMoving = false;
             }
         }
 
@@ -129,6 +143,12 @@ public class AspirantMovement : MonoBehaviour
                     isMovementSkillActivated = false;
                     Tiles.HighlightAdjacentTiles(false);
                 }
+
+                else
+                {
+                    pathIndex = 0;
+                    isMoving = true;
+                }
             }
         }
 
@@ -141,11 +161,22 @@ public class AspirantMovement : MonoBehaviour
             {
                 Debug.Log("Move Locked In!");
 
+                originalXIndex = currentXIndex;
+                originalYIndex = currentYIndex;
+
+                foreach (Vector2Int Tile in AvailableTiles)
+                {
+                    TileObject tileObj = Tiles.Tiles[Tile.x, Tile.y].GetComponent<TileObject>();
+                    
+                    for (int i = 0; i < tileObj.PathsToTile.Count; i++)
+                        tileObj.PathsToTile[i] = new List<Vector2Int>();
+                }
+
                 AvailableTiles.Clear();
                 AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
             }
 
-            aspirant.hasMoved = true;
+            aspirant.hasMoved = !aspirant.hasMoved;
 
             GetComponent<SpriteRenderer>().sprite = normal;
             isSelected = false;
@@ -192,6 +223,12 @@ public class AspirantMovement : MonoBehaviour
         // update running list
         EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
 
+        foreach (Vector2Int Tile in AvailableTiles)
+        {
+            TileObject tileObj = Tiles.Tiles[Tile.x, Tile.y].GetComponent<TileObject>();
+            tileObj.PathsToTile.Clear();
+        }
+
         AvailableTiles.Clear();
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
     }
@@ -209,12 +246,9 @@ public class AspirantMovement : MonoBehaviour
             else
                 multiplier = 1.0f;
         }
-        catch(Exception e)
+        catch(Exception)
         {
             multiplier = 1.0f;
-
-            if(!isErrorIgnored)
-                Debug.Log("Ignorable Error: " + e.Message);
         }
 
         // get object position and dimensions
@@ -294,8 +328,11 @@ public class AspirantMovement : MonoBehaviour
         return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
+    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range, List<Vector2Int> Pathway = null)
     {
+        if (Pathway == null)
+            Pathway = new List<Vector2Int>();
+
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
         AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
@@ -311,6 +348,24 @@ public class AspirantMovement : MonoBehaviour
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
+
+                // get tile object
+                TileObject tileObj = Tiles.Tiles[tile.x, tile.y].GetComponent<TileObject>();
+                int index = tileObj.Aspirants.IndexOf(this.gameObject);
+
+                // if there is no path to the tile yet, or
+                // if the previously-determined path is longer than the current path,
+                if (tileObj.PathsToTile[index].Count == 0 ||
+                    tileObj.PathsToTile[index].Count > Pathway.Count + 1)
+                {
+                    tileObj.PathsToTile[index] = new List<Vector2Int>();
+
+                    // store the path (including the end of the path, which is the tile itself)
+                    foreach(Vector2Int path in Pathway)
+                        tileObj.PathsToTile[index].Add(path);
+
+                    tileObj.PathsToTile[index].Add(tile);
+                }
             }
         }
 
@@ -367,11 +422,29 @@ public class AspirantMovement : MonoBehaviour
                         // if it was determined as a tile from a different layer before,
                         if (DifferentLayerTiles.Contains(tile))
                         {
-                            int index = DifferentLayerTiles.IndexOf(tile);
+                            int i = DifferentLayerTiles.IndexOf(tile);
 
                             // remove it from that list
-                            DifferentLayerTiles.RemoveAt(index);
-                            RequiredExtraMovement.RemoveAt(index);
+                            DifferentLayerTiles.RemoveAt(i);
+                            RequiredExtraMovement.RemoveAt(i);
+                        }
+
+                        // get tile object
+                        TileObject tileObj = Tiles.Tiles[y, x].GetComponent<TileObject>();
+                        int index = tileObj.Aspirants.IndexOf(this.gameObject);
+
+                        // if there is no path to the tile yet, or
+                        // if the previously-determined path is longer than the current path,
+                        if (tileObj.PathsToTile[index].Count == 0 ||
+                            tileObj.PathsToTile[index].Count > Pathway.Count + 1)
+                        {
+                            tileObj.PathsToTile[index] = new List<Vector2Int>();
+
+                            // store the path (including the end of the path, which is the tile itself)
+                            foreach(Vector2Int path in Pathway)
+                                tileObj.PathsToTile[index].Add(path);
+
+                            tileObj.PathsToTile[index].Add(tile);
                         }
                     }
 
@@ -389,21 +462,28 @@ public class AspirantMovement : MonoBehaviour
                     }
                 }
             }
-            catch(Exception e) // index out of bounds (outside of 2d array)
-            {
-                if(!isErrorIgnored)
-                    Debug.Log("Ignorable Error: " + e.Message);
-            }
+            catch(Exception){} // index out of bounds (outside of 2d array)
         }
 
+        range--;
+
         // if there is more "movement" left,
-        if (range > 1)
+        if (range > 0)
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
 
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1));
+            {
+                List<Vector2Int> NewPath = new List<Vector2Int>();
+
+                foreach(Vector2Int path in Pathway)
+                    NewPath.Add(path);
+
+                NewPath.Add(Tile);
+
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, NewPath));
+            }
 
             // then add them to the current running list of adjacent tiles
             AdjacentTiles.UnionWith(NewTiles);
@@ -412,53 +492,70 @@ public class AspirantMovement : MonoBehaviour
         return AdjacentTiles;
     }
 
-    public Queue<Vector2Int> CreatePathToTarget(Vector2Int target)
+    List<Vector2Int> CreatePathToTarget(Vector2Int target)
     {
-        Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
+        TileObject targetTile = Tiles.Tiles[target.y, target.x].GetComponent<TileObject>();
 
-        int currentY = currentYIndex;
-        int currentX = currentXIndex;
+        // reset player position
+        currentXIndex = originalXIndex;
+        currentYIndex = originalYIndex;
+        aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
 
-        while (currentY != target.y || currentX != target.x)
-        {
-            int stepY = 0;
+        int index = targetTile.Aspirants.IndexOf(this.gameObject);
 
-            if (currentY < target.y)
-                stepY = 1;
-            else if (currentY > target.y)
-                stepY = -1;
+        if (targetTile.PathsToTile[index].Count > 0)
+            return targetTile.PathsToTile[index];
+        
+        if(target.x != currentXIndex || target.y != currentYIndex)
+            Debug.Log("Something's wrong ?!");
+        
+        return new List<Vector2Int>();
 
-            int stepX = 0;
+        // Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
 
-            if (currentX < target.x)
-            {
-                if ((stepY ==  1 && currentY < (Tiles.returnRowCount() -1)/2) ||
-                    (stepY == -1 && currentY > (Tiles.returnRowCount() -1)/2) ||
-                     stepY ==  0)
-                    stepX = 1;
-            }
-            else if (currentX > target.x)
-            {
-                if ((stepY == -1 && currentY <= (Tiles.returnRowCount() -1)/2) ||
-                    (stepY ==  1 && currentY >= (Tiles.returnRowCount() -1)/2) ||
-                     stepY ==  0)
-                    stepX = -1;
-            }
+        // int currentY = currentYIndex;
+        // int currentX = currentXIndex;
 
-            currentY += stepY;
-            currentX += stepX;
+        // while (currentY != target.y || currentX != target.x)
+        // {
+        //     int stepY = 0;
 
-            if(EnemyIndices.Contains(new Vector2Int(currentY, currentX)))
-            {
-                Pathway = new Queue<Vector2Int>();
-                Debug.Log("This path will pass through an enemy\nTry clicking on each tile in the path to the destination");
-                break;
-            }
+        //     if (currentY < target.y)
+        //         stepY = 1;
+        //     else if (currentY > target.y)
+        //         stepY = -1;
 
-            Pathway.Enqueue(new Vector2Int(currentX, currentY));
-        }
+        //     int stepX = 0;
 
-        return Pathway;
+        //     if (currentX < target.x)
+        //     {
+        //         if ((stepY ==  1 && currentY < (Tiles.returnRowCount() -1)/2) ||
+        //             (stepY == -1 && currentY > (Tiles.returnRowCount() -1)/2) ||
+        //              stepY ==  0)
+        //             stepX = 1;
+        //     }
+        //     else if (currentX > target.x)
+        //     {
+        //         if ((stepY == -1 && currentY <= (Tiles.returnRowCount() -1)/2) ||
+        //             (stepY ==  1 && currentY >= (Tiles.returnRowCount() -1)/2) ||
+        //              stepY ==  0)
+        //             stepX = -1;
+        //     }
+
+        //     currentY += stepY;
+        //     currentX += stepX;
+
+        //     if(EnemyIndices.Contains(new Vector2Int(currentY, currentX)))
+        //     {
+        //         Pathway = new Queue<Vector2Int>();
+        //         Debug.Log("This path will pass through an enemy\nTry clicking on each tile in the path to the destination");
+        //         break;
+        //     }
+
+        //     Pathway.Enqueue(new Vector2Int(currentX, currentY));
+        // }
+
+        // return Pathway;
     }
 
 }
