@@ -510,52 +510,5 @@ public class AspirantMovement : MonoBehaviour
             Debug.Log("Something's wrong ?!");
         
         return new List<Vector2Int>();
-
-        // Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
-
-        // int currentY = currentYIndex;
-        // int currentX = currentXIndex;
-
-        // while (currentY != target.y || currentX != target.x)
-        // {
-        //     int stepY = 0;
-
-        //     if (currentY < target.y)
-        //         stepY = 1;
-        //     else if (currentY > target.y)
-        //         stepY = -1;
-
-        //     int stepX = 0;
-
-        //     if (currentX < target.x)
-        //     {
-        //         if ((stepY ==  1 && currentY < (Tiles.returnRowCount() -1)/2) ||
-        //             (stepY == -1 && currentY > (Tiles.returnRowCount() -1)/2) ||
-        //              stepY ==  0)
-        //             stepX = 1;
-        //     }
-        //     else if (currentX > target.x)
-        //     {
-        //         if ((stepY == -1 && currentY <= (Tiles.returnRowCount() -1)/2) ||
-        //             (stepY ==  1 && currentY >= (Tiles.returnRowCount() -1)/2) ||
-        //              stepY ==  0)
-        //             stepX = -1;
-        //     }
-
-        //     currentY += stepY;
-        //     currentX += stepX;
-
-        //     if(EnemyIndices.Contains(new Vector2Int(currentY, currentX)))
-        //     {
-        //         Pathway = new Queue<Vector2Int>();
-        //         Debug.Log("This path will pass through an enemy\nTry clicking on each tile in the path to the destination");
-        //         break;
-        //     }
-
-        //     Pathway.Enqueue(new Vector2Int(currentX, currentY));
-        // }
-
-        // return Pathway;
     }
-
 }
