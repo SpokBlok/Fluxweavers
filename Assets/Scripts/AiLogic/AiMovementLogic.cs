@@ -54,16 +54,11 @@ public class AiMovementLogic : MonoBehaviour
     void Update()
     {
         HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentXIndex, currentYIndex, attackRange);
-        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
 
         
         // Call attack script first if already in range
         if (neighbors.Contains(new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex))) {
             attackLogic.attack();
-        }
-        if (Input.GetKeyDown(KeyCode.C)) { // Path handling
-            attackLogic.canAttack = true; // Change this
-            CreatePathToTarget(target, movementStat, attackRange);
         }
 
         if (Path.Count > 0) // Handles movement
@@ -83,9 +78,16 @@ public class AiMovementLogic : MonoBehaviour
                     aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
             }
         }
-
         
     }
+
+    public void move () {
+        
+        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
+        attackLogic.canAttack = true; // Change this
+        CreatePathToTarget(target, movementStat, attackRange);
+    }
+
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
@@ -194,8 +196,6 @@ public class AiMovementLogic : MonoBehaviour
         int currentX = currentXIndex;
 
         HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentX, currentY, range);
-
-        Vector2Int aspirantPosition = new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex);
 
         while (!neighbors.Contains(new Vector2Int(target.y, target.x)) && Path.Count < movement)
         {
