@@ -53,16 +53,28 @@ public class FluxInterface : MonoBehaviour
     private FluxNames castedSpell;
     private List<Elements> currentElements = new List<Elements>();
     
+    private Flux pickedFlux;
+    private bool placedFlux;
     void Start() {
         Clear();
+        placedFlux = false;
+        pickedFlux = null;
     }
 
     void Update() {
         GetCombination();
-        castSpellText.text = castedSpell == FluxNames.None ? "" : castedSpell.ToString() ?? "" ;
+    }
 
-        currentElement1Text.text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
-        currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
+    public void PickupFlux(Flux flux){
+        pickedFlux = flux;
+    }
+
+    public void FluxPlaced(){
+        placedFlux = true;
+    }
+
+    public void PutDownFlux() {
+        pickedFlux = null;
     }
 
     void AddElement(Elements element) {
@@ -231,6 +243,10 @@ public class FluxInterface : MonoBehaviour
                 castedSpell = FluxNames.None;
                 break;
         }
+
+        castSpellText.text = castedSpell == FluxNames.None ? "" : castedSpell.ToString() ?? "" ;
+        currentElement1Text .text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
+        currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
     }
 }
 
