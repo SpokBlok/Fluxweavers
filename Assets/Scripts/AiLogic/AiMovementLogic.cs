@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AiMovementLogic : MonoBehaviour
@@ -11,8 +14,9 @@ public class AiMovementLogic : MonoBehaviour
     public TilesCreationScript Tiles;
     [SerializeField] private AspirantMovement aspirant;
 
-    [SerializeField] private int currentYIndex;
+    
     [SerializeField] private int currentXIndex;
+    [SerializeField] private int currentYIndex;
     private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;
@@ -85,7 +89,7 @@ public class AiMovementLogic : MonoBehaviour
         
         Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
         attackLogic.canAttack = true; // Change this
-        CreatePathToTarget(target, movementStat, attackRange);
+        CreatePathToTarget(target);
     }
 
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
@@ -188,6 +192,79 @@ public class AiMovementLogic : MonoBehaviour
         }
 
         return AdjacentTiles;
+    }
+
+    private int ManhattanDistance (Vector2Int source, Vector2Int destination) {
+        return (
+            Math.Abs(destination.x - source.x) + 
+            Math.Abs(destination.y - source.y) + 
+            Math.Abs(destination.y + destination.x - source.y - source.x)
+            ) / 2;
+    }
+
+    private List<Vector2Int> GetAdjacentTiles(Vector2Int center) {
+        List<Vector2Int> neighbors = new()
+        {
+            center,
+            center + Vector2Int.left,
+            center + Vector2Int.right,
+            center + Vector2Int.up,
+            center + Vector2Int.down,
+            center + new Vector2Int(-1, -1),
+            center + new Vector2Int(-1, 1),
+        };
+
+        return neighbors;
+    }
+
+    void CreatePathToTarget(Vector2Int target) {
+
+        Vector2Int startLocation = new(currentXIndex, currentYIndex);
+        Vector2Int currentLocation;
+
+        // Queue<Vector2Int> searchSpace = new();
+        Dictionary<int, Vector2Int> priorityNodes = new(); // (priority, node)
+        Dictionary<Vector2Int, Vector2Int> nodeHistory= new(); // For back tracking
+        List<Vector2Int> nodefilter = new();
+
+        priorityNodes[ManhattanDistance(startLocation, target)] = startLocation;
+        // priorityNodes.Add(new Tuple<int, Vector2Int>(ManhattanDistance(startLocation, target), startLocation));
+        // searchSpace.Enqueue(startLocation);
+
+
+        nodeHistory[startLocation] = startLocation;
+
+        while (priorityNodes.Count > 0) {
+            currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
+
+            if (currentLocation.Equals(target)) {
+                break;
+            }
+
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation)) {
+                if (!nodeHistory.Keys.Contains(neighbor) && neighbor.x >= 0 && neighbor.y >= 0) {
+                    priorityNodes[ManhattanDistance(neighbor, target)] = neighbor;
+                    // priorityNodes.OrderBy(node => node.Item1);
+                    nodeHistory[neighbor] = currentLocation;
+                }
+
+            }
+        }
+
+
+        // currentLocation = target; // Start at node just before target
+        currentLocation = nodeHistory[target];
+
+        while (!currentLocation.Equals(startLocation)) {
+            Path.Enqueue(currentLocation);
+            currentLocation = nodeHistory[currentLocation];
+        }
+
+        Path = new Queue<Vector2Int>(Path.Reverse());
+
+        foreach (Vector2Int tile in Path) {
+            Debug.Log(tile);
+        }
     }
 
     void CreatePathToTarget(Vector2Int target, int movement, int range)
