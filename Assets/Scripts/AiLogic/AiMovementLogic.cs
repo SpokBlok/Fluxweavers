@@ -197,11 +197,12 @@ public class AiMovementLogic : MonoBehaviour
     private int ManhattanDistance (Vector2Int source, Vector2Int destination) {
         return (
             Math.Abs(destination.x - source.x) + 
-            Math.Abs(destination.y - source.y) + 
-            Math.Abs(destination.y + destination.x - source.y - source.x)
-            ) / 2;
+            Math.Abs(destination.y - source.y) // + 
+            // Math.Abs(destination.y + destination.x - source.y - source.x)
+            ); // 2;
     }
 
+    // Trash Remove this shit
     private List<Vector2Int> GetAdjacentTiles(Vector2Int center) {
         List<Vector2Int> neighbors = new()
         {
@@ -241,16 +242,17 @@ public class AiMovementLogic : MonoBehaviour
                 break;
             }
 
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation)) {
-                if (!nodeHistory.Keys.Contains(neighbor) && neighbor.x >= 0 && neighbor.y >= 0) {
-                    priorityNodes[ManhattanDistance(neighbor, target)] = neighbor;
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
+
+                Vector2Int swappedCoords = new Vector2Int(neighbor.y, neighbor.x);
+                if (!nodeHistory.Keys.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
+                    priorityNodes[ManhattanDistance(swappedCoords, target)] = swappedCoords;
                     // priorityNodes.OrderBy(node => node.Item1);
-                    nodeHistory[neighbor] = currentLocation;
+                    nodeHistory[swappedCoords] = currentLocation;
                 }
 
             }
         }
-
 
         // currentLocation = target; // Start at node just before target
         currentLocation = nodeHistory[target];
@@ -262,9 +264,9 @@ public class AiMovementLogic : MonoBehaviour
 
         Path = new Queue<Vector2Int>(Path.Reverse());
 
-        foreach (Vector2Int tile in Path) {
-            Debug.Log(tile);
-        }
+        // foreach (Vector2Int tile in Path) {
+        //     Debug.Log(tile);
+        // }
     }
 
     void CreatePathToTarget(Vector2Int target, int movement, int range)
