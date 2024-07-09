@@ -20,16 +20,15 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.player.basicAttackMana))
             {
+                float damage = 0;
                 //check for damagetype
-                //if phys
-                    //damage = player.basicAttack(enemyArmor)
-                //if magic
-                    //damage = player.basicAttack(enemyMagRes)
+                if (ph.player.isBasicAttackPhysical)
+                    damage = ph.player.basicAttack(ph.enemy.armor);
+                else
+                    damage = ph.player.basicAttack(ph.enemy.magicResistance);
 
-                //enemy.health = enemy.health - damage
+                ph.enemy.health = ph.enemy.health - damage;
             }
-
-            ph.player.basicAttack();
         }
 
         if (Input.GetKeyDown(KeyCode.S))
