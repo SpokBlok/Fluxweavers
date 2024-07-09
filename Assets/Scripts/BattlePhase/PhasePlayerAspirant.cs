@@ -16,49 +16,57 @@ public class PhasePlayerAspirant : PhaseBase
 
     public override void UpdateState(PhaseHandler ph) {
 
-        if (Input.GetKeyDown(KeyCode.B))
+        
+        if (ph.player.isSelected == true)
         {
-            if (ph.rs.playerAbilityUseCheck(ph.player.basicAttackMana))
+            if (Input.GetKeyDown(KeyCode.B))
             {
-                float damage = 0;
-                //check for damagetype
-                if (ph.player.isBasicAttackPhysical)
-                    damage = ph.player.basicAttack(ph.enemy.armor);
-                else
-                    damage = ph.player.basicAttack(ph.enemy.magicResistance);
-
-                ph.enemy.health = ph.enemy.health - damage;
+                Debug.Log("B was Pressed");
             }
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (ph.rs.playerAbilityUseCheck(ph.player.skillMana))
             {
+                if (ph.rs.playerAbilityUseCheck(ph.player.basicAttackMana))
+                {
+                    float damage = 0;
+                    //check for damagetype
+                    if (ph.player.isBasicAttackPhysical)
+                        damage = ph.player.basicAttack(ph.enemy.armor);
+                    else
+                        damage = ph.player.basicAttack(ph.enemy.magicResistance);
 
-                //check for skill type
+                    ph.enemy.health = ph.enemy.health - damage;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                if (ph.rs.playerAbilityUseCheck(ph.player.skillMana))
+                {
+
+                    //check for skill type
                     //if attack
-                        //check for damagetype
-                            //if phys
-                        //damage = player.basicAttack(enemyArmor)
-                            //if magic
-                        //damage = player.basicAttack(enemyMagRes)
+                    //check for damagetype
+                    //if phys
+                    //damage = player.basicAttack(enemyArmor)
+                    //if magic
+                    //damage = player.basicAttack(enemyMagRes)
                     //if buff/debuff
-                        //send to manager
+                    //send to manager
+                }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            if (ph.rs.playerAbilityUseCheck(ph.player.signatureMoveMana))
+            if (Input.GetKeyDown(KeyCode.U))
             {
-                //damage = player.signatureAttack(enemyArmor)
-                //enemy.health = enemy.health - damage
+                if (ph.rs.playerAbilityUseCheck(ph.player.signatureMoveMana))
+                {
+                    //damage = player.signatureAttack(enemyArmor)
+                    //enemy.health = enemy.health - damage
+                }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            ph.SwitchState(nextState);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ph.SwitchState(nextState);
+            }
         }
     }
 }

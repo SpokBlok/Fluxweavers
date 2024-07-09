@@ -35,6 +35,7 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool isSelected; //Check if the player is selected
 
     //Mana & Resource Script
     public ResourceScript resourceScript;
@@ -44,6 +45,7 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
+        isSelected = false;
     }
 
     // Update is called once per frame
@@ -91,5 +93,11 @@ public class PlayerObject : MonoBehaviour
     public virtual float signatureMove()
     {
         return 0;
+    }
+
+    public void OnMouseDown()
+    {
+        isSelected = !isSelected;
+        Debug.Log("Mouse Down");
     }
 }
