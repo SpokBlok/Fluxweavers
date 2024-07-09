@@ -31,13 +31,33 @@ public class ResourceScript : MonoBehaviour
         }
     }
 
-    public bool abilityUseCheck(int currentMana, int manaCost)
+    public bool playerAbilityUseCheck(int manaCost)
     {
-        return manaCost <= currentMana;
+        return manaCost <= playerManaCount;
     }
 
-    public int abilityUseManaUpdate(int currentMana, int manaCost)
+    public void playerAbilityUseManaUpdate(int manaCost)
     {
-        return currentMana - manaCost;
+        playerManaCount = playerManaCount - manaCost;
+    }
+
+    public int playerMana()
+    {
+        return playerManaCount; 
+    }
+
+    public bool enemyAbilityUseCheck(int manaCost)
+    {
+        return manaCost <= enemyManaCount;
+    }
+
+    public void enemyAbilityUseManaUpdate(int manaCost)
+    {
+        enemyManaCount = enemyManaCount - manaCost;
+    }
+
+    public int enemyMana()
+    {
+        return enemyManaCount;
     }
 }
