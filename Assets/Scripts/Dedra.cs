@@ -6,64 +6,61 @@ using Unity.VisualScripting;
 public class Dedra : MonoBehaviour
 {
 
-    public PlayerObject Dedra;
+    public PlayerObject DedraPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
     //Player Stats
-        Dedra.armor = 9;
-        Dedra.armorPenetration = 5;
-        Dedra.magicResistance = 9;
-        Dedra.magicPenetration = 0;
-        Dedra.attackStat = 40;
-        Dedra.movement = 2;
-        Dedra.control = 2; // All players have control over 2 hexes
+        DedraPlayer.armor = 9;
+        DedraPlayer.armorPenetration = 5;
+        DedraPlayer.magicResistance = 9;
+        DedraPlayer.magicPenetration = 0;
+        DedraPlayer.attackStat = 40;
+        DedraPlayer.movement = 2;
+        DedraPlayer.control = 2; // All players have control over 2 hexes
 
         // Health Related Stuff
-        Dedra.health = 120;
+        DedraPlayer.health = 120;
 
         //Attack Stats
-        Dedra.basicAttackDamage = Dedra.attackStat;
-        Dedra.basicAttackMana = 4;
-        Dedra.basicAttackRange = 3;
+        DedraPlayer.basicAttackDamage = DedraPlayer.attackStat;
+        DedraPlayer.basicAttackMana = 4;
+        DedraPlayer.basicAttackRange = 3;
 
-        Dedra.skillDamage; // Deals no damage
-        Dedra.skillMana = 5;
-        Dedra.skillRange; // N/A (Self-Target)
+        DedraPlayer.skillMana = 5;
+        DedraPlayer.signatureMoveMana = 12;
 
-        Dedra.signatureMoveDamage; // Deals no damage
-        Dedra.signatureMoveMana = 12;
-        Dedra.signatureMoveRange; // N/A (Self-Target)
+    }
 
-        public bool isOnFolia;
-        public int checkerForExit;
-        public bool skillActivation; // checks if skill was activated
-        public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
-        public bool signatureMoveActivation = false; // checks if signature move was activated
+    public bool wasOnFolia;
+    public int checkerForExit;
+    public bool skillActivation; // checks if skill was activated
+    public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
+    public bool signatureMoveActivation = false; // checks if signature move was activated
         
-    }
 
-    public void basicAttack()
+    public float basicAttack()
     {
-        if (!isSkillStillActive && !signatureMoveActivation) // reverts the basic attack back to normal
+        if (!isSkillStillActive && !signatureMoveActivation) // reverts the basic attack back to normal just in case ultimate was used
         {
-            Dedra.basicAttackDamage = Dedra.attackStat;
-            Dedra.basicAttackMana = 4;
-            Dedra.basicAttackRange = 3;
+            DedraPlayer.basicAttackDamage = DedraPlayer.attackStat;
+            DedraPlayer.basicAttackMana = 4;
+            DedraPlayer.basicAttackRange = 3;
         }
-        /* opponent.health -= Dedra.basicAttackDamage*/
+        /* opponent.health -= DedraPlayer.basicAttackDamage*/
+        return DedraPlayer.basicAttackDamage;
     }
 
-    public void dedraSkill()
+    public void DedraPlayerSkill()
     {
-        /* if (playerClicksOnSkill && Dedra.mana >= Dedra.skillMana)
+        /* if (playerClicksOnSkill && DedraPlayer.mana >= DedraPlayer.skillMana)
         {
-            dedra.skill = true;
+            DedraPlayer.skill = true;
         }
 
         // logic for the skill
-        if (dedra.skillActivation = true)
+        if (DedraPlayer.skillActivation = true)
         {
             int counter = 0; // this counter will be changed when the turns feature has been implemented
             while (counter > 3) // the skill lasts 3 turns
@@ -71,13 +68,13 @@ public class Dedra : MonoBehaviour
                 // if opponents health is <35%, basic attacks deal 200% of the attackStat
                 if (opponent.currentHealth < opponent.maxHealth * 0.35)
                 {
-                    dedra.basicAttackDamage = dedra.attackStat * 2;
+                    DedraPlayer.basicAttackDamage = DedraPlayer.attackStat * 2;
                 }
 
                 // else,  basic attacks deal 165% of the attackStat
                 else 
                 {
-                    dedra.basicAttack = dedra.attackStat * 1.65;
+                    DedraPlayer.basicAttack = DedraPlayer.attackStat * 1.65;
                 }
 
                 // set isSkillStillActive to true
@@ -89,13 +86,13 @@ public class Dedra : MonoBehaviour
         } */
     }
 
-    public void dedraSignatureMove()
+    public void DedraPlayerSignatureMove()
     {
-        if (wasOnFolia && Dedra.health > 0 && Dedra.mana >= Dedra.signatureMoveMana)
+        if (wasOnFolia && DedraPlayer.health > 0 && DedraPlayer.mana >= DedraPlayer.signatureMoveMana)
         {
-            Dedra.control += 1;
-            Dedra.basicAttackMana -= 2;
-            Dedra.basicAttackRange += 1;
+            DedraPlayer.control += 1;
+            DedraPlayer.basicAttackMana -= 2;
+            DedraPlayer.basicAttackRange += 1;
             signatureMoveActivation = true;
         } 
     }
@@ -109,6 +106,6 @@ public class Dedra : MonoBehaviour
 
     /* things to do for tomorrow:
             - subtract damage from enemey's health using basic attack
-            - find way to check if dedra just left the Folia environment
+            - find way to check if DedraPlayer just left the Folia environment
             - double check stats, and kit specifics */
 }
