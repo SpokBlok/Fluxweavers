@@ -3,48 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MaikoScript : MonoBehaviour
+public class MaikoScript : PlayerObject
 {
-    //Player Stats
-    public int level = 1;
-    public float armor = 16;
-    public float armorPenetration = 0;
-    public float magicResistance = 11;
-    public float magicPenetration = 0;
-    public float attackStat = 6;
-    public int movement = 2;
-    public int control = 2; // All players have control over 2 hexes
-
-    // Health Related Stuff
-    public HealthBar healthBar;
-    public float health = 200;
-
-    //Attack Stats
-    public float basicAttackDamage;
-    public int basicAttackMana = 4;
-    public float basicAttackRange = 1;
-
-    public float skillDamage;
-    public int skillMana = 10;
-    public float skillRange;
-
-    public float signatureMoveDamage;
-    public int signatureMoveMana = 16;
-    public float signatureMoveRange = 2;
-
-    // Checkers
-    public bool hasMoved; // Check if the player has moved in that turn
+    // Checkers for Maiko
     public bool inAquaHex; // For Maiko Passive and Ultimate Check
-
-    //Mana & Resource Script
-    public ResourceScript resourceScript;
-    public int mana;
 
     // Start is called before the first frame update
     void Start()
     {
+        //Player Stats
+        level = 1;
+        armor = 16;
+        armorPenetration = 0;
+        magicResistance = 11;
+        magicPenetration = 0;
+        attackStat = 6;
+        movement = 2;
+        control = 2; // All players have control over 2 hexes
+
+        // Health Related Stuff
+        health = 200;
+
+        //Attack Stats
+        basicAttackMana = 4;
+        basicAttackRange = 1;
+
+        skillDamage = 0;
+        skillMana = 10;
+        skillRange = 1;
+
+        signatureMoveDamage = 1;
+        signatureMoveMana = 16;
+        signatureMoveRange = 2;
+
+
         basicAttackDamage = (health * 0.08f) + ((armor + magicResistance) * 0.7f); // 8% of Maiko HP + 70% of armor + magic resistance
         skillDamage = (health * 0.18f) + (attackStat); // 18% of Maiko HP + attackStat
+
+        isBasicAttackPhysical = true;
+
+        isSkillAttackPhysical = false;
+        skillAttackExists = true;
+        skillStatusExists = true;
+
+        isSignatureMoveAttackPhysical = false;
+        signatureMoveAttackExists = false;
+        signatureMoveStatusExists = true;
     }
 
     // Update is called once per frame
@@ -63,41 +67,43 @@ public class MaikoScript : MonoBehaviour
         }
     }
 
-    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
+    public void IsAttacked(float damageTaken)
     {
-        if (isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
-        else
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
+        health -= damageTaken;
         IsDead();
     }
 
-    public void basicAttack()
+    public override float basicAttack(int enemyArmor)
     {
         // Mana Portion
-        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, basicAttackMana) == true)
+        if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
         {
-            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, basicAttackMana);
-            //Deal Damage code here
+            resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
+            float outputDamage = basicAttackDamage * ((100 - enemyArmor) / 100);
+            return outputDamage;
             //range code here when implemented
         }
         else
         {
+            return 0;
             //Message here not enough mana
         }
     }
 
-    public void skillAttack()
+    public override float skillAttack(int enemyMagicResistance)
     {
         // Mana Portion
-        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, skillMana) == true)
+        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
-            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, skillMana);
-            //Deal Damage code here
+            resourceScript.playerAbilityUseManaUpdate(skillMana);
+            float outputDamage = basicAttackDamage * ((100 - enemyMagicResistance) / 100);
+            return outputDamage;
+            //SkillStatus effect here when done
             //Range code here when implemented
         }
         else
         {
+            return 0;
             //Message here not enough mana
         }
         //reduce target movement by 1 for 1 round here.
@@ -105,10 +111,12 @@ public class MaikoScript : MonoBehaviour
 
     public void signatureMove()
     {
+        //Check if in aqua hex code here
         // Mana Portion
-        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, signatureMoveMana) == true)
+        if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
-            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, signatureMoveMana);
+            resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
+            movement += 1;// For this round only logic to be implemented in the future
             armor += armor * 0.45f;
             magicResistance += magicResistance * 0.45f;
             //Deal Damage code here
