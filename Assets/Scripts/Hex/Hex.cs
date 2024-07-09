@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Hex : MonoBehaviour
+public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
 {
-    public SpriteRenderer hexSprite;
+    private SpriteRenderer hexSprite;   
     [SerializeField] FluxInterface fi;
     void Start()
     {
@@ -21,16 +23,18 @@ public class Hex : MonoBehaviour
         hexSprite.color = Color.green;
     }
 
-    void OnMouseEnter() {
+    public void OnPointerEnter(PointerEventData eventData) {
         hexSprite.color = Color.red;
     }
 
-    void OnMouseExit() {
+    public void OnPointerExit(PointerEventData eventData) {
         hexSprite.color = Color.white;
     }
 
-    void OnMouseUp() {
-        OnFluxPlaced();
-        fi.FluxPlaced();
+    public void OnDrop(PointerEventData eventData) {
+        if(eventData.pointerDrag != null) {
+            OnFluxPlaced();
+            fi.FluxPlaced(eventData.pointerDrag);
+        }
     }
 }

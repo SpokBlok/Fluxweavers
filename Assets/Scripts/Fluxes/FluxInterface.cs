@@ -52,29 +52,20 @@ public class FluxInterface : MonoBehaviour
     }
     private FluxNames castedSpell;
     private List<Elements> currentElements = new List<Elements>();
-    
-    private Flux pickedFlux;
-    private bool placedFlux;
+    public Flux pickedUpFlux;
+
     void Start() {
         Clear();
-        placedFlux = false;
-        pickedFlux = null;
+        pickedUpFlux = null;
+    }
+
+    public void FluxPlaced(GameObject fluxObject) {
+        pickedUpFlux = fluxObject.GetComponent<Flux>();
+        Destroy(fluxObject);
     }
 
     void Update() {
         GetCombination();
-    }
-
-    public void PickupFlux(Flux flux){
-        pickedFlux = flux;
-    }
-
-    public void FluxPlaced(){
-        placedFlux = true;
-    }
-
-    public void PutDownFlux() {
-        pickedFlux = null;
     }
 
     void AddElement(Elements element) {
@@ -84,6 +75,7 @@ public class FluxInterface : MonoBehaviour
     }
     
     public void Cast(){
+
     }
     
     public void Clear(){
