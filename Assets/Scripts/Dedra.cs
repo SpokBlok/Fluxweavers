@@ -3,78 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
 
-public class Dedra : MonoBehaviour
-{
-
-    public PlayerObject DedraPlayer;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    //Player Stats
-        DedraPlayer.armor = 9;
-        DedraPlayer.armorPenetration = 5;
-        DedraPlayer.magicResistance = 9;
-        DedraPlayer.magicPenetration = 0;
-        DedraPlayer.attackStat = 40;
-        DedraPlayer.movement = 2;
-        DedraPlayer.control = 2; // All players have control over 2 hexes
-
-        // Health Related Stuff
-        DedraPlayer.health = 120;
-
-        //Attack Stats
-        DedraPlayer.basicAttackDamage = DedraPlayer.attackStat;
-        DedraPlayer.basicAttackMana = 4;
-        DedraPlayer.basicAttackRange = 3;
-
-        DedraPlayer.skillMana = 5;
-        DedraPlayer.signatureMoveMana = 12;
-
-    }
-
+public class Dedra : PlayerObject
+{   // Start is called before the first frame update
     public bool wasOnFolia;
     public int checkerForExit;
     public bool skillActivation; // checks if skill was activated
     public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
     public bool signatureMoveActivation = false; // checks if signature move was activated
-        
 
-    public float basicAttack()
+    void Start()
     {
-        if (!isSkillStillActive && !signatureMoveActivation) // reverts the basic attack back to normal just in case ultimate was used
-        {
-            DedraPlayer.basicAttackDamage = DedraPlayer.attackStat;
-            DedraPlayer.basicAttackMana = 4;
-            DedraPlayer.basicAttackRange = 3;
-        }
-        /* opponent.health -= DedraPlayer.basicAttackDamage*/
-        return DedraPlayer.basicAttackDamage;
+    //Player Stats
+        armor = 9;
+        armorPenetration = 5;
+        magicResistance = 9;
+        magicPenetration = 0;
+        attackStat = 40;
+        movement = 2;
+        control = 2; // All players have control over 2 hexes
+
+        // Health Related Stuff
+        health = 120;
+
+        //Attack Stats
+        basicAttackDamage = attackStat;
+        basicAttackMana = 4;
+        basicAttackRange = 3;
+
+        skillMana = 5;
+        signatureMoveMana = 12;
+
     }
 
-    public void DedraPlayerSkill()
+    public override float basicAttack(float enemyArmor)
     {
-        /* if (playerClicksOnSkill && DedraPlayer.mana >= DedraPlayer.skillMana)
+        if (!isSkillStillActive && !signatureMoveActivation) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
         {
-            DedraPlayer.skill = true;
+            basicAttackDamage = attackStat;
+            basicAttackMana = 4;
+            basicAttackRange = 3;
         }
+        
+        return basicAttackDamage * (100 - enemyArmor) / 100; 
+    }
 
+    public void skillAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
+    {
         // logic for the skill
-        if (DedraPlayer.skillActivation = true)
+        if (skillActivation == true)
         {
             int counter = 0; // this counter will be changed when the turns feature has been implemented
             while (counter > 3) // the skill lasts 3 turns
             {
                 // if opponents health is <35%, basic attacks deal 200% of the attackStat
-                if (opponent.currentHealth < opponent.maxHealth * 0.35)
+                if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
                 {
-                    DedraPlayer.basicAttackDamage = DedraPlayer.attackStat * 2;
+                    basicAttackDamage = attackStat * 2f;
                 }
 
                 // else,  basic attacks deal 165% of the attackStat
                 else 
                 {
-                    DedraPlayer.basicAttack = DedraPlayer.attackStat * 1.65;
+                    basicAttackDamage = attackStat * 1.65f;
                 }
 
                 // set isSkillStillActive to true
@@ -83,19 +73,40 @@ public class Dedra : MonoBehaviour
                 // increment counter
                 counter++; 
             } 
-        } */
+        } 
     }
 
-    public void DedraPlayerSignatureMove()
+    public void PlayerSignatureMove()
     {
-        if (wasOnFolia && DedraPlayer.health > 0 && DedraPlayer.mana >= DedraPlayer.signatureMoveMana)
+        if (wasOnFolia && health > 0)
         {
-            DedraPlayer.control += 1;
-            DedraPlayer.basicAttackMana -= 2;
-            DedraPlayer.basicAttackRange += 1;
+            control += 1;
+            basicAttackMana -= 2;
+            basicAttackRange += 1;
             signatureMoveActivation = true;
         } 
     }
+
+    /*public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == Dedra)
+        {
+            isCharacterOnTile = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject == Dedra && isCharacterOnTile)
+        {
+            isCharacterOnTile = false;
+            signatureMoveActivation = true;
+        }
+    }
+    
+    link for this on chatgpt: https://chatgpt.com/share/ada9a22b-d0c4-42bc-99bf-3036e43ba00a
+    
+    */
 
     // Update is called once per frame
     void Update()

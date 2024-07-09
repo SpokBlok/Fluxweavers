@@ -38,6 +38,7 @@ public class PlayerObject : MonoBehaviour
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;
+    public bool isBasicAttackPhysical;
 
     // Start is called before the first frame update
     void Start()
@@ -68,5 +69,20 @@ public class PlayerObject : MonoBehaviour
         else
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
         IsDead();
+    }
+
+    public virtual float basicAttack(float enemyResistStat)
+    {
+        return 0;
+    }
+
+    public virtual float skill(float enemyResistStat, float enemyCurrentHealth, float enemyMaximumHealth)
+    {
+        return 0;
+    }
+
+    public virtual float DedraPlayerSignatureMove()
+    {
+        return 0;
     }
 }
