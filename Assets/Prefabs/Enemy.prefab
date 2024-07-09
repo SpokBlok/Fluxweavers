@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5449534775431675315}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,8 +132,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40a656458451b84284a46f63261ab46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normal: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  selected: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
   Tiles: {fileID: 0}
   aspirant: {fileID: 0}
   currentYIndex: 5

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 341160263792652899}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,6 +137,7 @@ MonoBehaviour:
   Tiles: {fileID: 0}
   currentYIndex: 5
   currentXIndex: 8
+  Enemies: []
   movementSpeed: 2
   isAvailableHighlighted: 1
   isErrorIgnored: 1

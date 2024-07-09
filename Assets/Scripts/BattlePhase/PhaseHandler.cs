@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Resources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,9 +15,11 @@ public class PhaseHandler : MonoBehaviour
     public PhaseMatchStart matchStart = new PhaseMatchStart();
     public PhaseRoundEnd roundEnd = new PhaseRoundEnd();
     public int currentRound;
+    public int playerManaCount;
+    public int enemyManaCount;
 
-    public PlayerObject player;
-    public PlayerObject enemy;
+    public GameObject[] player;
+    public GameObject[] enemy;
     public ResourceScript rs;
 
     //This text field is meant only to test the funcitonality of the state machine
@@ -24,7 +27,12 @@ public class PhaseHandler : MonoBehaviour
     
     void Start()
     {
-        currentRound = 0;
+        player = GameObject.FindGameObjectsWithTag("Player");
+        enemy = GameObject.FindGameObjectsWithTag("Enemy");
+        rs = GameObject.FindObjectOfType<ResourceScript>();
+        
+        currentRound = 1;
+        rs.roundStart(currentRound);
         currentState = matchStart;
         currentState.EnterState(this);
     }
