@@ -90,7 +90,7 @@ public class MaikoScript : PlayerObject
         }
     }
 
-    public override float skillAttack(int enemyMagicResistance)
+    public override float skillAttack(float enemyMagicResistance, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)

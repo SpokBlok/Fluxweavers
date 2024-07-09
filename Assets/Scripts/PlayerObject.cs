@@ -84,7 +84,7 @@ public class PlayerObject : MonoBehaviour
         return 0;
     }
 
-    public virtual float skillAttack(int enemyResistStat)
+    public virtual float skillAttack(float enemyResistStat, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         return 0;
     }
