@@ -393,7 +393,8 @@ public class AspirantMovement : MonoBehaviour
             Steps.Add(new Vector2Int(-1, 1));
         }
 
-        float currentZ = Tiles.Tiles[yIndex,xIndex].transform.position.z; // TEMP to determine mountain
+        // get current layer of current tile
+        float currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<TileObject>().layer;
 
         // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
@@ -414,7 +415,7 @@ public class AspirantMovement : MonoBehaviour
                     && !EnemyIndices.Contains(tile))
                 {
                     // if same layer
-                    if(Tiles.Tiles[y,x].transform.position.z == currentZ)
+                    if(Tiles.Tiles[y,x].GetComponent<TileObject>().layer == currentLayer)
                     {
                         // add to collection of adjacent tiles
                         AdjacentTiles.Add(tile);
@@ -453,11 +454,11 @@ public class AspirantMovement : MonoBehaviour
                     else if (!DifferentLayerTiles.Contains(tile))
                     {
                         // check if it can be traversed given the "movement" left, if yes:
-                        if(Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)) < range)
+                        if(Math.Round(Math.Abs(currentLayer-Tiles.Tiles[y,x].GetComponent<TileObject>().layer)) < range)
                         {
                             // add to collection of tiles on a different layer
                             DifferentLayerTiles.Add(tile);
-                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentZ- Tiles.Tiles[y,x].transform.position.z)));
+                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentLayer-GetComponent<TileObject>().layer)));
                         }
                     }
                 }
@@ -513,9 +514,20 @@ public class AspirantMovement : MonoBehaviour
                 return new List<Vector2Int>();
         }
         
-        if(target.x != currentXIndex || target.y != currentYIndex)
+        if(target.x != originalXIndex || target.y != originalYIndex)
+        {
             Debug.Log("Something's wrong ?!");
+            return new List<Vector2Int>();
+        }
+        else
+        {
+            // reset player position
+            currentXIndex = originalXIndex;
+            currentYIndex = originalYIndex;
+            aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
+
+            return new List<Vector2Int>{new Vector2Int(currentYIndex, currentXIndex)};
+        }
         
-        return new List<Vector2Int>();
     }
 }

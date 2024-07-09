@@ -1470,6 +1470,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1481221387}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: currentXIndex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
