@@ -13,7 +13,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 
-public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler 
 {
     public enum Type {
         Spell,

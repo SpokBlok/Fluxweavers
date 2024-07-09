@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2900961039089130242}
   - component: {fileID: 5046811766275382877}
   m_Layer: 0
-  m_Name: Ignis
+  m_Name: CinderCone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

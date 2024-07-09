@@ -17,8 +17,17 @@ public class FluxInterface : MonoBehaviour
     [SerializeField] Button clearButton;
     [SerializeField] TextMeshProUGUI currentElement1Text;
     [SerializeField] TextMeshProUGUI currentElement2Text;
-    [SerializeField] TextMeshProUGUI castSpellText;
+    [SerializeField] TextMeshProUGUI castFluxText;
 
+    [SerializeField] GameObject singe;
+    [SerializeField] GameObject blaze;
+    [SerializeField] GameObject scald;
+    [SerializeField] GameObject wildfire;
+    [SerializeField] GameObject cinderCone;
+
+    [SerializeField] GameObject scorchingWinds;
+
+    private List<GameObject> fluxes;
     public enum Elements {
         Ignis,
         Aqua,
@@ -50,13 +59,19 @@ public class FluxInterface : MonoBehaviour
         Gust,
         Tornado
     }
-    private FluxNames castedSpell;
+    private FluxNames castedFlux;
     private List<Elements> currentElements = new List<Elements>();
     public Flux pickedUpFlux;
 
     void Start() {
+        fluxes = new List<GameObject>{singe, blaze, scald, wildfire, cinderCone, scorchingWinds};
         Clear();
         pickedUpFlux = null;
+        castedFlux = FluxNames.None;
+
+        foreach(GameObject flux in fluxes) {
+            Debug.Log(flux.name);
+        }
     }
 
     public void FluxPlaced(GameObject fluxObject) {
@@ -65,7 +80,6 @@ public class FluxInterface : MonoBehaviour
     }
 
     void Update() {
-        GetCombination();
     }
 
     void AddElement(Elements element) {
@@ -73,34 +87,53 @@ public class FluxInterface : MonoBehaviour
             currentElements.Add(element);
         }
     }
-    
-    public void Cast(){
-
+    public void Cast(FluxNames fluxName){
+        if(castedFlux != FluxNames.None) {
+            foreach(GameObject flux in fluxes) {
+                if(flux.name == fluxName.ToString()) {
+                    Debug.Log("Instantiated!");
+                    Instantiate(flux, GameObject.Find("FluxHolder").transform);
+                }
+            }
+        }
     }
     
     public void Clear(){
+        ElementsChanged();
         currentElements.Clear();
-        castSpellText.text = "";
+        castFluxText.text = "";
     }
     
     public void AddIgnis(){
         AddElement(Elements.Ignis);
+        ElementsChanged();
     }
     
     public void AddAqua(){
         AddElement(Elements.Aqua);
+        ElementsChanged();
     }
     
     public void AddFolia(){
         AddElement(Elements.Folia);
+        ElementsChanged();
     }
     
     public void AddTerra(){
         AddElement(Elements.Terra);
+        ElementsChanged();
     }
     
     public void AddVentus(){
         AddElement(Elements.Ventus);
+        ElementsChanged();
+    }
+
+    private void ElementsChanged(){
+        GetCombination();
+        if(GameObject.Find("FluxHolder").transform.childCount > 0)
+            Destroy(GameObject.Find("FluxHolder").transform.GetChild(0).gameObject);
+        Cast(castedFlux);
     }
 
     private void GetCombination() {
@@ -108,19 +141,19 @@ public class FluxInterface : MonoBehaviour
             case 1:
                 switch(currentElements[0]) {
                     case Elements.Ignis:
-                        castedSpell = FluxNames.Singe;
+                        castedFlux = FluxNames.Singe;
                         break;
                     case Elements.Aqua:
-                        castedSpell = FluxNames.HighTide;
+                        castedFlux = FluxNames.HighTide;
                         break;
                     case Elements.Folia:
-                        castedSpell = FluxNames.Regrowth;
+                        castedFlux = FluxNames.Regrowth;
                         break;
                     case Elements.Terra:
-                        castedSpell = FluxNames.EarthArise;
+                        castedFlux = FluxNames.EarthArise;
                         break;
                     case Elements.Ventus:
-                        castedSpell = FluxNames.Gust;
+                        castedFlux = FluxNames.Gust;
                         break;
                 }
                 break;
@@ -130,19 +163,19 @@ public class FluxInterface : MonoBehaviour
                     case Elements.Ignis:
                         switch(currentElements[1]) {
                             case Elements.Ignis:
-                                castedSpell = FluxNames.Blaze;
+                                castedFlux = FluxNames.Blaze;
                                 break;
                             case Elements.Aqua:
-                                castedSpell = FluxNames.Scald;
+                                castedFlux = FluxNames.Scald;
                                 break;
                             case Elements.Folia:
-                                castedSpell = FluxNames.Wildfire;
+                                castedFlux = FluxNames.Wildfire;
                                 break;
                             case Elements.Terra:
-                                castedSpell = FluxNames.CinderCone;
+                                castedFlux = FluxNames.CinderCone;
                                 break;
                             case Elements.Ventus:
-                                castedSpell = FluxNames.ScorchingWinds;
+                                castedFlux = FluxNames.ScorchingWinds;
                         
                             break;
                         }
@@ -151,19 +184,19 @@ public class FluxInterface : MonoBehaviour
                     case Elements.Aqua:
                         switch(currentElements[1]) {
                             case Elements.Ignis:
-                                castedSpell = FluxNames.Scald;
+                                castedFlux = FluxNames.Scald;
                                 break;
                             case Elements.Aqua:
-                                castedSpell = FluxNames.Rivershape;
+                                castedFlux = FluxNames.Rivershape;
                                 break;
                             case Elements.Folia:
-                                castedSpell = FluxNames.Swamp;
+                                castedFlux = FluxNames.Swamp;
                                 break;
                             case Elements.Terra:
-                                castedSpell = FluxNames.Waterfall;
+                                castedFlux = FluxNames.Waterfall;
                                 break;
                             case Elements.Ventus:
-                                castedSpell = FluxNames.Rain;
+                                castedFlux = FluxNames.Rain;
                             break;
                         }
                         break;
@@ -171,19 +204,19 @@ public class FluxInterface : MonoBehaviour
                     case Elements.Folia:
                         switch(currentElements[1]) {
                             case Elements.Ignis:
-                                castedSpell = FluxNames.Wildfire;
+                                castedFlux = FluxNames.Wildfire;
                                 break;
                             case Elements.Aqua:
-                                castedSpell = FluxNames.Swamp;
+                                castedFlux = FluxNames.Swamp;
                                 break;
                             case Elements.Folia:
-                                castedSpell = FluxNames.Reforestation;
+                                castedFlux = FluxNames.Reforestation;
                                 break;
                             case Elements.Terra:
-                                castedSpell = FluxNames.MountainSpires;
+                                castedFlux = FluxNames.MountainSpires;
                                 break;
                             case Elements.Ventus:
-                                castedSpell = FluxNames.WindsweptWoods;
+                                castedFlux = FluxNames.WindsweptWoods;
                         
                             break;
                         }
@@ -192,19 +225,19 @@ public class FluxInterface : MonoBehaviour
                     case Elements.Terra:
                         switch(currentElements[1]) {
                             case Elements.Ignis:
-                                castedSpell = FluxNames.CinderCone;
+                                castedFlux = FluxNames.CinderCone;
                                 break;
                             case Elements.Aqua:
-                                castedSpell = FluxNames.Waterfall;
+                                castedFlux = FluxNames.Waterfall;
                                 break;
                             case Elements.Folia:
-                                castedSpell = FluxNames.MountainSpires;
+                                castedFlux = FluxNames.MountainSpires;
                                 break;
                             case Elements.Terra:
-                                castedSpell = FluxNames.SeismicWave;
+                                castedFlux = FluxNames.SeismicWave;
                                 break;
                             case Elements.Ventus:
-                                castedSpell = FluxNames.Sandstorm;
+                                castedFlux = FluxNames.Sandstorm;
                             break;
                         }
                         break;
@@ -212,19 +245,19 @@ public class FluxInterface : MonoBehaviour
                     case Elements.Ventus:
                         switch(currentElements[1]) {
                             case Elements.Ignis:
-                                castedSpell = FluxNames.ScorchingWinds;
+                                castedFlux = FluxNames.ScorchingWinds;
                                 break;
                             case Elements.Aqua:
-                                castedSpell = FluxNames.Rain;
+                                castedFlux = FluxNames.Rain;
                                 break;
                             case Elements.Folia:
-                                castedSpell = FluxNames.WindsweptWoods;
+                                castedFlux = FluxNames.WindsweptWoods;
                                 break;
                             case Elements.Terra:
-                                castedSpell = FluxNames.Sandstorm;
+                                castedFlux = FluxNames.Sandstorm;
                                 break;
                             case Elements.Ventus:
-                                castedSpell = FluxNames.Tornado;
+                                castedFlux = FluxNames.Tornado;
                         
                             break;
                         }
@@ -232,11 +265,11 @@ public class FluxInterface : MonoBehaviour
                 }
                 break;
             default:
-                castedSpell = FluxNames.None;
+                castedFlux = FluxNames.None;
                 break;
         }
-
-        castSpellText.text = castedSpell == FluxNames.None ? "" : castedSpell.ToString() ?? "" ;
+        
+        castFluxText.text = castedFlux == FluxNames.None ? "" : castedFlux.ToString() ?? "" ;
         currentElement1Text .text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
         currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
     }

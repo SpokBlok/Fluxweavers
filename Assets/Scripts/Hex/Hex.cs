@@ -7,9 +7,10 @@ using UnityEngine.EventSystems;
 public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
 {
     private SpriteRenderer hexSprite;   
-    [SerializeField] FluxInterface fi;
+    private FluxInterface fi;
     void Start()
     {
+        fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();        
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
     }
 
