@@ -69,4 +69,19 @@ public class PlayerObject : MonoBehaviour
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
         IsDead();
     }
+
+    public virtual float basicAttack()
+    {
+        return 0;
+    }
+
+    public virtual float skill()
+    {
+        return 0;
+    }
+
+    public virtual float signatureMove()
+    {
+        return 0;
+    }
 }

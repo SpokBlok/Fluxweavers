@@ -28,6 +28,8 @@ public class PhasePlayerAspirant : PhaseBase
 
                 //enemy.health = enemy.health - damage
             }
+
+            ph.player.basicAttack();
         }
 
         if (Input.GetKeyDown(KeyCode.S))
