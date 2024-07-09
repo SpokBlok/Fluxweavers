@@ -161,6 +161,11 @@ public class AspirantMovement : MonoBehaviour
             {
                 Debug.Log("Move Locked In!");
 
+                GetComponent<SpriteRenderer>().sprite = normal;
+                isSelected = false;
+                isMovementSkillActivated = false;
+                Tiles.HighlightAdjacentTiles(false);
+
                 originalXIndex = currentXIndex;
                 originalYIndex = currentYIndex;
 
@@ -177,11 +182,6 @@ public class AspirantMovement : MonoBehaviour
             }
 
             aspirant.hasMoved = !aspirant.hasMoved;
-
-            GetComponent<SpriteRenderer>().sprite = normal;
-            isSelected = false;
-            isMovementSkillActivated = false;
-            Tiles.HighlightAdjacentTiles(false);
         }
 
         else if (Input.GetKeyDown(KeyCode.H) && isSelected)
@@ -496,15 +496,22 @@ public class AspirantMovement : MonoBehaviour
     {
         TileObject targetTile = Tiles.Tiles[target.y, target.x].GetComponent<TileObject>();
 
-        // reset player position
-        currentXIndex = originalXIndex;
-        currentYIndex = originalYIndex;
-        aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
-
         int index = targetTile.Aspirants.IndexOf(this.gameObject);
 
         if (targetTile.PathsToTile[index].Count > 0)
-            return targetTile.PathsToTile[index];
+        {
+            if (target.x != currentXIndex || target.y != currentYIndex)
+            {
+                // reset player position
+                currentXIndex = originalXIndex;
+                currentYIndex = originalYIndex;
+                aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
+
+                return targetTile.PathsToTile[index];
+            }
+            else
+                return new List<Vector2Int>();
+        }
         
         if(target.x != currentXIndex || target.y != currentYIndex)
             Debug.Log("Something's wrong ?!");
