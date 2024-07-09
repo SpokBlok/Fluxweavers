@@ -109,7 +109,7 @@ public class MaikoScript : PlayerObject
         //reduce target movement by 1 for 1 round here.
     }
 
-    public void signatureMove()
+    public override float signatureMoveStatus()
     {
         //Check if in aqua hex code here
         // Mana Portion
@@ -119,11 +119,13 @@ public class MaikoScript : PlayerObject
             movement += 1;// For this round only logic to be implemented in the future
             armor += armor * 0.45f;
             magicResistance += magicResistance * 0.45f;
+            return 30; //Lower 30 percent of enemy attack stat
             //Deal Damage code here
             //Range code here when implemented
         }
         else
         {
+            return 0;
             //Message here not enough mana
         }
         //range code here when implemented

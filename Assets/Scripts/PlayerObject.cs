@@ -99,8 +99,8 @@ public class PlayerObject : MonoBehaviour
         return 0;
     }
 
-    /*public virtual float signatureMoveStatus()
+    public virtual float signatureMoveStatus()
     {
-
-    }*/
+        return 0;
+    }
 }
