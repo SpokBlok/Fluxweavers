@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+[System.Serializable]
 public class StatusEffect
 {
     public string statusEffectName;

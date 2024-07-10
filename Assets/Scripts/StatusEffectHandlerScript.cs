@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class StatusEffectHandlerScript : MonoBehaviour
 {
-    public List<StatusEffect> effectList = new List<StatusEffect>();
+    [SerializeField]
+    List<StatusEffect> effectList;
     public PlayerObject[] playerObject;
     // Start is called before the first frame update
     void Start()
