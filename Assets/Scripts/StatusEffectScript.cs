@@ -24,17 +24,7 @@ public class StatusEffect : MonoBehaviour
         
     }
 
-    public void instantiate(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
-    {
-        this.statusEffectName = statusEffectName;
-        this.statusEffect = statusEffect;
-        this.duration = duration;
-        this.targets = targets;
-        applyEffect();
-
-    }
-
-    public void applyEffect()
+    public void instantiateEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
     {
         foreach (PlayerObject target in targets)
         {
@@ -43,6 +33,7 @@ public class StatusEffect : MonoBehaviour
             newStat = oldStat * statusEffect;
             statField.SetValue(target, newStat);
         }
+
     }
 
     public void revertEffect()
