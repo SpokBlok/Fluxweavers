@@ -33,29 +33,32 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     protected int manaCost;
     protected EffectTimings effectTiming;
     protected String description;
-    private Transform parentAfterDrag;
     private Vector3 initialPosition;
+    private CanvasGroup canvasGroup;
+    private RectTransform rectTransform;
 
     private void Start() {
-        parentAfterDrag = transform.parent;
-        GetComponent<SpriteRenderer>().sortingOrder = 100;
+        rectTransform = GetComponent<RectTransform>();
+        canvasGroup = GetComponent<CanvasGroup>();
+        Debug.Log(transform.position);
         initialPosition = transform.position;
     }
 
     public void OnBeginDrag(PointerEventData eventData){
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
-        GetComponent<PolygonCollider2D>().enabled = false;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.alpha = 0.75f;
     }
     public void OnDrag(PointerEventData eventData) {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePos = Input.mousePosition;
         transform.position = new Vector3(mousePos.x, mousePos.y, transform.position.z);
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        transform.SetParent(parentAfterDrag);
-        GetComponent<PolygonCollider2D>().enabled = true;
         transform.position = initialPosition;
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.alpha = 1.0f;
     }
 
     public void Destroy() {

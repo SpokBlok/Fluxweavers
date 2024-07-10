@@ -1502,68 +1502,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 811978075}
   m_CullTransparentMesh: 1
---- !u!1001 &856502018
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.60095215
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3.2810059
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2595735596569695844, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5046811766275382877, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: fi
-      value: 
-      objectReference: {fileID: 1374788679}
-    - target: {fileID: 7000492695183999065, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-      propertyPath: m_Name
-      value: Ignis
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1439752223700608153, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
 --- !u!1001 &889700986
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1983,7 +1921,7 @@ RectTransform:
   m_GameObject: {fileID: 1075955073}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1254426605}
@@ -2810,12 +2748,12 @@ MonoBehaviour:
   currentElement1Text: {fileID: 1080611712}
   currentElement2Text: {fileID: 1037246085}
   castFluxText: {fileID: 1561021442}
-  singe: {fileID: 7000492695183999065, guid: 1cf8787ca0de2764ba8170a5f8c0b6a8, type: 3}
-  blaze: {fileID: 7000492695183999065, guid: cb6eac227e15d6d429f8d0157087644d, type: 3}
-  scald: {fileID: 7000492695183999065, guid: 6001f4022c14d704da745100aca8fd65, type: 3}
-  wildfire: {fileID: 7000492695183999065, guid: 71ecc72f94b697c4086b5c21e15a202c, type: 3}
-  cinderCone: {fileID: 7000492695183999065, guid: 7e3e7e57af681d642b6d0edc6add11e3, type: 3}
-  scorchingWinds: {fileID: 7000492695183999065, guid: 9e4056f4cfd7d2643ba873285a2cfc1c, type: 3}
+  singe: {fileID: 2992005526990138681, guid: 149e9c7e5e7c728429bb9fe9d926ac75, type: 3}
+  blaze: {fileID: 2992005526990138681, guid: e915241daea3cd04183db06664b517d8, type: 3}
+  scald: {fileID: 2992005526990138681, guid: 1bcf060a3c56f1e4d9e08d8ef9672c14, type: 3}
+  wildfire: {fileID: 2992005526990138681, guid: 6c44b1d0e4a891444926f24a77442e85, type: 3}
+  cinderCone: {fileID: 2992005526990138681, guid: e6c2713cbf3366b40a5548202c33f20c, type: 3}
+  scorchingWinds: {fileID: 2992005526990138681, guid: e28c1f2d7ff0bd34cae367ffb943eada, type: 3}
   pickedUpFlux: {fileID: 0}
 --- !u!4 &1374788680
 Transform:
@@ -4007,5 +3945,4 @@ SceneRoots:
   - {fileID: 1254426605}
   - {fileID: 424774186}
   - {fileID: 1345682696}
-  - {fileID: 856502018}
   - {fileID: 178524152}

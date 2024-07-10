@@ -77,16 +77,13 @@ public class FluxInterface : MonoBehaviour
     public void FluxPlaced(GameObject fluxObject) {
         pickedUpFlux = fluxObject.GetComponent<Flux>();
         Destroy(fluxObject);
+        Clear();
     }
 
     void Update() {
     }
 
-    void AddElement(Elements element) {
-        if(currentElements.Count < 2){
-            currentElements.Add(element);
-        }
-    }
+    
     public void Cast(FluxNames fluxName){
         if(castedFlux != FluxNames.None) {
             foreach(GameObject flux in fluxes) {
@@ -99,40 +96,41 @@ public class FluxInterface : MonoBehaviour
     }
     
     public void Clear(){
-        ElementsChanged();
         currentElements.Clear();
         castFluxText.text = "";
+        ElementsChanged();
     }
-    
+    void AddElement(Elements element) {
+        if(currentElements.Count < 2){
+            currentElements.Add(element);
+            ElementsChanged();
+        }
+    }
+
     public void AddIgnis(){
         AddElement(Elements.Ignis);
-        ElementsChanged();
     }
     
     public void AddAqua(){
         AddElement(Elements.Aqua);
-        ElementsChanged();
     }
     
     public void AddFolia(){
         AddElement(Elements.Folia);
-        ElementsChanged();
     }
     
     public void AddTerra(){
         AddElement(Elements.Terra);
-        ElementsChanged();
     }
     
     public void AddVentus(){
         AddElement(Elements.Ventus);
-        ElementsChanged();
     }
 
     private void ElementsChanged(){
         GetCombination();
         if(GameObject.Find("FluxHolder").transform.childCount > 0)
-            Destroy(GameObject.Find("FluxHolder").transform.GetChild(0).gameObject);
+            Destroy(GameObject.Find("FluxHolder").transform.GetChild(transform.childCount).gameObject);
         Cast(castedFlux);
     }
 

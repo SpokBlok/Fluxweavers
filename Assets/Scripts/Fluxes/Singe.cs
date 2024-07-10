@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class Ignis : Flux
+public class Singe : Flux
 {
     /* 
     public enum Type {
