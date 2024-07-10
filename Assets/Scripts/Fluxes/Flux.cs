@@ -37,6 +37,16 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
 
+    /*
+        The code does the following:
+
+        - Allows fluxes to be dragged.
+        - If it doesnt dorp on a hex, it returns to its original position
+        - on dragging, it blocks raycasts so the mouse pointer can pick up other event data
+        - we also change it to be the end of the canvas so it appears in front of everything
+
+    */
+    
     private void Start() {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
