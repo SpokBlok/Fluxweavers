@@ -17,18 +17,16 @@ public class TilesCreationScript : MonoBehaviour
         // format them into a grid
         int rowNumber = -1;
         int colNumber = 0;
-        int offsetX = 5;
 
-        foreach (Transform row in mapTransform)
+        for (int j = 0; j < mapTransform.childCount; j++)
         {
+            Transform row = mapTransform.GetChild(j);
+
             if (row.gameObject.name.Equals("Left Edge") || row.gameObject.name.Equals("Right Edge"))
                 break;
 
             rowNumber++;
-            colNumber = AddLeftEdgeTiles(rowNumber, offsetX);
-
-            if(offsetX > 0)
-                offsetX--;
+            colNumber = AddLeftEdgeTiles(rowNumber, Math.Max(5-j,0));
 
             for (int i = row.childCount - 1; i > -1; i--)
             {
@@ -105,7 +103,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+1;
                 }
@@ -130,7 +128,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+1;
                 }
@@ -155,7 +153,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+1;
                 }
@@ -165,7 +163,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+2;
                 }
@@ -190,7 +188,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+1;
                 }
@@ -215,7 +213,7 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                     indices.y = rowNumber;
                     indices.x = colNumber+1;
                 }
@@ -306,7 +304,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -329,7 +327,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -352,7 +350,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -362,7 +360,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+2;
             }
@@ -385,7 +383,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -395,7 +393,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+2;
             }
@@ -418,7 +416,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -428,7 +426,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+2;
             }
@@ -451,7 +449,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
@@ -474,7 +472,7 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
+                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
                 indices.y = rowNumber;
                 indices.x = colNumber+1;
             }
