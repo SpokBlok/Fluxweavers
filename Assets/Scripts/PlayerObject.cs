@@ -21,19 +21,28 @@ public class PlayerObject : MonoBehaviour
 
     //Attack Stats
     public float basicAttackDamage;
-    public float basicAttackMana;
+    public int basicAttackMana;
     public float basicAttackRange;
 
     public float skillDamage;
-    public float skillMana;
+    public int skillMana;
     public float skillRange;
 
     public float signatureMoveDamage;
-    public float signatureMoveMana;
+    public int signatureMoveMana;
     public float signatureMoveRange;
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool isBasicAttackPhysical;
+
+    public bool isSkillAttackPhysical;
+    public bool skillAttackExists;
+    public bool skillStatusExists;
+
+    public bool isSignatureMoveAttackPhysical;
+    public bool signatureMoveAttackExists;
+    public bool signatureMoveStatusExists;
 
     //Mana & Resource Script
     public ResourceScript resourceScript;
@@ -68,5 +77,30 @@ public class PlayerObject : MonoBehaviour
         else
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
         IsDead();
+    }
+
+    public virtual float basicAttack(int enemyResistStat) 
+    {
+        return 0;
+    }
+
+    public virtual float skillAttack(float enemyResistStat, float enemyCurrentHealth, float enemyMaximumHealth)
+    {
+        return 0;
+    }
+
+    public virtual float skillStatus()
+    {
+        return 0;
+    }
+
+    public virtual float signatureMoveAttack(int enemyResistStat)
+    {
+        return 0;
+    }
+
+    public virtual float signatureMoveStatus()
+    {
+        return 0;
     }
 }
