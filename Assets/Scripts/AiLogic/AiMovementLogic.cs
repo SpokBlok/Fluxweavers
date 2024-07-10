@@ -85,11 +85,11 @@ public class AiMovementLogic : MonoBehaviour
         
     }
 
-    public void move () {
+    public void Move (Vector2Int[] obstacles) {
         
         Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
         attackLogic.canAttack = true; // Change this
-        CreatePathToTarget(target);
+        CreatePathToTarget(target, obstacles);
     }
 
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
@@ -218,7 +218,7 @@ public class AiMovementLogic : MonoBehaviour
         return neighbors;
     }
 
-    void CreatePathToTarget(Vector2Int target) {
+    void CreatePathToTarget(Vector2Int target, Vector2Int[] nodeFilter) {
 
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
         Vector2Int currentLocation;
@@ -226,36 +226,49 @@ public class AiMovementLogic : MonoBehaviour
         // Queue<Vector2Int> searchSpace = new();
         Dictionary<int, Vector2Int> priorityNodes = new(); // (priority, node)
         Dictionary<Vector2Int, Vector2Int> nodeHistory= new(); // For back tracking
-        List<Vector2Int> nodefilter = new();
+        // List<Vector2Int> nodefilter = new();
 
         priorityNodes[ManhattanDistance(startLocation, target)] = startLocation;
         // priorityNodes.Add(new Tuple<int, Vector2Int>(ManhattanDistance(startLocation, target), startLocation));
         // searchSpace.Enqueue(startLocation);
 
-
         nodeHistory[startLocation] = startLocation;
+        int moveCounter = 0;
 
         while (priorityNodes.Count > 0) {
             currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
 
-            if (currentLocation.Equals(target)) {
+            // This is inefficient
+            HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
+
+            if (neighbors.Contains(new Vector2Int(target.y, target.x)) || moveCounter >= movementStat) {
+                // nodeHistory[new Vector2Int(target.y, target.x)] = currentLocation;
+                // target = nodeHistory[currentLocation];
+                Debug.Log(currentLocation);
+                target = currentLocation;
                 break;
             }
 
+            // if (moveCounter == movementStat) {
+            //     target = currentLocation; // Upon exceeding movementStat set target to nearest tile
+            //     break;
+            // }
+
             foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
 
-                Vector2Int swappedCoords = new Vector2Int(neighbor.y, neighbor.x);
-                if (!nodeHistory.Keys.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
+                Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
+                if (!nodeHistory.Keys.Contains(swappedCoords) && !nodeFilter.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
                     priorityNodes[ManhattanDistance(swappedCoords, target)] = swappedCoords;
                     // priorityNodes.OrderBy(node => node.Item1);
                     nodeHistory[swappedCoords] = currentLocation;
                 }
 
             }
+            moveCounter += 1;
         }
 
-        // currentLocation = target; // Start at node just before target
-        currentLocation = nodeHistory[target];
+        currentLocation = target; // Start at node just before target
+        // currentLocation = nodeHistory[target];
 
         while (!currentLocation.Equals(startLocation)) {
             Path.Enqueue(currentLocation);
