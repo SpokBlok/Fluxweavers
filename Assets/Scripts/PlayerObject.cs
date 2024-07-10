@@ -97,7 +97,18 @@ public class PlayerObject : MonoBehaviour
 
     public void OnMouseDown()
     {
+        // Deselect all other players
+        PlayerObject[] allPlayers = FindObjectsOfType<PlayerObject>();
+        foreach (PlayerObject player in allPlayers)
+        {
+            if (player != this)
+            {
+                player.isSelected = false;
+            }
+        }
+
+        // Select this player
         isSelected = !isSelected;
-        Debug.Log("Mouse Down");
+        Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
     }
 }
