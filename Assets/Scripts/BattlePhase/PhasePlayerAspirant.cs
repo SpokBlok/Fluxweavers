@@ -16,7 +16,11 @@ public class PhasePlayerAspirant : PhaseBase
 
     public override void UpdateState(PhaseHandler ph) {
 
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ph.SwitchState(nextState);
+        }
+
         if (ph.player.isSelected == true)
         {
             if (Input.GetKeyDown(KeyCode.B))
@@ -61,11 +65,6 @@ public class PhasePlayerAspirant : PhaseBase
                     //damage = player.signatureAttack(enemyArmor)
                     //enemy.health = enemy.health - damage
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ph.SwitchState(nextState);
             }
         }
     }
