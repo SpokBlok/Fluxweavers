@@ -71,7 +71,8 @@ public class AspirantMovement : MonoBehaviour
 
         isMovementSkillActivated = false;
 
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        HashSet<PlayerObject> placeholder;
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -178,7 +179,8 @@ public class AspirantMovement : MonoBehaviour
                 }
 
                 AvailableTiles.Clear();
-                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+                HashSet<PlayerObject> placeholder;
+                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
             }
 
             aspirant.hasMoved = !aspirant.hasMoved;
@@ -230,7 +232,8 @@ public class AspirantMovement : MonoBehaviour
         }
 
         AvailableTiles.Clear();
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        HashSet<PlayerObject> placeholder;
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -328,8 +331,11 @@ public class AspirantMovement : MonoBehaviour
         return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range, List<Vector2Int> Pathway = null)
+    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range,
+                                                out HashSet<PlayerObject> EnemiesInRange, List<Vector2Int> Pathway = null)
     {
+        EnemiesInRange = new HashSet<PlayerObject>();
+
         if (Pathway == null)
             Pathway = new List<Vector2Int>();
 
@@ -369,32 +375,19 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
-        // setting up steps from current tile to adjacent tiles (up, down, left, right in that order)
+        // setting up steps from current tile to adjacent tiles
+        // upper-left, upper-right,
+        // lower-left, lower-right,
+        //       left, right
         List<Vector2Int> Steps = new List<Vector2Int>
         {
-            new Vector2Int(0, -1), new Vector2Int(0, 1),
+             new Vector2Int(0,-1), new Vector2Int(1,-1),
+            new Vector2Int(-1, 1), new Vector2Int(0, 1),
             new Vector2Int(-1, 0), new Vector2Int(1, 0)
         };
 
-        // setting up the other two adjacent tiles (upper-left & lower-left, or upper-right & lower-right)
-        if (yIndex > (Tiles.returnRowCount() - 1)/2)
-        {
-            Steps.Add(new Vector2Int(1, -1));
-            Steps.Add(new Vector2Int(-1, 1));
-        }
-        else if (yIndex < (Tiles.returnRowCount() - 1)/2)
-        {
-            Steps.Add(new Vector2Int(-1, -1));
-            Steps.Add(new Vector2Int(1, 1));
-        }
-        else
-        {
-            Steps.Add(new Vector2Int(-1, -1));
-            Steps.Add(new Vector2Int(-1, 1));
-        }
-
         // get current layer of current tile
-        float currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<TileObject>().layer;
+        int currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<TileObject>().layer;
 
         // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
@@ -414,8 +407,10 @@ public class AspirantMovement : MonoBehaviour
                     && !AdjacentTiles.Contains(tile)
                     && !EnemyIndices.Contains(tile))
                 {
+                    int tileLayer = Tiles.Tiles[y,x].GetComponent<TileObject>().layer;
+
                     // if same layer
-                    if(Tiles.Tiles[y,x].GetComponent<TileObject>().layer == currentLayer)
+                    if(tileLayer == currentLayer)
                     {
                         // add to collection of adjacent tiles
                         AdjacentTiles.Add(tile);
@@ -454,13 +449,20 @@ public class AspirantMovement : MonoBehaviour
                     else if (!DifferentLayerTiles.Contains(tile))
                     {
                         // check if it can be traversed given the "movement" left, if yes:
-                        if(Math.Round(Math.Abs(currentLayer-Tiles.Tiles[y,x].GetComponent<TileObject>().layer)) < range)
+                        if(Math.Abs(currentLayer-tileLayer) < range)
                         {
                             // add to collection of tiles on a different layer
                             DifferentLayerTiles.Add(tile);
-                            RequiredExtraMovement.Add((int) Math.Round(Math.Abs(currentLayer-GetComponent<TileObject>().layer)));
+                            RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
                         }
                     }
+                }
+
+                else if (EnemyIndices.Contains(tile))
+                {
+                    int i = EnemyIndices.IndexOf(tile);
+
+                    EnemiesInRange.Add(Enemies[i].gameObject.GetComponent<PlayerObject>());
                 }
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
@@ -483,7 +485,8 @@ public class AspirantMovement : MonoBehaviour
 
                 NewPath.Add(Tile);
 
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, NewPath));
+                HashSet<PlayerObject> placeholder;
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out placeholder, NewPath));
             }
 
             // then add them to the current running list of adjacent tiles
@@ -527,7 +530,6 @@ public class AspirantMovement : MonoBehaviour
             aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
 
             return new List<Vector2Int>{new Vector2Int(currentYIndex, currentXIndex)};
-        }
-        
+        }   
     }
 }
