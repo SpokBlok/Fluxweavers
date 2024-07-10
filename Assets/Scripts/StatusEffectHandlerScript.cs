@@ -8,7 +8,6 @@ public class StatusEffectHandlerScript : MonoBehaviour
 {
     [SerializeField]
     List<StatusEffect> effectList;
-    public PlayerObject[] playerObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,34 +23,20 @@ public class StatusEffectHandlerScript : MonoBehaviour
     public void addStatusEffect(StatusEffect effect)
     {
         effectList.Add(effect); //the effect is added to the Status Effect List
-        Debug.Log("Added");
-        foreach (StatusEffect effectss in effectList)
-        {
-            Debug.Log(effectss.statusEffectName);
-            Debug.Log(effectss.statusEffect);
-            Debug.Log(effectss.duration);
-            Debug.Log(effectss.targets);
-
-        }
+        Debug.Log("Added"); //Debug message
     }
 
     public void roundUpdate()
     {
-        foreach (StatusEffect effect in effectList)
+        //Start from the last element so no errors even if an element is removed
+        for (int i = effectList.Count - 1; i >= 0; i--)
         {
-            effect.duration--; //The duration variable of each effect in the list is reduced
-            if (effect.duration == 0)
+            effectList[i].duration--; // The duration variable of each effect in the list is reduced
+            if (effectList[i].duration <= 0)
             {
-                effect.revertEffect(); //Status effect is reverted
-                effectList.Remove(effect); //Effect is removed from the list
+                effectList[i].revertEffect(); // Status effect is reverted
+                effectList.RemoveAt(i); // Effect is removed from the list
             }
         }
-    }
-
-    private void OnMouseDown()
-    {
-        StatusEffect effect = new StatusEffect();
-        effect.instantiateEffect("armor", 0.7f, 2, playerObject);
-        addStatusEffect(effect);
     }
 }

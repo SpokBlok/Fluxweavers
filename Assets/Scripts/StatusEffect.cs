@@ -10,8 +10,8 @@ public class StatusEffect
     public float statusEffect;
     public int duration;
     public PlayerObject[] targets;
-    public FieldInfo statField;
-    public float newStat;
+    FieldInfo statField;
+    float newStat;
 
     // Start is called before the first frame update
     void Start()
