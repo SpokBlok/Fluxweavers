@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StatusEffectHandlerScript : MonoBehaviour
 {
-    List<StatusEffect> effectList = new List<StatusEffect>();
+    public List<StatusEffect> effectList = new List<StatusEffect>();
+    public PlayerObject[] playerObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,15 @@ public class StatusEffectHandlerScript : MonoBehaviour
     public void addStatusEffect(StatusEffect effect)
     {
         effectList.Add(effect); //the effect is added to the Status Effect List
+        Debug.Log("Added");
+        foreach (StatusEffect effectss in effectList)
+        {
+            Debug.Log(effectss.statusEffectName);
+            Debug.Log(effectss.statusEffect);
+            Debug.Log(effectss.duration);
+            Debug.Log(effectss.targets);
+
+        }
     }
 
     public void roundUpdate()
@@ -32,8 +43,14 @@ public class StatusEffectHandlerScript : MonoBehaviour
             {
                 effect.revertEffect(); //Status effect is reverted
                 effectList.Remove(effect); //Effect is removed from the list
-                Destroy(effect);//Effect object is destroyed
             }
         }
+    }
+
+    private void OnMouseDown()
+    {
+        StatusEffect effect = new StatusEffect();
+        effect.instantiateEffect("armor", 0.7f, 2, playerObject);
+        addStatusEffect(effect);
     }
 }

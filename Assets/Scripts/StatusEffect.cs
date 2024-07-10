@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public class StatusEffect : MonoBehaviour
+public class StatusEffect
 {
     public string statusEffectName;
     public float statusEffect;
@@ -26,6 +26,11 @@ public class StatusEffect : MonoBehaviour
 
     public void instantiateEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
     {
+        this.statusEffectName = statusEffectName;
+        this.statusEffect = statusEffect;
+        this.duration = duration;
+        this.targets = targets;
+
         foreach (PlayerObject target in targets)
         {
             statField = target.GetType().GetField(statusEffectName);
@@ -38,7 +43,6 @@ public class StatusEffect : MonoBehaviour
 
     public void revertEffect()
     {
-
         foreach (PlayerObject target in targets)
         {
             statField = target.GetType().GetField(statusEffectName);
