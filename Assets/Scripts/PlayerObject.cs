@@ -23,7 +23,6 @@ public class PlayerObject : MonoBehaviour
     public float basicAttackDamage;
     public int basicAttackMana;
     public float basicAttackRange;
-    public bool isBasicAttackPhysical;
 
     public float skillDamage;
     public int skillMana;
@@ -35,6 +34,15 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool isBasicAttackPhysical;
+
+    public bool isSkillAttackPhysical;
+    public bool skillAttackExists;
+    public bool skillStatusExists;
+
+    public bool isSignatureMoveAttackPhysical;
+    public bool signatureMoveAttackExists;
+    public bool signatureMoveStatusExists;
 
     public bool isSkillAttackPhysical;
     public bool skillAttackExists;
@@ -71,12 +79,9 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
+    public void IsAttacked(float opponentDamage)
     {
-        if (isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
-        else
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
+        health -= opponentDamage;
         IsDead();
     }
 
