@@ -244,6 +244,10 @@ public class AiMovementLogic : MonoBehaviour
             // This is inefficient
             HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
 
+            if (nodeFilter.Contains(currentLocation)) {
+                moveCounter++;
+            }
+
             if (neighbors.Contains(new Vector2Int(target.y, target.x)) || moveCounter >= movementStat) {
                 // nodeHistory[new Vector2Int(target.y, target.x)] = currentLocation;
                 // target = nodeHistory[currentLocation];
@@ -251,6 +255,8 @@ public class AiMovementLogic : MonoBehaviour
                 target = currentLocation;
                 break;
             }
+
+            
 
             // if (moveCounter == movementStat) {
             //     target = currentLocation; // Upon exceeding movementStat set target to nearest tile
@@ -266,7 +272,7 @@ public class AiMovementLogic : MonoBehaviour
 
                     if (nodeFilter.Contains(swappedCoords)) {
                         priority += 1; // swappedCoord.z - currentLocation.z
-                        moveCounter += 1; // swappedCoord.z - currentLocation.z
+                        // moveCounter += 1; // swappedCoord.z - currentLocation.z
                     }
 
                     priorityNodes[priority] = swappedCoords;
