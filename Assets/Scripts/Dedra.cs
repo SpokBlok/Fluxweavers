@@ -50,8 +50,9 @@ public class Dedra : PlayerObject
     public void skillAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         // logic for the skill
-        if (skillActivation == true)
+        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
+            resourceScript.playerAbilityUseManaUpdate(skillMana);
             int counter = 0; // this counter will be changed when the turns feature has been implemented
             while (counter > 3) // the skill lasts 3 turns
             {
@@ -74,17 +75,33 @@ public class Dedra : PlayerObject
                 counter++; 
             } 
         } 
+        
+        else
+        {
+            //Message here not enough mana
+        }
+    }
+
+        public override float skillStatus()
+    {
+        return 0;
     }
 
     public void PlayerSignatureMove()
     {
-        if (wasOnFolia && health > 0)
+        if (wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
+            resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
             control += 1;
             basicAttackMana -= 2;
             basicAttackRange += 1;
             signatureMoveActivation = true;
         } 
+
+        else
+        {
+            //Message here not enough mana
+        }
     }
 
     /*public void OnTriggerEnter(Collider other)
