@@ -22,8 +22,7 @@ public class PhasePlayerAspirant : PhaseBase
             ph.SwitchState(nextState);
         }
 
-        PlayerObject[] players = Object.FindObjectsOfType<PlayerObject>();
-        foreach (var player in players)
+        foreach (var player in ph.players)
         {
             if (player.isSelected)
             {
