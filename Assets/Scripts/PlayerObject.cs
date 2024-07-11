@@ -23,6 +23,7 @@ public class PlayerObject : MonoBehaviour
     public float basicAttackDamage;
     public int basicAttackMana;
     public float basicAttackRange;
+    public bool isBasicAttackPhysical;
 
     public float skillDamage;
     public int skillMana;
@@ -67,6 +68,7 @@ public class PlayerObject : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
+            //Death Animation plays
         }
     }
 
@@ -79,7 +81,7 @@ public class PlayerObject : MonoBehaviour
         IsDead();
     }
 
-    public virtual float basicAttack(int enemyResistStat) 
+    public virtual float basicAttack(float armor)
     {
         return 0;
     }
