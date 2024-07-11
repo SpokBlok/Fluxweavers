@@ -1,35 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using FluxNamespace;
+using UnityEngine.UIElements;
 
-public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler, IPointerClickHandler
 {
     public SpriteRenderer hexSprite;   
     private FluxInterface fi;
     public int terrainDuration;
     public TerrainNames currentTerrain;
+    private bool clickToCast;
+    [SerializeField] Sprite defaultSprite;
+    private EnvironmentInterface ei;
     void Start()
     {
-        currentTerrain = TerrainNames.None;
-        fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();        
+        PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes each hex to the onRoundEnd event seen in PhaseRoundEnd.cs
+        ei = GameObject.Find("EnvironmentInterface").GetComponent<EnvironmentInterface>();
+        fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();  
+        EnvironmentInterface.onCastAdjacentStart += ClickToCastEnable;
+        currentTerrain = TerrainNames.None;      
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        clickToCast = false;
         
     }
 
-    private void OnFluxPlaced() {
-        //hexSprite.color = Color.green;
-    }
-
     public void OnPointerEnter(PointerEventData eventData) {
-        hexSprite.color = Color.red;
+        hexSprite.color = new Color(0.8f, 0.8f, 0.8f, 1);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
@@ -38,8 +38,27 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
 
     public void OnDrop(PointerEventData eventData) {
         if(eventData.pointerDrag != null) {
-            OnFluxPlaced();
-            fi.FluxPlaced(eventData.pointerDrag, this);
+            fi.FluxPlaced(eventData.pointerDrag, this); //sends the data to the flux interface
         }
+    }
+    public void OnPointerClick(PointerEventData eventData) {
+        if(clickToCast){
+            ei.HexClicked(this);
+        }
+    }
+
+    //subtracts duration by 1 on round end
+    private void RoundEnd() {
+        if (terrainDuration > 0) {
+            terrainDuration -= 1;
+            if(terrainDuration == 0){
+                hexSprite.sprite = defaultSprite;
+                currentTerrain = TerrainNames.None;
+            }
+        }
+    }
+
+    private void ClickToCastEnable() {
+        clickToCast = !clickToCast;
     }
 }

@@ -31,7 +31,7 @@ public class HighTide : Flux
     void Awake() {
         fluxName = "HighTide";
         type = Type.Environment;
-        duration = 0;
+        duration = 2;
         manaCost = 10;
         damage = 10;
         effectTiming = EffectTimings.OnCast;

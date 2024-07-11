@@ -23,9 +23,9 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
 
     public String fluxName;
     public Type type;
-    protected int duration;
+    public int duration;
     public int tileLength;
-    protected int manaCost;
+    public int manaCost;
     protected EffectTimings effectTiming;
     protected String description;
     private Vector3 initialPosition;
@@ -43,6 +43,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     */
     
     private void Start() {
+        tileLength = 4; //TEMPORARY(?) TILE LENGTH
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         initialPosition = transform.position;
