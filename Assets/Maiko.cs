@@ -118,11 +118,9 @@ public class MaikoScript : PlayerObject
 
             //Target Calculation Goes Here
             StatusEffect effect = new StatusEffect();
-            PlayerObject[] targets = new PlayerObject[4];
             effect.instantiateMultiEffect("attack", 0.7f, 2, targets);
-            StatusEffectHandlerScript Handler = GameObject.FindObjectOfType<StatusEffectHandlerScript>();
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(effect);
-            //Deal Damage code here
             //Range code here when implemented
         }
         else
