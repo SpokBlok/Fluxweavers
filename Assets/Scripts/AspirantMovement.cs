@@ -38,7 +38,6 @@ public class AspirantMovement : MonoBehaviour
     private bool isMovementSkillActivated;
 
     private HashSet<Vector2Int> AvailableTiles;
-    public List<Vector2Int> Mountains;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -73,8 +72,9 @@ public class AspirantMovement : MonoBehaviour
 
         isMovementSkillActivated = false;
 
-        HashSet<PlayerObject> placeholder;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
+        HashSet<Vector2Int> unreachableMountains;
+        HashSet<PlayerObject> enemiesInRange;
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -131,7 +131,7 @@ public class AspirantMovement : MonoBehaviour
             else if(isSelected && isMovementSkillActivated)
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
-                Path = CreatePathToTarget(targetTile, Mountains);
+                Path = CreatePathToTarget(targetTile);
 
                 if (Path.Count == 0)
                 {
@@ -161,8 +161,9 @@ public class AspirantMovement : MonoBehaviour
                 originalYIndex = currentYIndex;
 
                 AvailableTiles.Clear();
-                HashSet<PlayerObject> placeholder;
-                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
+                HashSet<Vector2Int> unreachableMountains;
+                HashSet<PlayerObject> enemiesInRange;
+                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
             }
 
             aspirant.hasMoved = !aspirant.hasMoved;
@@ -208,8 +209,9 @@ public class AspirantMovement : MonoBehaviour
         EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
 
         AvailableTiles.Clear();
-        HashSet<PlayerObject> placeholder;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out placeholder);
+        HashSet<Vector2Int> unreachableMountains;
+        HashSet<PlayerObject> enemiesInRange;
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -308,8 +310,10 @@ public class AspirantMovement : MonoBehaviour
     }
 
     public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range,
+                                                out HashSet<Vector2Int> UnreachableMountains,
                                                 out HashSet<PlayerObject> EnemiesInRange)
     {
+        UnreachableMountains = new HashSet<Vector2Int>();
         EnemiesInRange = new HashSet<PlayerObject>();
 
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
@@ -392,6 +396,8 @@ public class AspirantMovement : MonoBehaviour
                             DifferentLayerTiles.Add(tile);
                             RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
                         }
+                        else
+                            UnreachableMountains.Add(tile);
                     }
                 }
 
@@ -415,9 +421,11 @@ public class AspirantMovement : MonoBehaviour
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
             {
+                HashSet<Vector2Int> NewMountains;
                 HashSet<PlayerObject> NewEnemies;
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewEnemies));
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains, out NewEnemies));
 
+                UnreachableMountains.UnionWith(NewMountains);
                 EnemiesInRange.UnionWith(NewEnemies);
             }
 
@@ -436,7 +444,7 @@ public class AspirantMovement : MonoBehaviour
             );
     }
 
-    Queue<Vector2Int> CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter)
+    Queue<Vector2Int> CreatePathToTarget(Vector2Int target)
     {
         Queue<Vector2Int> Pathway = new Queue<Vector2Int>();
 
@@ -466,7 +474,6 @@ public class AspirantMovement : MonoBehaviour
         priorityNodes[ManhattanDistance(startLocation, target)] = startLocation;
 
         nodeHistory[startLocation] = startLocation;
-        int moveCounter = 0;
 
         while (priorityNodes.Count > 0)
         {
@@ -475,32 +482,38 @@ public class AspirantMovement : MonoBehaviour
             if (currentLocation.x == target.x && currentLocation.y == target.y)
                 break;
 
-            HashSet<PlayerObject> placeholder;
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out placeholder))
+            HashSet<Vector2Int> unreachableMountains;
+            HashSet<PlayerObject> enemiesInRange;
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out unreachableMountains, out enemiesInRange))
             {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 
-                if (!nodeHistory.Keys.Contains(swappedCoords)
-                    && !EnemyIndices.Contains(swappedCoords)
-                    && neighbor.x >= 0 && neighbor.y >= 0)
+                if (!nodeHistory.Keys.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0)
+                {
+                    int priority = ManhattanDistance(swappedCoords, target);
+                    priorityNodes[priority] = swappedCoords;
+                    nodeHistory[swappedCoords] = currentLocation;
+                }
+            }
+
+            TileObject currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<TileObject>();
+
+            foreach(Vector2Int mountain in unreachableMountains)
+            {
+                Vector2Int swappedCoords = new(mountain.y, mountain.x);
+                
+                if (!nodeHistory.Keys.Contains(swappedCoords) && mountain.x >= 0 && mountain.y >= 0)
                 {
                     int priority = ManhattanDistance(swappedCoords, target);
 
-                    if (nodeFilter.Contains(swappedCoords))
-                    {
-                        TileObject currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<TileObject>();
-                        TileObject nextTile = Tiles.Tiles[neighbor.y, neighbor.x].GetComponent<TileObject>();
-
-                        priority += Math.Abs(currentTile.layer - nextTile.layer);
-                        moveCounter += Math.Abs(currentTile.layer - nextTile.layer);
-                    }
+                    TileObject nextTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<TileObject>();
+                    int layerDifference = (int) Math.Abs(currentTile.layer - nextTile.layer);
+                    priority += layerDifference;
 
                     priorityNodes[priority] = swappedCoords;
                     nodeHistory[swappedCoords] = currentLocation;
                 }
-
             }
-            moveCounter += 1;
         }
 
         while (!currentLocation.Equals(startLocation))
