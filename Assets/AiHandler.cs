@@ -55,7 +55,7 @@ public class AiHandler : MonoBehaviour
     private IEnumerator MoveAi () {
         foreach (AiMovementLogic ai in aiEntities) {
             ai.Move(obstacles, aiComrades);
-            yield return new WaitForSeconds(1);
+            yield return new WaitUntil(() => ai.enabled == false);
             // yield return StartCoroutine(ai.Move(obstacles));
             UpdateObstacles();
         }

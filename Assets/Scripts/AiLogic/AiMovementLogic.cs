@@ -77,10 +77,12 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
-
-                if (Path.Count == 0)
-                    aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
             }
+        }
+
+        if (Path.Count == 0) {
+            aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
+            enabled = false;
         }
         
     }
@@ -89,6 +91,7 @@ public class AiMovementLogic : MonoBehaviour
         
         Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
         attackLogic.canAttack = true; // Change this
+        enabled = true;
         CreatePathToTarget(target, obstacles, enemyAi);
     }
 

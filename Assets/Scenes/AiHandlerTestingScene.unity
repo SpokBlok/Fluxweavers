@@ -331,6 +331,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 6378959972037442261, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: movement
       value: 1
@@ -452,6 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a0f4789b8bace48833859fbc8cea1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstacles: []
 --- !u!1001 &285613340
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1299,6 +1304,10 @@ PrefabInstance:
     - target: {fileID: 6378959972037442261, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: m_Name
       value: Enemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6378959972037442261, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: movement
