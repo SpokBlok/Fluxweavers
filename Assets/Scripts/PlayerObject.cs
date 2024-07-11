@@ -23,7 +23,6 @@ public class PlayerObject : MonoBehaviour
     public float basicAttackDamage;
     public int basicAttackMana;
     public float basicAttackRange;
-    public bool isBasicAttackPhysical;
 
     public float skillDamage;
     public int skillMana;
@@ -72,12 +71,9 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
+    public void IsAttacked(float opponentDamage)
     {
-        if (isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
-        else
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
+        health -= opponentDamage;
         IsDead();
     }
 
@@ -93,7 +89,7 @@ public class PlayerObject : MonoBehaviour
 
     public virtual float skillStatus()
     {
-
+        return 0;
     }
 
     public virtual float signatureMoveAttack(int enemyResistStat)

@@ -55,25 +55,8 @@ public class MaikoScript : PlayerObject
     void Update()
     {
     }
-    public void manaRoundStart(int newMana)
-    {
-        mana = newMana;
-    }
-    public void IsDead()
-    {
-        if (health <= 0)
-        {
-            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
-        }
-    }
 
-    public void IsAttacked(float damageTaken)
-    {
-        health -= damageTaken;
-        IsDead();
-    }
-
-    public override float basicAttack(int enemyArmor)
+    public override float basicAttack(float enemyArmor)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
