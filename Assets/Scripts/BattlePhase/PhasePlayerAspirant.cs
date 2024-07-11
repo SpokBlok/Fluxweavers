@@ -5,29 +5,60 @@ using UnityEngine;
 public class PhasePlayerAspirant : PhaseBase
 {
     PhaseBase nextState;
-    public override void EnterState(PhaseHandler ph) {
-        if(ph.currentRound%2==0) 
+    private TilesCreationScript tiles; 
+    private HashSet<Vector2Int> availableTiles;
+
+    public override void EnterState(PhaseHandler ph)
+    {
+        if (ph.currentRound % 2 == 0)
             nextState = ph.enemyAspirant;
         else
             nextState = ph.roundEnd;
-        
+
         ph.stateText.text = "Player Aspirant";
+
+        // Initialize availableTiles HashSet
+        availableTiles = new HashSet<Vector2Int>();
+
+        // Find TilesCreationScript in the scene
+        tiles = GameObject.FindObjectOfType<TilesCreationScript>();
+        if (tiles == null)
+        {
+            Debug.LogError("TilesCreationScript not found in the scene.");
+        }
     }
 
-    public override void UpdateState(PhaseHandler ph) {
-
+    public override void UpdateState(PhaseHandler ph)
+    {
         if (Input.GetKeyDown(KeyCode.B))
         {
             if (ph.rs.playerAbilityUseCheck(ph.player.basicAttackMana))
             {
                 float damage = 0;
-                //check for damagetype
+                // Check for damage type
                 if (ph.player.isBasicAttackPhysical)
                     damage = ph.player.basicAttack(ph.enemy.armor);
                 else
                     damage = ph.player.basicAttack(ph.enemy.magicResistance);
 
                 ph.enemy.health = ph.enemy.health - damage;
+
+                // Get current position indices from AspirantMovement script
+                AspirantMovement aspirantMovement = ph.player.GetComponent<AspirantMovement>();
+                if (aspirantMovement != null)
+                {
+                    int currentXIndex = aspirantMovement.currentXIndex;
+                    int currentYIndex = aspirantMovement.currentYIndex;
+
+                    availableTiles = aspirantMovement.GetAdjacentTiles(currentXIndex, currentYIndex, (int)ph.player.basicAttackRange);
+                    availableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+
+                    tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
+                }
+                else
+                {
+                    Debug.LogError("AspirantMovement script not found on PlayerObject.");
+                }
             }
         }
 
@@ -35,16 +66,8 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.player.skillMana))
             {
-
-                //check for skill type
-                    //if attack
-                        //check for damagetype
-                            //if phys
-                        //damage = player.basicAttack(enemyArmor)
-                            //if magic
-                        //damage = player.basicAttack(enemyMagRes)
-                    //if buff/debuff
-                        //send to manager
+                // Handle skill logic
+                // Placeholder: Insert your skill logic here
             }
         }
 
@@ -52,12 +75,13 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.player.signatureMoveMana))
             {
-                //damage = player.signatureAttack(enemyArmor)
-                //enemy.health = enemy.health - damage
+                // Handle signature move logic
+                // Placeholder: Insert your signature move logic here
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             ph.SwitchState(nextState);
         }
     }

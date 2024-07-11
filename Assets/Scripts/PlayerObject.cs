@@ -22,7 +22,7 @@ public class PlayerObject : MonoBehaviour
     //Attack Stats
     public float basicAttackDamage;
     public int basicAttackMana;
-    public float basicAttackRange;
+    public float basicAttackRange=3;
 
     public float skillDamage;
     public int skillMana;
@@ -34,6 +34,7 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool isSelected; //Check if the player is selected
     public bool isBasicAttackPhysical;
 
     public bool isSkillAttackPhysical;
@@ -98,5 +99,21 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void signatureMoveStatus()
     {
+    }
+    public void OnMouseDown()
+    {
+        // Deselect all other players
+        PlayerObject[] allPlayers = FindObjectsOfType<PlayerObject>();
+        foreach (PlayerObject player in allPlayers)
+        {
+            if (player != this)
+            {
+                player.isSelected = false;
+            }
+        }
+
+        // Select this player
+        isSelected = !isSelected;
+        Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
     }
 }

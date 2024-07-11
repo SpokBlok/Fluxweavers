@@ -235,6 +235,7 @@ MonoBehaviour:
   signatureMoveMana: 0
   signatureMoveRange: 0
   hasMoved: 0
+  isSelected: 0
   isBasicAttackPhysical: 0
   isSkillAttackPhysical: 0
   skillAttackExists: 0
@@ -459,7 +460,7 @@ MonoBehaviour:
   currentRound: 0
   playerManaCount: 0
   enemyManaCount: 0
-  player: {fileID: 0}
+  players: []
   enemy: {fileID: 0}
   rs: {fileID: 918580870}
   stateText: {fileID: 1483612342}
@@ -612,13 +613,14 @@ GameObject:
   m_Component:
   - component: {fileID: 660119110}
   - component: {fileID: 660119109}
+  - component: {fileID: 660119111}
   m_Layer: 0
   m_Name: Maiko
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &660119109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,7 +628,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 660119108}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8afc79ee910aa5e42b214f1cc2f71e81, type: 3}
   m_Name: 
@@ -651,6 +653,7 @@ MonoBehaviour:
   signatureMoveMana: 0
   signatureMoveRange: 0
   hasMoved: 0
+  isSelected: 0
   isBasicAttackPhysical: 0
   isSkillAttackPhysical: 0
   skillAttackExists: 0
@@ -658,7 +661,7 @@ MonoBehaviour:
   isSignatureMoveAttackPhysical: 0
   signatureMoveAttackExists: 0
   signatureMoveStatusExists: 0
-  resourceScript: {fileID: 0}
+  resourceScript: {fileID: 918580870}
   mana: 0
   inAquaHex: 0
   targets: []
@@ -677,6 +680,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &660119111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660119108}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normal: {fileID: 0}
+  selected: {fileID: 0}
+  Tiles: {fileID: 0}
+  currentYIndex: 0
+  currentXIndex: 0
+  Enemies: []
+  movementSpeed: 0
+  isAvailableHighlighted: 0
+  isErrorIgnored: 0
 --- !u!1001 &674158151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1649,6 +1673,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1002510715}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1708,6 +1736,10 @@ PrefabInstance:
       propertyPath: resourceScript
       value: 
       objectReference: {fileID: 918580870}
+    - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: basicAttackRange
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_Name
       value: Player
