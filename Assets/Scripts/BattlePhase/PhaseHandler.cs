@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Resources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,8 @@ public class PhaseHandler : MonoBehaviour
     public PhaseMatchStart matchStart = new PhaseMatchStart();
     public PhaseRoundEnd roundEnd = new PhaseRoundEnd();
     public int currentRound;
+    public int playerManaCount;
+    public int enemyManaCount;
 
     public PlayerObject player;
     public PlayerObject enemy;
@@ -24,7 +27,12 @@ public class PhaseHandler : MonoBehaviour
     
     void Start()
     {
-        currentRound = 0;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerObject>();
+        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<PlayerObject>(); ;
+        rs = GameObject.FindObjectOfType<ResourceScript>();
+        
+        currentRound = 1;
+        rs.roundStart(currentRound);
         currentState = matchStart;
         currentState.EnterState(this);
     }
