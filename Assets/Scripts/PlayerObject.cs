@@ -89,6 +89,7 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void skillStatus()
     {
+        
     }
 
     public virtual float signatureMoveAttack(int enemyResistStat)
@@ -98,5 +99,6 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void signatureMoveStatus()
     {
+        
     }
 }

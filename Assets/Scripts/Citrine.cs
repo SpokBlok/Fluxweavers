@@ -74,7 +74,7 @@ public class Citrine : PlayerObject
         }
     }
 
-    public override float skillStatus()
+    public override void skillStatus()
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
@@ -83,24 +83,24 @@ public class Citrine : PlayerObject
 
             PlayerObject[] targets = new PlayerObject[1];
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddEffect("armorPenetration", 10, 2, targets);
+            effect.instantiateAddFloatEffect("armorPenetration", 10, 2, targets);
 
             StatusEffect effect1 = new StatusEffect();
-            effect.instantiateAddEffect("magicPenetration", 10, 2, targets);
+            effect.instantiateAddFloatEffect("magicPenetration", 10, 2, targets);
 
-            return 0;
+            
         
             //Range code here when implemented (3 tile radius)
         }
         else
         {
-            return 0;
+            
             //Message here not enough mana
         }
        
     }
 
-    public override float signatureMoveStatus()
+    public override void signatureMoveStatus()
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
@@ -111,15 +111,15 @@ public class Citrine : PlayerObject
 
             PlayerObject[] targets = new PlayerObject[1];
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiEffect("shield", 10, 2, targets);
+            effect.instantiateMultiFloatEffect("shield", 10, 2, targets);
 
             StatusEffect effect1 = new StatusEffect();
-            effect.instantiateMultiEffect("attack", 10, 2, targets);
-            return 0;
+            effect.instantiateMultiFloatEffect("attack", 10, 2, targets);
+            
         }
         else
         {
-            return 0;
+            
             //Message here not enough mana
         }
         //range code here when implemented
