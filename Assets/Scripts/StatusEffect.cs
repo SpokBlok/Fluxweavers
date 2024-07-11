@@ -10,9 +10,9 @@ public class StatusEffect
     public float statusEffect;
     public int duration;
     public bool isAdditive;
+    public bool isInt;
     public PlayerObject[] targets;
     FieldInfo statField;
-    float newStat;
 
     // Start is called before the first frame update
     void Start()
@@ -26,13 +26,14 @@ public class StatusEffect
         
     }
 
-    public void instantiateAddEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateAddEffect() for ints like movement
+    public void instantiateAddIntEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateAddEffect() for ints like movement
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
         this.duration = duration;
         this.targets = targets;
         isAdditive = true;
+        isInt = true;
 
         foreach (PlayerObject target in targets)
         {
@@ -40,25 +41,66 @@ public class StatusEffect
             Debug.Log(statField.GetValue(target));
             float oldStat = (float)(int)statField.GetValue(target);
             Debug.Log("lmao");
-            newStat = oldStat - statusEffect;
+            float newStat = oldStat - statusEffect;
             statField.SetValue(target, (int) newStat);
         }
 
     }
 
-    public void instantiateMultiEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateMultiEffect() for floats like armor and MR
+    public void instantiateAddFloatEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateAddEffect() for ints like movement
+    {
+        this.statusEffectName = statusEffectName;
+        this.statusEffect = statusEffect;
+        this.duration = duration;
+        this.targets = targets;
+        isAdditive = true;
+        isInt = false;
+
+        foreach (PlayerObject target in targets)
+        {
+            statField = target.GetType().GetField(statusEffectName);
+            Debug.Log(statField.GetValue(target));
+            float oldStat = (float) statField.GetValue(target);
+            Debug.Log("lmao");
+            float newStat = oldStat - statusEffect;
+            statField.SetValue(target, newStat);
+        }
+
+    }
+
+    public void instantiateMultiIntEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateMultiEffect() for floats like armor and MR
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
         this.duration = duration;
         this.targets = targets;
         isAdditive = false;
+        isInt = true;
+
+        foreach (PlayerObject target in targets)
+        {
+            statField = target.GetType().GetField(statusEffectName);
+            float oldStat = (float)(int)statField.GetValue(target);
+            float newStat = oldStat * statusEffect;
+            statField.SetValue(target, (int)newStat);
+        }
+
+    }
+
+    public void instantiateMultiFloatEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateMultiEffect() for floats like armor and MR
+    {
+        this.statusEffectName = statusEffectName;
+        this.statusEffect = statusEffect;
+        this.duration = duration;
+        this.targets = targets;
+        isAdditive = false;
+        isInt = false;
 
         foreach (PlayerObject target in targets)
         {
             statField = target.GetType().GetField(statusEffectName);
             float oldStat = (float)statField.GetValue(target);
-            newStat = oldStat * statusEffect;
+            float newStat = oldStat * statusEffect;
             statField.SetValue(target, newStat);
         }
 
@@ -68,22 +110,48 @@ public class StatusEffect
     {
         if (isAdditive)
         {
-            foreach (PlayerObject target in targets)
+            if (isInt)
             {
-                statField = target.GetType().GetField(statusEffectName);
-                float oldStat = (float)statField.GetValue(target);
-                newStat = oldStat / statusEffect;
-                statField.SetValue(target, newStat);
+                foreach (PlayerObject target in targets)
+                {
+                    statField = target.GetType().GetField(statusEffectName);
+                    float oldStat = (float)(int)statField.GetValue(target);
+                    float newStat = oldStat + statusEffect;
+                    statField.SetValue(target, (int) newStat);
+                }
+            }
+            else
+            {
+                foreach (PlayerObject target in targets)
+                {
+                    statField = target.GetType().GetField(statusEffectName);
+                    float oldStat = (float)statField.GetValue(target);
+                    float newStat = oldStat + statusEffect;
+                    statField.SetValue(target, newStat);
+                }
             }
         }
         else
         {
-            foreach (PlayerObject target in targets)
+            if (isInt)
             {
-                statField = target.GetType().GetField(statusEffectName);
-                float oldStat = (float)statField.GetValue(target);
-                newStat = oldStat + statusEffect;
-                statField.SetValue(target, newStat);
+                foreach (PlayerObject target in targets)
+                {
+                    statField = target.GetType().GetField(statusEffectName);
+                    float oldStat = (float)(int)statField.GetValue(target);
+                    float newStat = oldStat / statusEffect;
+                    statField.SetValue(target, (int) newStat);
+                }
+            }
+            else
+            {
+                foreach (PlayerObject target in targets)
+                {
+                    statField = target.GetType().GetField(statusEffectName);
+                    float oldStat = (float)statField.GetValue(target);
+                    float newStat = oldStat / statusEffect;
+                    statField.SetValue(target, newStat);
+                }
             }
         }
     }
