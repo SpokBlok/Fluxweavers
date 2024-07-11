@@ -35,7 +35,6 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
-    public bool isBasicAttackPhysical;
 
     public bool isSkillAttackPhysical;
     public bool skillAttackExists;

@@ -48,7 +48,7 @@ public class Citrine : PlayerObject
         signatureMoveRange = 0;
 
         basicAttackDamage = attackStat * 1.1f;
-        skillBuff =  (team.armorPenetration = armorPenetration + 10) & (team.magicPenetration = magicPenetration + 10);
+        //skillBuff =  (team.armorPenetration = armorPenetration + 10) & (team.magicPenetration = magicPenetration + 10);
     }
 
     // Update is called once per frame
@@ -56,28 +56,8 @@ public class Citrine : PlayerObject
     {
 
     }
-    public void manaRoundStart(int newMana)
-    {
-        mana = newMana;
-    }
-    public void IsDead()
-    {
-        if (health <= 0)
-        {
-            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
-        }
-    }
 
-    public void IsAttacked(float opponentDamage, float opponentAttackStat, float opponentArmorPenetration, float opponentMagicPenetration, bool isPhysical)
-    {
-        if (isPhysical)
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, armor, opponentArmorPenetration);
-        else
-            health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
-        IsDead();
-    }
-
-    public override float basicAttack(int enemyResistStat)
+    public override float basicAttack(float armor)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
@@ -85,9 +65,11 @@ public class Citrine : PlayerObject
             resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
             //Deal Damage code here
             //range code here when implemented
+            return 0;
         }
         else
         {
+            return 0;
             //Message here not enough mana
         }
     }
@@ -95,11 +77,12 @@ public class Citrine : PlayerObject
     public override float skillStatus()
     {
         // Mana Portion
-        if (resourceScript.abilityUseCheck(resourceScript.playerManaCount, skillMana) == true)
+        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
-            resourceScript.abilityUseManaUpdate(resourceScript.playerManaCount, skillMana);
+            resourceScript.playerAbilityUseManaUpdate(skillMana);
             //Deal Damage code here
             //Range code here when implemented
+            return 0;
         }
         else
         {
@@ -109,7 +92,7 @@ public class Citrine : PlayerObject
         //reduce target movement by 1 for 1 round here.
     }
 
-    public override float signatureMoveStatus(int enemyResistStat)
+    public override float signatureMoveStatus()
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
@@ -118,6 +101,7 @@ public class Citrine : PlayerObject
             //team.shield = Citrine.attackStat * 10.0f;
             //team.attackStat = attackStat + attack.Stat * 0.4f;
             //Range code here when implemented
+            return 0;
         }
         else
         {
