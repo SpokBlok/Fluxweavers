@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2462451143188748200}
   - component: {fileID: 4432530447134894472}
+  - component: {fileID: 4829743316278313637}
+  - component: {fileID: -72257945976363315}
   m_Layer: 0
   m_Name: HexTile
   m_TagString: Untagged
@@ -84,3 +86,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4829743316278313637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5915337308520205973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38d182508a6a2f43a81b07764b96475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layer: 0
+--- !u!114 &-72257945976363315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5915337308520205973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 394b4fed087b1d740bf955f773eba6c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  y: 0
+  x: 0

@@ -38,6 +38,7 @@ public class AspirantMovement : MonoBehaviour
     private bool isMovementSkillActivated;
 
     private HashSet<Vector2Int> AvailableTiles;
+    public List<Vector2Int> Mountains;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -130,7 +131,7 @@ public class AspirantMovement : MonoBehaviour
             else if(isSelected && isMovementSkillActivated)
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
-                Path = CreatePathToTarget(targetTile, new List<Vector2Int>());
+                Path = CreatePathToTarget(targetTile, Mountains);
 
                 if (Path.Count == 0)
                 {
