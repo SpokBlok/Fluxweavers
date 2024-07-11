@@ -5,7 +5,8 @@ using UnityEngine;
 public class ResourceScript : MonoBehaviour
 {
 
-    int manaCount;
+    int playerManaCount;
+    int enemyManaCount;
 
     // Start is called before the first frame update
     void Start()
@@ -19,23 +20,44 @@ public class ResourceScript : MonoBehaviour
         
     }
 
-    public int roundStart(int roundCount)
+    public void roundStart(int roundCount)
     {
-        manaCount = 10 + roundCount*10;
-        if (manaCount > 100)
+        playerManaCount = 10 + roundCount*10;
+        enemyManaCount = 10 + roundCount * 10;
+        if (playerManaCount > 100)
         {
-            manaCount = 100;
+            playerManaCount = 100;
+            enemyManaCount = 100;
         }
-        return manaCount;
     }
 
-    public bool abilityUseCheck(int currentMana, int manaCost)
+    public bool playerAbilityUseCheck(int manaCost)
     {
-        return manaCost <= currentMana;
+        return manaCost <= playerManaCount;
     }
 
-    public int abilityUseManaUpdate(int currentMana, int manaCost)
+    public void playerAbilityUseManaUpdate(int manaCost)
     {
-        return currentMana - manaCost;
+        playerManaCount = playerManaCount - manaCost;
+    }
+
+    public int playerMana()
+    {
+        return playerManaCount; 
+    }
+
+    public bool enemyAbilityUseCheck(int manaCost)
+    {
+        return manaCost <= enemyManaCount;
+    }
+
+    public void enemyAbilityUseManaUpdate(int manaCost)
+    {
+        enemyManaCount = enemyManaCount - manaCost;
+    }
+
+    public int enemyMana()
+    {
+        return enemyManaCount;
     }
 }
