@@ -85,11 +85,11 @@ public class AiMovementLogic : MonoBehaviour
         
     }
 
-    public void Move (Vector2Int[] obstacles) {
+    public void Move (List<Vector2Int> obstacles, Vector2Int[] enemyAi) {
         
         Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
         attackLogic.canAttack = true; // Change this
-        CreatePathToTarget(target, obstacles);
+        CreatePathToTarget(target, obstacles, enemyAi);
     }
 
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
@@ -218,7 +218,7 @@ public class AiMovementLogic : MonoBehaviour
         return neighbors;
     }
 
-    void CreatePathToTarget(Vector2Int target, Vector2Int[] nodeFilter) {
+    void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
 
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
         Vector2Int currentLocation;
@@ -257,8 +257,16 @@ public class AiMovementLogic : MonoBehaviour
             foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
 
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
-                if (!nodeHistory.Keys.Contains(swappedCoords) && !nodeFilter.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
-                    priorityNodes[ManhattanDistance(swappedCoords, target)] = swappedCoords;
+                if (!nodeHistory.Keys.Contains(swappedCoords) && !enemyAi.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
+
+                    int priority = ManhattanDistance(swappedCoords, target);
+
+                    if (nodeFilter.Contains(swappedCoords)) {
+                        priority += 1; // swappedCoord.z - currentLocation.z
+                        moveCounter += 1; // swappedCoord.z - currentLocation.z
+                    }
+
+                    priorityNodes[priority] = swappedCoords;
                     // priorityNodes.OrderBy(node => node.Item1);
                     nodeHistory[swappedCoords] = currentLocation;
                 }

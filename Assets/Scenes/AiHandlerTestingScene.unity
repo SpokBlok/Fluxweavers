@@ -939,6 +939,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1612473141}
     m_Modifications:
+    - target: {fileID: 36674764235976544, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 36674764235976544, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 36674764235976544, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.21960786
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (15)
@@ -1614,6 +1638,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1612473141}
     m_Modifications:
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.b
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.g
+      value: 0.21960786
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529052606701671076, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_Color.r
+      value: 0.21960786
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (16)
@@ -1702,6 +1738,10 @@ PrefabInstance:
       propertyPath: Enemies.Array.data[2]
       value: 
       objectReference: {fileID: 2002861507}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: isAvailableHighlighted
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.0310929

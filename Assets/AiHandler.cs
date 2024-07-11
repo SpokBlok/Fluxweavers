@@ -8,15 +8,24 @@ public class AiHandler : MonoBehaviour
     // Start is called before the first frame update
 
     private AiMovementLogic[] aiEntities;
-    private Vector2Int[] obstacles;
+    private Vector2Int[] aiComrades;
+
+    [SerializeField] private List<Vector2Int> obstacles;
 
     public Dictionary<AiMovementLogic, bool> turnCheck;
 
     void Start()
     {
         aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
-        obstacles = new Vector2Int[aiEntities.Count()];
+        aiComrades = new Vector2Int[aiEntities.Count()];
         turnCheck = new Dictionary<AiMovementLogic, bool>();
+
+        obstacles = new List<Vector2Int>
+        {
+            new(9, 4),
+            new(10, 4),
+            new(11, 5)
+        };
 
         // foreach (AiMovementLogic ai in aiEntities) {
         //     ai.enabled = false;
@@ -45,7 +54,7 @@ public class AiHandler : MonoBehaviour
 
     private IEnumerator MoveAi () {
         foreach (AiMovementLogic ai in aiEntities) {
-            ai.Move(obstacles);
+            ai.Move(obstacles, aiComrades);
             yield return new WaitForSeconds(1);
             // yield return StartCoroutine(ai.Move(obstacles));
             UpdateObstacles();
@@ -53,8 +62,8 @@ public class AiHandler : MonoBehaviour
     }
 
     private void UpdateObstacles () {
-        for (int i = 0; i < obstacles.Count(); i++) {
-            obstacles[i] = new Vector2Int(aiEntities[i].GetXIndex(), aiEntities[i].GetYIndex());
+        for (int i = 0; i < aiComrades.Count(); i++) {
+            aiComrades[i] = new Vector2Int(aiEntities[i].GetXIndex(), aiEntities[i].GetYIndex());
         }
     }
 }
