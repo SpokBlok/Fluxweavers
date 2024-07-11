@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using FluxNamespace;
 
 public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler
 {
-    private SpriteRenderer hexSprite;   
+    public SpriteRenderer hexSprite;   
     private FluxInterface fi;
+    public int terrainDuration;
+    public TerrainNames currentTerrain;
     void Start()
     {
+        currentTerrain = TerrainNames.None;
         fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();        
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
     }
@@ -21,7 +25,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     }
 
     private void OnFluxPlaced() {
-        hexSprite.color = Color.green;
+        //hexSprite.color = Color.green;
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -35,7 +39,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     public void OnDrop(PointerEventData eventData) {
         if(eventData.pointerDrag != null) {
             OnFluxPlaced();
-            fi.FluxPlaced(eventData.pointerDrag);
+            fi.FluxPlaced(eventData.pointerDrag, this);
         }
     }
 }

@@ -30,7 +30,7 @@ public class HighTide : Flux
 
     void Awake() {
         fluxName = "HighTide";
-        type = Type.Spell;
+        type = Type.Environment;
         duration = 0;
         manaCost = 10;
         damage = 10;

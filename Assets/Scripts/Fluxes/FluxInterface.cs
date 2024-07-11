@@ -4,9 +4,11 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-
+using FluxNamespace;
 public class FluxInterface : MonoBehaviour
 {
+    //Terrain interface
+    [SerializeField] EnvironmentInterface ei; 
     //Interactables
     [SerializeField] Button ignisButton;
     [SerializeField] Button aquaButton;
@@ -50,29 +52,8 @@ public class FluxInterface : MonoBehaviour
         Ventus
     };
 
-    public enum FluxNames {
-        None,
-        Singe,
-        Blaze,
-        Scald,
-        Wildfire,
-        CinderCone,
-        ScorchingWinds,
-        HighTide,
-        Rivershape,
-        Swamp,
-        Waterfall,
-        Rain,
-        Regrowth,
-        Reforestation,
-        MountainSpires,
-        WindsweptWoods,
-        EarthArise,
-        SeismicWave,
-        Sandstorm,
-        Gust,
-        Tornado
-    }
+    public FluxNames FluxNames;
+    
     /*
         currentFlux is the current flux made from the element combination
         currentElements is the combination of elements
@@ -115,10 +96,6 @@ public class FluxInterface : MonoBehaviour
         Clear();
         castedFlux = null;
         currentFlux = FluxNames.None;
-
-        foreach(GameObject flux in fluxes) {
-            Debug.Log(flux.name);
-        }
     }
 
     /*
@@ -126,18 +103,22 @@ public class FluxInterface : MonoBehaviour
         - Add<Element>, ElementsChanged and clear function updates and generates the current flux and the instantiated prefab
         - The flux can then be picked up by the mouse and placed on a hex tile
         - Once placed, data is sent from the hex to this interface via FluxPlaced
+        - If the flux is an environment spell, then the data of the hex is sent to TerrainInterface
     */
-    public void FluxPlaced(GameObject fluxObject) {
+
+    public void FluxPlaced(GameObject fluxObject, Hex hex) {
         castedFlux = fluxObject.GetComponent<Flux>();
         Destroy(fluxObject);
         Clear();
+        if(castedFlux.type == Flux.Type.Environment) {
+            ei.SetEnvironment(hex, castedFlux);
+        }
     }
 
     public void Cast(FluxNames fluxName){
         if(currentFlux != FluxNames.None) {
             foreach(GameObject flux in fluxes) {
                 if(flux.name == fluxName.ToString()) {
-                    Debug.Log("Instantiated!");
                     Instantiate(flux, GameObject.Find("FluxHolder").transform);
                 }
             }

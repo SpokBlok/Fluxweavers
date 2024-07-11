@@ -30,7 +30,7 @@ public class Rivershape : Flux
 
     void Awake() {
         fluxName = "Rivershape";
-        type = Type.Spell;
+        type = Type.Environment;
         duration = 0;
         manaCost = 10;
         damage = 10;

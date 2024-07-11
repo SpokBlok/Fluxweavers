@@ -1,20 +1,15 @@
 using UnityEngine.UIElements;
-
-/*
-
-    THE WAY THIS CLASS IS ABSTRACTED IS STILL SUBJDCT TO CHANGE!@iu!n!in! -ej :>
-
-*/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using FluxNamespace;
 
 public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler 
 {
+    public FluxNames FluxNames;
     public enum Type {
         Spell,
         Environment
@@ -26,10 +21,10 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
         RoundEnd
     };
 
-
-    protected String fluxName;
-    protected Type type;
+    public String fluxName;
+    public Type type;
     protected int duration;
+    public int tileLength;
     protected int manaCost;
     protected EffectTimings effectTiming;
     protected String description;
@@ -50,7 +45,6 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     private void Start() {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
-        Debug.Log(transform.position);
         initialPosition = transform.position;
     }
 
