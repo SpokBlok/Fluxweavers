@@ -44,14 +44,6 @@ public class PlayerObject : MonoBehaviour
     public bool signatureMoveAttackExists;
     public bool signatureMoveStatusExists;
 
-    public bool isSkillAttackPhysical;
-    public bool skillAttackExists;
-    public bool skillStatusExists;
-
-    public bool isSignatureMoveAttackPhysical;
-    public bool signatureMoveAttackExists;
-    public bool signatureMoveStatusExists;
-
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;

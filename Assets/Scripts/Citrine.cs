@@ -48,7 +48,6 @@ public class Citrine : PlayerObject
         signatureMoveRange = 0;
 
         basicAttackDamage = attackStat * 1.1f;
-        //skillBuff =  (team.armorPenetration = armorPenetration + 10) & (team.magicPenetration = magicPenetration + 10);
     }
 
     // Update is called once per frame
@@ -63,14 +62,15 @@ public class Citrine : PlayerObject
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
-            //Deal Damage code here
+            float outputDamage = basicAttackDamage;
+            return outputDamage;
+
             //range code here when implemented
-            return 0;
         }
         else
         {
             return 0;
-            //Message here not enough mana
+            //You Have Insufficient Mana
         }
     }
 
@@ -80,16 +80,24 @@ public class Citrine : PlayerObject
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
-            //Deal Damage code here
-            //Range code here when implemented
+
+            PlayerObject[] targets = new PlayerObject[1];
+            StatusEffect effect = new StatusEffect();
+            effect.instantiateAddEffect("armorPenetration", 10, 2, targets);
+
+            StatusEffect effect1 = new StatusEffect();
+            effect.instantiateAddEffect("magicPenetration", 10, 2, targets);
+
             return 0;
+        
+            //Range code here when implemented (3 tile radius)
         }
         else
         {
             return 0;
             //Message here not enough mana
         }
-        //reduce target movement by 1 for 1 round here.
+       
     }
 
     public override float signatureMoveStatus()
@@ -98,9 +106,15 @@ public class Citrine : PlayerObject
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            //team.shield = Citrine.attackStat * 10.0f;
-            //team.attackStat = attackStat + attack.Stat * 0.4f;
-            //Range code here when implemented
+            //shield = Citrine.magicResistance * 10
+            //attack += attackStat * 0.4f
+
+            PlayerObject[] targets = new PlayerObject[1];
+            StatusEffect effect = new StatusEffect();
+            effect.instantiateMultiEffect("shield", 10, 2, targets);
+
+            StatusEffect effect1 = new StatusEffect();
+            effect.instantiateMultiEffect("attack", 10, 2, targets);
             return 0;
         }
         else
