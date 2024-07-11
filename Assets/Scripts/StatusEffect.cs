@@ -26,7 +26,7 @@ public class StatusEffect
         
     }
 
-    public void instantiateAddEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateAddEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateAddEffect() for ints like movement
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
@@ -37,14 +37,16 @@ public class StatusEffect
         foreach (PlayerObject target in targets)
         {
             statField = target.GetType().GetField(statusEffectName);
-            float oldStat = (float)statField.GetValue(target);
+            Debug.Log(statField.GetValue(target));
+            float oldStat = (float)(int)statField.GetValue(target);
+            Debug.Log("lmao");
             newStat = oldStat - statusEffect;
-            statField.SetValue(target, newStat);
+            statField.SetValue(target, (int) newStat);
         }
 
     }
 
-    public void instantiateMultiEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateMultiEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets) //instantiateMultiEffect() for floats like armor and MR
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;

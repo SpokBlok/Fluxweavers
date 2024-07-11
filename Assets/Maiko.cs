@@ -2,11 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class MaikoScript : PlayerObject
 {
     // Checkers for Maiko
     public bool inAquaHex; // For Maiko Passive and Ultimate Check
+
+    //Targets
+    public PlayerObject[] targets;
 
     // Start is called before the first frame update
     void Start()
@@ -92,12 +96,16 @@ public class MaikoScript : PlayerObject
         //reduce target movement by 1 for 1 round here.
     }
 
-    public override float skillStatus()
+    public override void skillStatus()
     {
-        return 0;
+        StatusEffect effect = new StatusEffect();
+        //Target Calculation Goes Here
+        effect.instantiateAddEffect("movement", 1, 1, targets);
+        StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+        Handler.addStatusEffect(effect);
     }
 
-    public override float signatureMoveStatus()
+    public override void signatureMoveStatus()
     {
         //Check if in aqua hex code here
         // Mana Portion
@@ -107,15 +115,25 @@ public class MaikoScript : PlayerObject
             movement += 1;// For this round only logic to be implemented in the future
             armor += armor * 0.45f;
             magicResistance += magicResistance * 0.45f;
-            return 30; //Lower 30 percent of enemy attack stat
+
+            //Target Calculation Goes Here
+            StatusEffect effect = new StatusEffect();
+            PlayerObject[] targets = new PlayerObject[4];
+            effect.instantiateMultiEffect("attack", 0.7f, 2, targets);
+            StatusEffectHandlerScript Handler = GameObject.FindObjectOfType<StatusEffectHandlerScript>();
+            Handler.addStatusEffect(effect);
             //Deal Damage code here
             //Range code here when implemented
         }
         else
         {
-            return 0;
             //Message here not enough mana
         }
         //range code here when implemented
+    }
+
+    public void OnMouseDown()
+    {
+        skillStatus();
     }
 }
