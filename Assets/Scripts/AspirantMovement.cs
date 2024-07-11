@@ -485,8 +485,10 @@ public class AspirantMovement : MonoBehaviour
 
                 NewPath.Add(Tile);
 
-                HashSet<PlayerObject> placeholder;
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out placeholder, NewPath));
+                HashSet<PlayerObject> NewEnemies;
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewEnemies, NewPath));
+
+                EnemiesInRange.UnionWith(NewEnemies);
             }
 
             // then add them to the current running list of adjacent tiles
