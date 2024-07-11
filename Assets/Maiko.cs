@@ -100,7 +100,7 @@ public class MaikoScript : PlayerObject
     {
         StatusEffect effect = new StatusEffect();
         //Target Calculation Goes Here
-        effect.instantiateAddEffect("movement", 1, 1, targets);
+        effect.instantiateAddIntEffect("movement", 1, 1, targets);
         StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         Handler.addStatusEffect(effect);
     }
@@ -118,7 +118,7 @@ public class MaikoScript : PlayerObject
 
             //Target Calculation Goes Here
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiEffect("attack", 0.7f, 2, targets);
+            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(effect);
             //Range code here when implemented
@@ -128,10 +128,5 @@ public class MaikoScript : PlayerObject
             //Message here not enough mana
         }
         //range code here when implemented
-    }
-
-    public void OnMouseDown()
-    {
-        skillStatus();
     }
 }
