@@ -92,6 +92,11 @@ public class MaikoScript : PlayerObject
         //reduce target movement by 1 for 1 round here.
     }
 
+    public override float skillStatus()
+    {
+        return 0;
+    }
+
     public override float signatureMoveStatus()
     {
         //Check if in aqua hex code here
