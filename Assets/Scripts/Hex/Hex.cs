@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using FluxNamespace;
 using UnityEngine.UIElements;
 
-public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler, IPointerClickHandler
+public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler, IPointerDownHandler
 {
     public SpriteRenderer hexSprite;   
     private FluxInterface fi;
@@ -16,6 +16,10 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     private bool clickToCast;
     [SerializeField] Sprite defaultSprite;
     private EnvironmentInterface ei;
+    public int layer = 0; // default layer is ground (0)
+    public int y;         // y-index in 2d array
+    public int x;         // x-index in 2d array
+
     void Start()
     {
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes each hex to the onRoundEnd event seen in PhaseRoundEnd.cs
@@ -25,7 +29,6 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         currentTerrain = TerrainNames.None;      
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
         clickToCast = false;
-        
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -41,7 +44,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
             fi.FluxPlaced(eventData.pointerDrag, this); //sends the data to the flux interface
         }
     }
-    public void OnPointerClick(PointerEventData eventData) {
+    public void OnPointerDown(PointerEventData eventData) {
         if(clickToCast){
             ei.HexClicked(this);
         }
