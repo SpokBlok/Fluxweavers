@@ -120,5 +120,7 @@ public class PlayerObject : MonoBehaviour
 
         if (isSelected)
             phaseHandler.selectedPlayer = this;
+        else
+            phaseHandler.selectedPlayer = null;
     }
 }
