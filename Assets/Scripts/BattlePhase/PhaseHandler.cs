@@ -18,8 +18,8 @@ public class PhaseHandler : MonoBehaviour
     public int playerManaCount;
     public int enemyManaCount;
 
-    public GameObject[] player;
-    public GameObject[] enemy;
+    public PlayerObject player;
+    public PlayerObject enemy;
     public ResourceScript rs;
 
     //This text field is meant only to test the funcitonality of the state machine
@@ -27,8 +27,8 @@ public class PhaseHandler : MonoBehaviour
     
     void Start()
     {
-        player = GameObject.FindGameObjectsWithTag("Player");
-        enemy = GameObject.FindGameObjectsWithTag("Enemy");
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerObject>();
+        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<PlayerObject>(); ;
         rs = GameObject.FindObjectOfType<ResourceScript>();
         
         currentRound = 1;

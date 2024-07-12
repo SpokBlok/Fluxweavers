@@ -21,15 +21,16 @@ public class PlayerObject : MonoBehaviour
 
     //Attack Stats
     public float basicAttackDamage;
-    public float basicAttackMana;
+    public int basicAttackMana;
     public float basicAttackRange;
+    public bool isBasicAttackPhysical;
 
     public float skillDamage;
-    public float skillMana;
+    public int skillMana;
     public float skillRange;
 
     public float signatureMoveDamage;
-    public float signatureMoveMana;
+    public int signatureMoveMana;
     public float signatureMoveRange;
 
     // Checkers
@@ -58,6 +59,7 @@ public class PlayerObject : MonoBehaviour
         if (health <= 0)
         {
             Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
+            //Death Animation plays
         }
     }
 
@@ -68,5 +70,26 @@ public class PlayerObject : MonoBehaviour
         else
             health = health - healthBar.TotalDamageReceived(opponentDamage, opponentAttackStat, magicResistance, opponentMagicPenetration);
         IsDead();
+    }
+
+    public virtual float basicAttack(float armor)
+    {
+        return 0;
+    }
+
+    public virtual float skillAttack()
+    {
+        return 0;
+    }
+
+    public virtual float skillStatus()
+    {
+        return 0;
+    }
+
+
+    public virtual float signatureMove()
+    {
+        return 0;
     }
 }
