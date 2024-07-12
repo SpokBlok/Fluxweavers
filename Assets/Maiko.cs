@@ -10,11 +10,12 @@ public class MaikoScript : PlayerObject
     public bool inAquaHex; // For Maiko Passive and Ultimate Check
 
     //Targets
-    public HashSet<PlayerObject> targets;
+    public HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
 
     // Start is called before the first frame update
     void Start()
     {
+
         //Player Stats
         level = 1;
         armor = 16;
