@@ -11,7 +11,7 @@ public class StatusEffect
     public int duration;
     public bool isAdditive;
     public bool isInt;
-    public PlayerObject[] targets;
+    public HashSet<PlayerObject> targets;
     FieldInfo statField;
 
     // Start is called before the first frame update
@@ -26,7 +26,7 @@ public class StatusEffect
         
     }
 
-    public void instantiateAddIntEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateAddIntEffect(string statusEffectName, float statusEffect, int duration, HashSet<PlayerObject> targets)
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
@@ -47,7 +47,7 @@ public class StatusEffect
 
     }
 
-    public void instantiateAddFloatEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateAddFloatEffect(string statusEffectName, float statusEffect, int duration, HashSet<PlayerObject> targets)
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
@@ -68,7 +68,7 @@ public class StatusEffect
 
     }
 
-    public void instantiateMultiIntEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateMultiIntEffect(string statusEffectName, float statusEffect, int duration, HashSet<PlayerObject> targets)
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
@@ -87,7 +87,7 @@ public class StatusEffect
 
     }
 
-    public void instantiateMultiFloatEffect(string statusEffectName, float statusEffect, int duration, PlayerObject[] targets)
+    public void instantiateMultiFloatEffect(string statusEffectName, float statusEffect, int duration, HashSet<PlayerObject> targets)
     {
         this.statusEffectName = statusEffectName;
         this.statusEffect = statusEffect;
