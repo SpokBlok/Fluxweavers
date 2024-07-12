@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ public class AiMovementLogic : MonoBehaviour
 
         // position aspirant on current specified tile, with an offset to make it stand on top of it
         offset = new Vector3(0.0f, 0.22f, 0.0f); 
-        aiTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
+        aiTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset; //  
 
         DifferentLayerTiles = new List<Vector2Int>();
         RequiredExtraMovement = new List<int>();
@@ -68,7 +69,7 @@ public class AiMovementLogic : MonoBehaviour
         if (Path.Count > 0) // Handles movement
         {
             Vector2Int nextTile = Path.Peek();
-            Vector3 nextPosition = Tiles.Tiles[nextTile.y, nextTile.x].transform.position + offset;
+            Vector3 nextPosition = Tiles.Tiles[nextTile.y, nextTile.x].transform.position + offset; //  
             
             aiTransform.position = Vector3.MoveTowards(aiTransform.position, nextPosition, movementSpeed * Time.deltaTime);
 
@@ -95,6 +96,22 @@ public class AiMovementLogic : MonoBehaviour
         CreatePathToTarget(target, obstacles, enemyAi);
     }
 
+    HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range) {
+        HashSet<Vector2Int> tileSet = new();
+        // max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
+
+        for (int i = xIndex - range; i <= xIndex + range; i++) {
+            for (int j = yIndex - range; j <= yIndex + range; j++) {
+            // for (int j = yIndex - Math.Max(-i - range, -range); j <= yIndex + Math.Min(-i + range, range); j++) {
+                if (xIndex + yIndex - range <= i + j  && i + j <= xIndex + yIndex + range)
+                    tileSet.Add(new(j, i));
+            }
+        }
+
+        return tileSet;
+    }
+
+    /**
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
     {
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
@@ -197,29 +214,23 @@ public class AiMovementLogic : MonoBehaviour
         return AdjacentTiles;
     }
 
+    **/
     private int ManhattanDistance (Vector2Int source, Vector2Int destination) {
-        return (
-            Math.Abs(destination.x - source.x) + 
-            Math.Abs(destination.y - source.y) // + 
-            // Math.Abs(destination.y + destination.x - source.y - source.x)
-            ); // 2;
+
+        Hex sourceTile = Tiles.Tiles[source.y, source.x].GetComponent<Hex>();
+        Hex destinationtTile = Tiles.Tiles[destination.y, destination.x].GetComponent<Hex>();
+
+        return  Math.Abs(destinationtTile.x - sourceTile.x) + 
+                Math.Abs(destinationtTile.y - sourceTile.y) + 
+                Math.Abs(destinationtTile.layer - sourceTile.layer);
+
+        // return (
+        //     Math.Abs(destination.x - source.x) + 
+        //     Math.Abs(destination.y - source.y) // + 
+        //     // Math.Abs(destination.y + destination.x - source.y - source.x)
+        //     ); // 2;
     }
 
-    // Trash Remove this shit
-    private List<Vector2Int> GetAdjacentTiles(Vector2Int center) {
-        List<Vector2Int> neighbors = new()
-        {
-            center,
-            center + Vector2Int.left,
-            center + Vector2Int.right,
-            center + Vector2Int.up,
-            center + Vector2Int.down,
-            center + new Vector2Int(-1, -1),
-            center + new Vector2Int(-1, 1),
-        };
-
-        return neighbors;
-    }
 
     void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
 
@@ -240,12 +251,17 @@ public class AiMovementLogic : MonoBehaviour
 
         while (priorityNodes.Count > 0) {
             currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
+            Vector2Int prevLocation = nodeHistory[currentLocation];
+
+            Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
+            Hex prevTile = Tiles.Tiles[prevLocation.y, prevLocation.x].GetComponent<Hex>();
 
             // This is inefficient
             HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
 
-            if (nodeFilter.Contains(currentLocation)) {
-                moveCounter++;
+            if (moveCounter >= movementStat + math.abs(currentTile.layer - prevTile.layer)) {
+                target = currentLocation;
+                break;
             }
 
             if (neighbors.Contains(new Vector2Int(target.y, target.x)) || moveCounter >= movementStat) {
@@ -263,9 +279,11 @@ public class AiMovementLogic : MonoBehaviour
             //     break;
             // }
 
+
             foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
 
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
+                
                 if (!nodeHistory.Keys.Contains(swappedCoords) && !enemyAi.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
 
                     int priority = ManhattanDistance(swappedCoords, target);
