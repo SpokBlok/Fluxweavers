@@ -199,6 +199,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HexTile Grid (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5676243078868502408, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: layer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8304612645165409248, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
@@ -993,7 +997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentYIndex
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.size
@@ -1073,7 +1077,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: movement
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: healthBar
@@ -1846,7 +1850,15 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.5568628
       objectReference: {fileID: 0}
+    - target: {fileID: 5676243078868502408, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: layer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6259793191494432936, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7721061535570205888, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}

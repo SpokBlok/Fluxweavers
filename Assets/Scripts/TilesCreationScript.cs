@@ -38,9 +38,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
 
@@ -67,9 +67,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
 
@@ -82,9 +82,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -97,9 +97,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -107,9 +107,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+1;
+                    Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+1;
                 }
                 catch(Exception){}
                 
@@ -122,9 +122,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -132,9 +132,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+1;
+                    Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+1;
                 }
                 catch(Exception){}
                 
@@ -147,9 +147,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -157,9 +157,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+1;
+                    Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+1;
                 }
                 catch(Exception){}
                 
@@ -167,9 +167,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+2;
+                    Hex hexTile = Tiles[rowNumber, colNumber+2].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+2;
                 }
                 catch(Exception){}
                 
@@ -182,9 +182,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -192,9 +192,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+1;
+                    Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+1;
                 }
                 catch(Exception){}
                 
@@ -207,9 +207,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -217,9 +217,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber+1;
+                    Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber+1;
                 }
                 catch(Exception){}
                 
@@ -232,9 +232,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -247,9 +247,9 @@ public class TilesCreationScript : MonoBehaviour
 
                 try
                 {
-                    TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                    indices.y = rowNumber;
-                    indices.x = colNumber;
+                    Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                    hexTile.y = rowNumber;
+                    hexTile.x = colNumber;
                 }
                 catch(Exception){}
                 
@@ -272,9 +272,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}       
         }
@@ -285,9 +285,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
         }
@@ -298,9 +298,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -308,9 +308,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
         }
@@ -321,9 +321,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -331,9 +331,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
         }
@@ -344,9 +344,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -354,9 +354,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
 
@@ -364,9 +364,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+2;
+                Hex hexTile = Tiles[rowNumber, colNumber+2].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+2;
             }
             catch(Exception){}    
         }
@@ -377,9 +377,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -387,9 +387,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
 
@@ -397,9 +397,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+2;
+                Hex hexTile = Tiles[rowNumber, colNumber+2].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+2;
             }
             catch(Exception){}    
         }
@@ -410,9 +410,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}
 
@@ -420,9 +420,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
 
@@ -430,9 +430,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+2].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+2;
+                Hex hexTile = Tiles[rowNumber, colNumber+2].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+2;
             }
             catch(Exception){}    
         }
@@ -443,9 +443,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -453,9 +453,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
         }
@@ -466,9 +466,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
 
@@ -476,9 +476,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber+1].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber+1;
+                Hex hexTile = Tiles[rowNumber, colNumber+1].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber+1;
             }
             catch(Exception){}    
         }
@@ -489,9 +489,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
         }
@@ -502,9 +502,9 @@ public class TilesCreationScript : MonoBehaviour
 
             try
             {
-                TileIndices indices = Tiles[rowNumber, colNumber].GetComponent<TileIndices>();
-                indices.y = rowNumber;
-                indices.x = colNumber;
+                Hex hexTile = Tiles[rowNumber, colNumber].GetComponent<Hex>();
+                hexTile.y = rowNumber;
+                hexTile.x = colNumber;
             }
             catch(Exception){}    
         }

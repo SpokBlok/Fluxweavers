@@ -37,6 +37,8 @@ public class AspirantMovement : MonoBehaviour
 
     private bool isMovementSkillActivated;
 
+    [SerializeField] private HashSet<AspirantMovement> OtherAspirants;
+
     private HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -71,6 +73,13 @@ public class AspirantMovement : MonoBehaviour
         SetUpEnemyIndices();
 
         isMovementSkillActivated = false;
+
+        OtherAspirants = new HashSet<AspirantMovement>();
+        foreach(GameObject Aspirant in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            if (Aspirant != this.gameObject)
+                OtherAspirants.Add(Aspirant.GetComponent<AspirantMovement>());
+        }
 
         HashSet<Vector2Int> unreachableMountains;
         HashSet<PlayerObject> enemiesInRange;
@@ -346,7 +355,7 @@ public class AspirantMovement : MonoBehaviour
         };
 
         // get current layer of current tile
-        int currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<TileObject>().layer;
+        int currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<Hex>().layer;
 
         // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
@@ -366,7 +375,7 @@ public class AspirantMovement : MonoBehaviour
                     && !AdjacentTiles.Contains(tile)
                     && !EnemyIndices.Contains(tile))
                 {
-                    int tileLayer = Tiles.Tiles[y,x].GetComponent<TileObject>().layer;
+                    int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
 
                     // if same layer
                     if(tileLayer == currentLayer)
@@ -496,7 +505,7 @@ public class AspirantMovement : MonoBehaviour
                 }
             }
 
-            TileObject currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<TileObject>();
+            Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
 
             foreach(Vector2Int mountain in unreachableMountains)
             {
@@ -506,7 +515,7 @@ public class AspirantMovement : MonoBehaviour
                 {
                     int priority = ManhattanDistance(swappedCoords, target);
 
-                    TileObject nextTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<TileObject>();
+                    Hex nextTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<Hex>();
                     int layerDifference = (int) Math.Abs(currentTile.layer - nextTile.layer);
                     priority += layerDifference;
 
