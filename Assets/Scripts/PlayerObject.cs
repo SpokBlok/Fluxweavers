@@ -105,22 +105,41 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        // Deselect all other players
-        foreach (PlayerObject player in phaseHandler.players)
+        if(this.gameObject.CompareTag("Player"))
         {
-            if (player != this)
+            // Deselect all other players
+            foreach (PlayerObject player in phaseHandler.players)
             {
-                player.isSelected = false;
+                if (player != this)
+                {
+                    player.isSelected = false;
+                }
             }
+
+            phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
+
+            // Select this player
+            isSelected = !isSelected;
+            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+
+            if (isSelected)
+                phaseHandler.selectedPlayer = this;
+            else
+                phaseHandler.selectedPlayer = null;
         }
 
-        // Select this player
-        isSelected = !isSelected;
-        Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+        else if (this.gameObject.CompareTag("Enemy"))
+        {
+            AiMovementLogic enemy = this.gameObject.GetComponent<AiMovementLogic>();
+            Vector2Int enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
 
-        if (isSelected)
-            phaseHandler.selectedPlayer = this;
-        else
-            phaseHandler.selectedPlayer = null;
+            if (phaseHandler.enemiesInRange.Contains(enemyIndices))
+            {
+                phaseHandler.selectedEnemy = this;
+                phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                
+                Debug.Log("Enemy is clicked!");
+            }
+        }
     }
 }

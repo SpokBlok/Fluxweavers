@@ -35,15 +35,6 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
             {
-                float damage = 0;
-                // Check for damage type
-                if (ph.selectedPlayer.isBasicAttackPhysical)
-                    damage = ph.selectedPlayer.basicAttack(ph.enemy.armor);
-                else
-                    damage = ph.selectedPlayer.basicAttack(ph.enemy.magicResistance);
-
-                ph.enemy.health = ph.enemy.health - damage;
-
                 // Get current position indices from AspirantMovement script
                 AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
                 if (aspirantMovement != null)
@@ -51,7 +42,8 @@ public class PhasePlayerAspirant : PhaseBase
                     int currentXIndex = aspirantMovement.currentXIndex;
                     int currentYIndex = aspirantMovement.currentYIndex;
 
-                    availableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange);
+                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
+                                                        out ph.enemiesInRange);
 
                     // un-highlight the previous adjacent tiles if there are any
                     if(tiles.GetAdjacentTilesCount() > 0)
@@ -92,8 +84,10 @@ public class PhasePlayerAspirant : PhaseBase
         }
     }
 
-    HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range)
+    HashSet<Vector2Int> GetAdjacentTiles(PhaseHandler ph, int xIndex, int yIndex, int range, out HashSet<Vector2Int> EnemiesInRange)
     {
+        EnemiesInRange = new HashSet<Vector2Int>();
+
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
         AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
 
@@ -123,7 +117,15 @@ public class PhasePlayerAspirant : PhaseBase
                 // if it was not yet determined to be an adjacent tile, and
                 // **if it is not occupied by any enemy
                 if (tiles.Tiles[y,x] != null && !AdjacentTiles.Contains(tile))
-                    AdjacentTiles.Add(tile); // add to collection of adjacent tiles
+                {
+                    // add to collection of adjacent tiles
+                    AdjacentTiles.Add(tile);
+
+                    if (ph.enemyPositions.ContainsValue(tile))
+                    {
+                        EnemiesInRange.Add(tile);
+                    }
+                }
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
@@ -139,7 +141,12 @@ public class PhasePlayerAspirant : PhaseBase
             foreach (Vector2Int Tile in AdjacentTiles)
             {
                 if(Tile != new Vector2Int(yIndex, xIndex))
-                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range));
+                {
+                    HashSet<Vector2Int> FurtherEnemies;
+                    NewTiles.UnionWith(GetAdjacentTiles(ph, Tile.y, Tile.x, range, out FurtherEnemies));
+
+                    EnemiesInRange.UnionWith(FurtherEnemies);
+                }
             }
 
             // then add them to the current running list of adjacent tiles
@@ -147,5 +154,21 @@ public class PhasePlayerAspirant : PhaseBase
         }
 
         return AdjacentTiles;
+    }
+
+    public void BasicAttackDamage(PhaseHandler ph)
+    {
+        float damage = 0;
+        // Check for damage type
+        if (ph.selectedPlayer.isBasicAttackPhysical)
+            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.armor);
+        else
+            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.magicResistance);
+
+        ph.selectedEnemy.health = ph.selectedEnemy.health - damage;
+
+        Debug.Log("Enemy is attacked!");
+
+        ph.selectedEnemy = null;
     }
 }

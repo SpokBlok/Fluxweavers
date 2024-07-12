@@ -123,6 +123,8 @@ public class AspirantMovement : MonoBehaviour
 
                 if (Path.Count == 0)
                 {
+                    phaseHandler.playerPositions[aspirant] = new Vector2Int(currentYIndex, currentXIndex);
+
                     foreach(PlayerObject player in phaseHandler.players)
                     {
                         if (player != this.aspirant)
