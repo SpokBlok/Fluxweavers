@@ -49,6 +49,9 @@ public class PlayerObject : MonoBehaviour
     public ResourceScript resourceScript;
     public int mana;
 
+    // Phase Handler Script
+    public PhaseHandler phaseHandler;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -103,8 +106,7 @@ public class PlayerObject : MonoBehaviour
     public void OnMouseDown()
     {
         // Deselect all other players
-        PlayerObject[] allPlayers = FindObjectsOfType<PlayerObject>();
-        foreach (PlayerObject player in allPlayers)
+        foreach (PlayerObject player in phaseHandler.players)
         {
             if (player != this)
             {
@@ -115,5 +117,8 @@ public class PlayerObject : MonoBehaviour
         // Select this player
         isSelected = !isSelected;
         Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+
+        if (isSelected)
+            phaseHandler.selectedPlayer = this;
     }
 }
