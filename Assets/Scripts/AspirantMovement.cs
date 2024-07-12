@@ -463,17 +463,6 @@ public class AspirantMovement : MonoBehaviour
             return Pathway;
         }
 
-        // reset to starting position
-        currentYIndex = originalYIndex;
-        currentXIndex = originalXIndex;
-        aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
-
-        if (target.x == currentXIndex && target.y == currentYIndex)
-        {
-            Pathway.Enqueue(new Vector2Int(currentYIndex, currentXIndex));
-            return Pathway;
-        }
-
         Vector2Int startLocation = new Vector2Int(currentXIndex, currentYIndex);
         Vector2Int currentLocation = new Vector2Int(currentXIndex, currentYIndex);
 
