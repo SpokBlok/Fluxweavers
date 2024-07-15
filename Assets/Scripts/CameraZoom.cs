@@ -52,33 +52,35 @@ public class CameraControl : MonoBehaviour
             return;
         }
 
-        // Reset the direction each frame
-        Vector3 direction = Vector3.zero;
-
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if (!isFullMapInView)
         {
-            direction.y += 1;
-        }
-        if (!isFullMapInView && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)))
-        {
-            direction.y -= 1;
-        }
-        if (!isFullMapInView && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
-        {
-            direction.x -= 1;
-        }
-        if (!isFullMapInView && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)))
-        {
-            direction.x += 1;
-        }
+            Vector3 direction = Vector3.zero;
 
-        cam.transform.position += direction * moveSpeed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            {
+                direction.y += 1;
+            }
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                direction.y -= 1;
+            }
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                direction.x -= 1;
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                direction.x += 1;
+            }
 
-        // Clamp camera position within map bounds
-        float clampedX = Mathf.Clamp(cam.transform.position.x, mapMinX, mapMaxX);
-        float clampedY = Mathf.Clamp(cam.transform.position.y, mapMinY, mapMaxY);
+            cam.transform.position += direction * moveSpeed * Time.deltaTime;
 
-        cam.transform.position = new Vector3(clampedX, clampedY, cam.transform.position.z);
+            // Clamp camera position within map bounds
+            float clampedX = Mathf.Clamp(cam.transform.position.x, mapMinX, mapMaxX);
+            float clampedY = Mathf.Clamp(cam.transform.position.y, mapMinY, mapMaxY);
+
+            cam.transform.position = new Vector3(clampedX, clampedY, cam.transform.position.z);
+        }
     }
 
     void HandleZoom()
@@ -95,14 +97,30 @@ public class CameraControl : MonoBehaviour
         // Apply zoom once per frame
         if (!Mathf.Approximately(accumulatedScroll, 0f))
         {
-            cam.orthographicSize -= accumulatedScroll * zoomSpeed;
-            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, minOrthographicSize, maxOrthographicSize);
+            float newOrthographicSize = cam.orthographicSize - accumulatedScroll * zoomSpeed;
+            newOrthographicSize = Mathf.Clamp(newOrthographicSize, minOrthographicSize, maxOrthographicSize);
 
-            // Recalculate camera movement constraints based on updated orthographic size
-            CalculateCameraConstraints();
+            if (newOrthographicSize != cam.orthographicSize)
+            {
+                cam.orthographicSize = newOrthographicSize;
 
-            // Check if the entire map is in view
-            isFullMapInView = cam.orthographicSize >= maxOrthographicSize;
+                // Recalculate camera movement constraints based on updated orthographic size
+                CalculateCameraConstraints();
+
+                // Gradually move the camera towards the center of the map
+                if (cam.orthographicSize >= maxOrthographicSize)
+                {
+                    cam.transform.position = new Vector3(0, 0, cam.transform.position.z);
+                }
+                else
+                {
+                    Vector3 mapCenter = new Vector3((mapMinX + mapMaxX) / 2, (mapMinY + mapMaxY) / 2, cam.transform.position.z);
+                    cam.transform.position = Vector3.Lerp(cam.transform.position, mapCenter, Time.deltaTime * zoomSpeed);
+                }
+
+                // Check if the entire map is in view
+                isFullMapInView = cam.orthographicSize >= maxOrthographicSize;
+            }
 
             accumulatedScroll = 0f; // Reset accumulated scroll
         }
