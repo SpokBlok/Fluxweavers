@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
+using UnityEditor.UI;
 
 public class Dedra : PlayerObject
 {   // Start is called before the first frame update
@@ -59,13 +60,23 @@ public class Dedra : PlayerObject
                 // if opponents health is <35%, basic attacks deal 200% of the attackStat
                 if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
                 {
-                    basicAttackDamage = attackStat * 2f;
+                    StatusEffect basicAttackBuffEffect = new StatusEffect();
+                    //Target Calculation Goes Here
+                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 2f, 3, this);
+                    StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+                    Handler.addStatusEffect(basicAttackBuffEffect);
+                    // basicAttackDamage = attackStat * 2f;
                 }
 
                 // else,  basic attacks deal 165% of the attackStat
                 else 
                 {
-                    basicAttackDamage = attackStat * 1.65f;
+                    StatusEffect basicAttackBuffEffect = new StatusEffect();
+                    //Target Calculation Goes Here
+                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 1.65f, 3, this);
+                    StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+                    Handler.addStatusEffect(basicAttackBuffEffect);
+                    // basicAttackDamage = attackStat * 1.65f;
                 }
 
                 // set isSkillStillActive to true
@@ -82,20 +93,29 @@ public class Dedra : PlayerObject
         }
     }
 
-        public override float skillStatus()
+        public override void skillStatus()
     {
-        return 0;
+        
     }
 
     public void PlayerSignatureMove()
     {
         if (wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
+            StatusEffect controlBuffEffect = new StatusEffect();
+            StatusEffect basicAttackManaEffect = new StatusEffect();
+            StatusEffect basicAttackRangeEffect = new StatusEffect();
+
+            controlBuffEffect.instantiateEffect("controlBuff", this.control += 1, 6969, this);
+            basicAttackManaEffect.instantiateEffect("basicAttackMana", this.basicAttackMana -= 2, 6969, this);
+            basicAttackRangeEffect.instantiateEffect("basicAttackRange", this.basicAttackRange += 1, 6969, this);
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            control += 1;
-            basicAttackMana -= 2;
-            basicAttackRange += 1;
-            signatureMoveActivation = true;
+            // control += 1;
+            // basicAttackMana -= 2;
+            // basicAttackRange += 1;
+            // signatureMoveActivation = true;
         } 
 
         else
@@ -130,6 +150,11 @@ public class Dedra : PlayerObject
     {    
         // skill activation if the player has <=6 mana and presses the button 
         
+    }
+
+    public void OnMouseDown()
+    {
+        skillStatus();
     }
 
     /* things to do for tomorrow:

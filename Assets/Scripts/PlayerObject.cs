@@ -82,9 +82,9 @@ public class PlayerObject : MonoBehaviour
         return 0;
     }
 
-    public virtual float skillStatus()
+    public virtual void skillStatus()
     {
-        return 0;
+        
     }
 
 
