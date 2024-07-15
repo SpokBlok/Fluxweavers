@@ -83,22 +83,31 @@ public class PhasePlayerAspirant : PhaseBase
             AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
             if (aspirantMovement != null)
             {
-                int x = aspirantMovement.originalXIndex;
-                int y = aspirantMovement.originalYIndex;
-
-                HashSet<Vector2Int> unreachableMountains;
-                aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
-                                                                                    out unreachableMountains);
-
-                ph.selectedPlayer.isMovementSkillActivated = true;
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
+                if(ph.selectedPlayer.isMovementSkillActivated)
+                {
+                    ph.selectedPlayer.isMovementSkillActivated = false;
                     tiles.HighlightAdjacentTiles(false);
+                }
 
-                // set the new adjacent tiles and highlight them
-                tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
-                tiles.HighlightAdjacentTiles(true);
+                else
+                {
+                    int x = aspirantMovement.originalXIndex;
+                    int y = aspirantMovement.originalYIndex;
+
+                    HashSet<Vector2Int> unreachableMountains;
+                    aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
+                                                                                        out unreachableMountains);
+
+                    ph.selectedPlayer.isMovementSkillActivated = true;
+
+                    // un-highlight the previous adjacent tiles if there are any
+                    if(tiles.GetAdjacentTilesCount() > 0)
+                        tiles.HighlightAdjacentTiles(false);
+
+                    // set the new adjacent tiles and highlight them
+                    tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
+                    tiles.HighlightAdjacentTiles(true);
+                }
             }
             else
             {

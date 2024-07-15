@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PhaseHandler : MonoBehaviour
 {
-    PhaseBase currentState;
+    public PhaseBase currentState;
     public PhaseEnemyAspirant enemyAspirant = new PhaseEnemyAspirant();
     public PhasePlayerAspirant playerAspirant = new PhasePlayerAspirant();
     public PhaseEnemyFlux enemyFlux = new PhaseEnemyFlux();

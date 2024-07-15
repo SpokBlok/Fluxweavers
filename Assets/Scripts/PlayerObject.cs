@@ -114,21 +114,24 @@ public class PlayerObject : MonoBehaviour
     {
         if(this.gameObject.CompareTag("Player"))
         {
-            // Deselect all other players
-            foreach (PlayerObject player in phaseHandler.players)
+            if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if (player != this)
+                // Deselect all other players
+                foreach (PlayerObject player in phaseHandler.players)
                 {
-                    player.isSelected = false;
-                    player.gameObject.GetComponent<SpriteRenderer>().sprite = normal;
+                    if (player != this)
+                    {
+                        player.isSelected = false;
+                        player.gameObject.GetComponent<SpriteRenderer>().sprite = normal;
+                    }
                 }
+
+                phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
+
+                TogglePlayerSelection();
+
+                Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
             }
-
-            phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
-
-            TogglePlayerSelection();
-
-            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
