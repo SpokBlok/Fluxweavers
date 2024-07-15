@@ -8,7 +8,6 @@ public class CameraControl : MonoBehaviour
     public float moveSpeed = 5f;
     public float zoomSpeed = 1f;
     public float minOrthographicSize = 1f;
-    public float maxOrthographicSize = 10f;
 
     private float accumulatedScroll = 0f;
     private float mapMinX, mapMaxX, mapMinY, mapMaxY;
@@ -19,10 +18,14 @@ public class CameraControl : MonoBehaviour
     public float hexWidth = 1f;  // Width of a hexagon
     public float hexHeight = 1f; // Height of a hexagon
 
+    private float maxOrthographicSize;
+    private bool isFullMapInView = false;
+
     void Start()
     {
         cam = Camera.main;
         InitializeTiles(); // Initialize Tiles here
+        CalculateMaxOrthographicSize();
         CalculateCameraConstraints();
     }
 
@@ -56,15 +59,15 @@ public class CameraControl : MonoBehaviour
         {
             direction.y += 1;
         }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        if (!isFullMapInView && (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)))
         {
             direction.y -= 1;
         }
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        if (!isFullMapInView && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)))
         {
             direction.x -= 1;
         }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if (!isFullMapInView && (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)))
         {
             direction.x += 1;
         }
@@ -98,6 +101,9 @@ public class CameraControl : MonoBehaviour
             // Recalculate camera movement constraints based on updated orthographic size
             CalculateCameraConstraints();
 
+            // Check if the entire map is in view
+            isFullMapInView = cam.orthographicSize >= maxOrthographicSize;
+
             accumulatedScroll = 0f; // Reset accumulated scroll
         }
     }
@@ -123,5 +129,22 @@ public class CameraControl : MonoBehaviour
         mapMaxX = mapHalfWidth - cameraHalfWidth;
         mapMinY = -mapHalfHeight + cameraHalfHeight;
         mapMaxY = mapHalfHeight - cameraHalfHeight;
+    }
+
+    void CalculateMaxOrthographicSize()
+    {
+        if (Tiles == null)
+        {
+            Debug.LogError("TilesCreationScript not initialized.");
+            return;
+        }
+
+        float mapWidth = (Tiles.returnColCount() - 1) * (hexWidth * 0.75f);
+        float mapHeight = (Tiles.returnRowCount() - 1) * (hexHeight + hexHeight / 2f);
+
+        float maxOrthographicSizeBasedOnWidth = mapWidth / (2 * cam.aspect);
+        float maxOrthographicSizeBasedOnHeight = mapHeight / 2f;
+
+        maxOrthographicSize = Mathf.Max(maxOrthographicSizeBasedOnWidth, maxOrthographicSizeBasedOnHeight);
     }
 }
