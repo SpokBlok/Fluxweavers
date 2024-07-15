@@ -1051,6 +1051,7 @@ MonoBehaviour:
   tornado: {fileID: 2992005526990138681, guid: 98ca02343f8addc4fa595f6f76e6e994, type: 3}
   FluxNames: 0
   castedFlux: {fileID: 0}
+  isClickable: 0
 --- !u!4 &791523648
 Transform:
   m_ObjectHideFlags: 0
@@ -1789,6 +1790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentFluxNameText: {fileID: 811181729}
   tilesLeftText: {fileID: 723623803}
+  tcs: {fileID: 1481221385}
   waterSprite: {fileID: 21300000, guid: e474a58f3ad327f40b5534091a3b14a4, type: 3}
   defaultSprite: {fileID: 21300000, guid: 26ce1753723b6c941970baacc09de757, type: 3}
 --- !u!4 &1489880063
