@@ -370,6 +370,8 @@ MonoBehaviour:
   resourceScript: {fileID: 0}
   mana: 0
   phaseHandler: {fileID: 0}
+  normal: {fileID: 0}
+  selected: {fileID: 0}
   inAquaHex: 0
   targets:
   - {fileID: 1824707799}
@@ -838,6 +840,8 @@ MonoBehaviour:
   resourceScript: {fileID: 918580870}
   mana: 0
   phaseHandler: {fileID: 0}
+  normal: {fileID: 0}
+  selected: {fileID: 0}
   inAquaHex: 0
   targets: []
 --- !u!4 &660119110
@@ -867,11 +871,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normal: {fileID: 0}
-  selected: {fileID: 0}
   Tiles: {fileID: 0}
   currentYIndex: 0
   currentXIndex: 0
+  originalYIndex: 0
+  originalXIndex: 0
+  isMovementSkillActivated: 0
   movementSpeed: 0
 --- !u!1001 &674158151
 PrefabInstance:
@@ -2275,16 +2280,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: normal
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+    - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: movement
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: selected
+      value: 
+      objectReference: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 1226750106}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: attackStat
@@ -2313,9 +2326,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1824707802}
-    - targetCorrespondingSourceObject: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1824707805}
   m_SourcePrefab: {fileID: 100100000, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
 --- !u!114 &1824707798 stripped
 MonoBehaviour:
@@ -2334,7 +2344,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1824707797}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1273350890}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71cb0e714708b624eac049ece10c32cb, type: 3}
   m_Name: 
@@ -2384,50 +2394,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1824707805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1273350890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8afc79ee910aa5e42b214f1cc2f71e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 0
-  armor: 0
-  armorPenetration: 0
-  magicResistance: 0
-  magicPenetration: 0
-  attackStat: 0
-  movement: 0
-  control: 0
-  health: 0
-  basicAttackDamage: 0
-  basicAttackMana: 0
-  basicAttackRange: 3
-  skillDamage: 0
-  skillMana: 0
-  skillRange: 0
-  signatureMoveDamage: 0
-  signatureMoveMana: 0
-  signatureMoveRange: 0
-  hasMoved: 0
-  isSelected: 0
-  isBasicAttackPhysical: 0
-  isSkillAttackPhysical: 0
-  skillAttackExists: 0
-  skillStatusExists: 0
-  isSignatureMoveAttackPhysical: 0
-  signatureMoveAttackExists: 0
-  signatureMoveStatusExists: 0
-  resourceScript: {fileID: 918580870}
-  mana: 0
-  phaseHandler: {fileID: 381136618}
-  inAquaHex: 0
-  targets: []
 --- !u!1001 &1853367990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2497,9 +2463,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: normal
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+    - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: movement
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: selected
+      value: 
+      objectReference: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
     - target: {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: healthBar
       value: 
@@ -2658,6 +2632,14 @@ PrefabInstance:
       propertyPath: health
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: normal
+      value: 
+      objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: selected
+      value: 
+      objectReference: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: healthBar
       value: 

@@ -8,21 +8,15 @@ using UnityEngine;
 
 public class AspirantMovement : MonoBehaviour
 {
-    // placeholders to see if aspirant is selected or not
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
-
     private Transform aspirantTransform;
-
-    private bool isSelected;
 
     public TilesCreationScript Tiles;
 
     [SerializeField] public int currentYIndex;
     [SerializeField] public int currentXIndex;
 
-    private int originalYIndex;
-    private int originalXIndex;
+    public int originalYIndex;
+    public int originalXIndex;
 
     private Vector3 offset;
 
@@ -37,11 +31,9 @@ public class AspirantMovement : MonoBehaviour
     private List<AiMovementLogic> Enemies;
     private List<Vector2Int> EnemyIndices;
 
-    private bool isMovementSkillActivated;
-
     private Dictionary<PlayerObject, Vector2Int> OtherAspirantIndices;
 
-    private HashSet<Vector2Int> AvailableTiles;
+    public HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -51,8 +43,6 @@ public class AspirantMovement : MonoBehaviour
     void Start()
     {
         aspirantTransform = GetComponent<Transform>();
-
-        isSelected = false;
 
         originalYIndex = currentYIndex;
         originalXIndex = currentXIndex;
@@ -75,8 +65,6 @@ public class AspirantMovement : MonoBehaviour
             Enemies.Add(Enemy.GetComponent<AiMovementLogic>());
 
         SetUpEnemyIndices();
-
-        isMovementSkillActivated = false;
 
         OtherAspirantIndices = new Dictionary<PlayerObject, Vector2Int>();
         foreach(PlayerObject player in phaseHandler.players)
@@ -139,76 +127,36 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
-            if(isMouseOnObject(mouseX, mouseY, this.gameObject))
-            {
-                // Debug.Log("Click was on " + this.gameObject.name);
-                isSelected = !isSelected;
-
-                SpriteRenderer sr = GetComponent<SpriteRenderer>();
-                if(isSelected)
-                {
-                    sr.sprite = selected;
-
-                    if(Tiles.GetAdjacentTilesCount() > 0)
-                        Tiles.HighlightAdjacentTiles(false);
-
-                    Tiles.SetAdjacentTiles(AvailableTiles);
-                }
-                else
-                {
-                    sr.sprite = normal;
-                    isMovementSkillActivated = false;
-                    Tiles.HighlightAdjacentTiles(false);
-                }
-            }
-            else if(isSelected && isMovementSkillActivated)
+            if (aspirant.isSelected && aspirant.isMovementSkillActivated)
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
                 Path = CreatePathToTarget(targetTile);
-
-                if (Path.Count == 0)
-                {
-                    GetComponent<SpriteRenderer>().sprite = normal;
-                    isSelected = false;
-                    isMovementSkillActivated = false;
-                    Tiles.HighlightAdjacentTiles(false);
-                }
             }
         }
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
-            if (aspirant.hasMoved)
-                Debug.Log("Make Your Next Move..");
-
-            else
+            if (!aspirant.hasMoved)
             {
                 Debug.Log("Move Locked In!");
 
-                GetComponent<SpriteRenderer>().sprite = normal;
-                isSelected = false;
-                isMovementSkillActivated = false;
+                aspirant.isMovementSkillActivated = false;
                 Tiles.HighlightAdjacentTiles(false);
 
                 originalXIndex = currentXIndex;
                 originalYIndex = currentYIndex;
 
-                AvailableTiles.Clear();
-                HashSet<Vector2Int> unreachableMountains;
-                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
+                AvailableTiles = new HashSet<Vector2Int>();
+
+                if (aspirant.isSkillUsed)
+                    aspirant.TogglePlayerSelection();
             }
 
-            aspirant.hasMoved = !aspirant.hasMoved;
-        }
-
-        else if (Input.GetKeyDown(KeyCode.H) && isSelected)
-        {
-            isMovementSkillActivated = !isMovementSkillActivated;
-
-            if(isMovementSkillActivated)
-                Tiles.HighlightAdjacentTiles(true);
+            // to be removed i think
             else
-                Tiles.HighlightAdjacentTiles(false);
+                Debug.Log("Make Your Next Move..");
+
+            aspirant.hasMoved = !aspirant.hasMoved;
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
@@ -331,14 +279,12 @@ public class AspirantMovement : MonoBehaviour
                 if (Tiles.Tiles[i,j] == null)
                     continue;
 
-                // ISSUE: since this assumes tile is rectangular but it is hexagonal
                 if(isMouseOnObject(mouseX, mouseY, Tiles.Tiles[i,j]))
                 {
+                    // Debug.Log("Click was on [" + Tiles.Tiles[i,j].transform.parent.name + "] " + Tiles.Tiles[i,j].name);
+
                     if(AvailableTiles.Contains(new Vector2Int(i,j)))
-                    {
-                        // Debug.Log("Click was on " + Tiles[i,j].name);
                         return new Vector2Int(j,i);
-                    }
                     else
                         break;
                 }
@@ -355,7 +301,7 @@ public class AspirantMovement : MonoBehaviour
         UnreachableMountains = new HashSet<Vector2Int>();
 
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
-        AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+        AdjacentTiles.Add(new Vector2Int(originalYIndex, originalXIndex));
 
         // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)

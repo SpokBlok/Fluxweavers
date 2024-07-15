@@ -32,7 +32,9 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
+    public bool isSkillUsed; // Check if the player has used a skill in that turn
     public bool isSelected; //Check if the player is selected
+
     public bool isBasicAttackPhysical;
 
     public bool isSkillAttackPhysical;
@@ -43,12 +45,19 @@ public class PlayerObject : MonoBehaviour
     public bool signatureMoveAttackExists;
     public bool signatureMoveStatusExists;
 
+    public bool isMovementSkillActivated;
+
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;
 
     // Phase Handler Script
     public PhaseHandler phaseHandler;
+
+    // Sprites
+    // to see if aspirant is selected or not
+    [SerializeField] private Sprite normal;
+    [SerializeField] private Sprite selected;
 
     // Start is called before the first frame update
     void Start()
@@ -111,19 +120,15 @@ public class PlayerObject : MonoBehaviour
                 if (player != this)
                 {
                     player.isSelected = false;
+                    player.gameObject.GetComponent<SpriteRenderer>().sprite = normal;
                 }
             }
 
             phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
 
-            // Select this player
-            isSelected = !isSelected;
-            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+            TogglePlayerSelection();
 
-            if (isSelected)
-                phaseHandler.selectedPlayer = this;
-            else
-                phaseHandler.selectedPlayer = null;
+            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
@@ -138,6 +143,23 @@ public class PlayerObject : MonoBehaviour
                 
                 Debug.Log("Enemy is clicked!");
             }
+        }
+    }
+
+    public void TogglePlayerSelection()
+    {
+        // Select or Unselect this player
+        isSelected = !isSelected;
+
+        if (isSelected)
+        {
+            phaseHandler.selectedPlayer = this;
+            GetComponent<SpriteRenderer>().sprite = selected;
+        }
+        else
+        {
+            phaseHandler.selectedPlayer = null;
+            GetComponent<SpriteRenderer>().sprite = normal;
         }
     }
 }
