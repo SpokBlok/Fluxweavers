@@ -98,6 +98,8 @@ public class AiMovementLogic : MonoBehaviour
 
     HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range) {
         HashSet<Vector2Int> tileSet = new();
+        // int xPos;
+        // int yPos;
         // max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
 
         for (int i = xIndex - range; i <= xIndex + range; i++) {
@@ -221,8 +223,8 @@ public class AiMovementLogic : MonoBehaviour
         Hex destinationtTile = Tiles.Tiles[destination.y, destination.x].GetComponent<Hex>();
 
         return  Math.Abs(destinationtTile.x - sourceTile.x) + 
-                Math.Abs(destinationtTile.y - sourceTile.y) + 
-                Math.Abs(destinationtTile.layer - sourceTile.layer);
+                Math.Abs(destinationtTile.y - sourceTile.y);
+                // Math.Abs(destinationtTile.layer - sourceTile.layer)) / 2;
 
         // return (
         //     Math.Abs(destination.x - source.x) + 
@@ -231,11 +233,61 @@ public class AiMovementLogic : MonoBehaviour
         //     ); // 2;
     }
 
+    void CreatePathToTarget(Vector2Int target, Vector2Int[] enemyAi) {
+        Vector2Int startLocation = new(currentXIndex, currentYIndex);
+        Vector2Int currentLocation = startLocation;
+
+        Dictionary<int, Vector2Int> priorityNodes = new();
+        Dictionary<Vector2Int, Vector2Int> nodeHistory = new();
+        Dictionary<Vector2Int, int> costHistory = new();
+
+        priorityNodes[ManhattanDistance(startLocation, target)] = startLocation;
+        nodeHistory[startLocation] = startLocation;
+        costHistory[startLocation] = 0;
+
+        while (priorityNodes.Count > 0) {
+            currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
+            HashSet<Vector2Int> currentNeighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
+
+            if (currentNeighbors.Contains(new Vector2Int(target.y, target.x))) {
+                Debug.Log(currentLocation);
+                // target = currentLocation;
+                break;
+            }
+
+            Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
+                Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
+                Hex prevTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<Hex>();
+
+                int currentCost = costHistory[currentLocation] + Math.Abs(currentTile.layer - prevTile.layer) + 1;
+
+                if (!costHistory.Keys.Contains(swappedCoords) || !enemyAi.Contains(swappedCoords) || currentCost < costHistory[swappedCoords]) {
+                    int priority = ManhattanDistance(swappedCoords, target); // + currentCost
+                    costHistory[swappedCoords] = currentCost;
+                    priorityNodes[priority] = swappedCoords;
+                    nodeHistory[swappedCoords] = currentLocation;
+                }
+            }
+        }
+
+        Path.Enqueue(currentLocation);
+        currentLocation = nodeHistory[currentLocation]; // Start at node just before target
+        // currentLocation = nodeHistory[target];
+
+        while (!currentLocation.Equals(startLocation)) {
+            Path.Enqueue(currentLocation);
+            currentLocation = nodeHistory[currentLocation];
+        }
+
+        Path = new Queue<Vector2Int>(Path.Reverse());
+    }
+
 
     void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
 
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
-        Vector2Int currentLocation;
+        Vector2Int currentLocation = startLocation;
 
         // Queue<Vector2Int> searchSpace = new();
         Dictionary<int, Vector2Int> priorityNodes = new(); // (priority, node)
@@ -250,21 +302,26 @@ public class AiMovementLogic : MonoBehaviour
         int moveCounter = 0;
 
         while (priorityNodes.Count > 0) {
+            
             currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
             Vector2Int prevLocation = nodeHistory[currentLocation];
-
+            
             Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
             Hex prevTile = Tiles.Tiles[prevLocation.y, prevLocation.x].GetComponent<Hex>();
+
+            moveCounter += math.abs(currentTile.layer - prevTile.layer);
 
             // This is inefficient
             HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
 
-            if (moveCounter >= movementStat + math.abs(currentTile.layer - prevTile.layer)) {
-                target = currentLocation;
+            // moveCounter += math.abs(currentTile.layer - prevTile.layer);
+
+            if (moveCounter > movementStat) {
+                target = nodeHistory[currentLocation];
                 break;
             }
 
-            if (neighbors.Contains(new Vector2Int(target.y, target.x)) || moveCounter >= movementStat) {
+            if (neighbors.Contains(new Vector2Int(target.y, target.x))) {
                 // nodeHistory[new Vector2Int(target.y, target.x)] = currentLocation;
                 // target = nodeHistory[currentLocation];
                 Debug.Log(currentLocation);
@@ -272,26 +329,18 @@ public class AiMovementLogic : MonoBehaviour
                 break;
             }
 
-            
-
-            // if (moveCounter == movementStat) {
-            //     target = currentLocation; // Upon exceeding movementStat set target to nearest tile
-            //     break;
-            // }
-
-
             foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
 
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 
-                if (!nodeHistory.Keys.Contains(swappedCoords) && !enemyAi.Contains(swappedCoords) && neighbor.x >= 0 && neighbor.y >= 0) {
+                if (!nodeHistory.Keys.Contains(swappedCoords) && !enemyAi.Contains(swappedCoords)) {
 
                     int priority = ManhattanDistance(swappedCoords, target);
 
-                    if (nodeFilter.Contains(swappedCoords)) {
-                        priority += 1; // swappedCoord.z - currentLocation.z
-                        // moveCounter += 1; // swappedCoord.z - currentLocation.z
-                    }
+                    // if (nodeFilter.Contains(swappedCoords)) {
+                    //     priority += 1; // swappedCoord.z - currentLocation.z
+                    //     // moveCounter += 1; // swappedCoord.z - currentLocation.z
+                    // }
 
                     priorityNodes[priority] = swappedCoords;
                     // priorityNodes.OrderBy(node => node.Item1);
@@ -299,6 +348,7 @@ public class AiMovementLogic : MonoBehaviour
                 }
 
             }
+
             moveCounter += 1;
         }
 
