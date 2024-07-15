@@ -165,12 +165,10 @@ public class PhasePlayerAspirant : PhaseBase
         else
             damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.magicResistance);
 
-        ph.selectedEnemy.health = ph.selectedEnemy.health - damage;
+        ph.selectedEnemy.IsAttacked(damage);
 
         Debug.Log("Enemy is attacked!");
 
         ph.selectedEnemy = null;
-
-        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 }

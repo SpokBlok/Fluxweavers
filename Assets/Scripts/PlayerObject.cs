@@ -15,8 +15,6 @@ public class PlayerObject : MonoBehaviour
     public int movement;
     public int control; // All players have control over 2 hexes
 
-    // Health Related Stuff
-    public HealthBar healthBar;
     public float health;
 
     //Attack Stats
@@ -83,7 +81,7 @@ public class PlayerObject : MonoBehaviour
 
     public virtual float basicAttack(float armor)
     {
-        return 0;
+        return 10;
     }
 
     public virtual float skillAttack(float enemyResistStat, float enemyCurrentHealth, float enemyMaximumHealth)
