@@ -52,7 +52,7 @@ public class MaikoScript : PlayerObject
 
         // Checkers for what hash set to call in the PhaseHandler for targetting
         skillStatusAffectsEnemies = true;
-        skillAttackAffectsAllies = false;
+        skillStatusAffectsAllies = false;
 
         signatureMoveAffectsEnemies = true;
         signatureMoveAffectsAllies = false;

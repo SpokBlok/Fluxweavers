@@ -34,29 +34,29 @@ public class PlayerObject : MonoBehaviour
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
     public bool isSelected; //Check if the player is selected
-    public bool isBasicAttackPhysical;
+    public bool isBasicAttackPhysical = false;
 
-    public bool isSkillAttackPhysical;
-    public bool skillAttackExists;
-    public bool skillStatusExists;
+    public bool isSkillAttackPhysical = false;
+    public bool skillAttackExists = false;
+    public bool skillStatusExists = false;
 
-    public bool isSignatureMoveAttackPhysical;
-    public bool signatureMoveAttackExists;
-    public bool signatureMoveStatusExists;
+    public bool isSignatureMoveAttackPhysical = false;
+    public bool signatureMoveAttackExists = false;
+    public bool signatureMoveStatusExists = false;
 
     // Checkers for what hash set to call in the PhaseHandler for targetting
-    public bool skillStatusAffectsEnemies;
-    public bool skillAttackAffectsAllies;
+    public bool skillStatusAffectsEnemies = false;
+    public bool skillStatusAffectsAllies = false;
 
-    public bool signatureMoveAffectsEnemies;
-    public bool signatureMoveAffectsAllies;
+    public bool signatureMoveAffectsEnemies = false;
+    public bool signatureMoveAffectsAllies = false;
 
     // Checkers if skill status is single target or AOE
-    public bool skillStatusAffectsSingle;
-    public bool skillStatusAffectsAOE;
+    public bool skillStatusAffectsSingle = false;
+    public bool skillStatusAffectsAOE = false;
 
-    public bool signatureMoveStatusAffectsSingle;
-    public bool signatureMoveStatusAffectsAOE;
+    public bool signatureMoveStatusAffectsSingle = false;
+    public bool signatureMoveStatusAffectsAOE = false;
 
     //Mana & Resource Script
     public ResourceScript resourceScript;

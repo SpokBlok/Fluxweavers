@@ -11,11 +11,12 @@ public class Dedra : PlayerObject
     public int skillCounter = 0;
     public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
     public bool isSignatureMoveActive = false; // checks if signature move was activated
-
-    public HashSet<PlayerObject> targets;
+    HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
 
     void Start()
     {
+        dedraSelf.Add(this);
+
     //Player Stats
         armor = 9;
         armorPenetration = 5;
@@ -34,7 +35,22 @@ public class Dedra : PlayerObject
         basicAttackRange = 3;
 
         skillMana = 5;
+        skillRange = 6;
         signatureMoveMana = 12;
+
+        //checkers
+        // basic attacks
+        isBasicAttackPhysical = true;
+
+        // skill
+        skillStatusExists = true;
+        skillStatusAffectsAllies = true;
+        skillStatusAffectsSingle = true;
+
+        // signature move
+        signatureMoveStatusExists = true;
+        signatureMoveAffectsAllies = true;
+        signatureMoveStatusAffectsSingle = true;
 
     }
 
@@ -75,13 +91,14 @@ public class Dedra : PlayerObject
             isSignatureMoveActive = false;
         }
         
+        resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
         return calculatedBasicAttackDamage; 
     }
 
-    public override void skillStatus()
+    public override void skillStatus(HashSet<PlayerObject> targets)
     {
         // logic for the skill
-        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
+        if (resourceScript.playerAbilityUseCheck(skillMana))
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
             if (skillCounter < 3) // the skill lasts 3 turns
@@ -90,9 +107,8 @@ public class Dedra : PlayerObject
             }
 
             StatusEffect armorPenetrationEffect = new StatusEffect();
-            targets.Add(GetComponent<PlayerObject>());
             //Target Calculation Goes Here
-            armorPenetrationEffect.instantiateMultiFloatEffect("armorPenetration", this.armorPenetration = this.armorPenetration * 1.2f, 3, targets);
+            armorPenetrationEffect.instantiateMultiFloatEffect("armorPenetration", 1.2f, 3, targets);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(armorPenetrationEffect);
         } 
@@ -144,11 +160,6 @@ public class Dedra : PlayerObject
     {    
         // skill activation if the player has <=6 mana and presses the button 
         
-    }
-
-    public void OnMouseDown()
-    {
-        skillStatus();
     }
 
     /* things to do for tomorrow:

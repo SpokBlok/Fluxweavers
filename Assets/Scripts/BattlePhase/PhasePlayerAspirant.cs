@@ -90,7 +90,7 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.HighlightAdjacentTiles(true);
                     }
 
-                    if (ph.selectedPlayer.skillAttackAffectsAllies)
+                    if (ph.selectedPlayer.skillStatusAffectsAllies)
                     {
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
                                     out ph.alliesInRange);
@@ -295,6 +295,25 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
+
+            if (ph.selectedPlayer.skillStatusAffectsAllies)
+            {
+                if (ph.selectedPlayer.skillStatusAffectsSingle)
+                {
+                    targets.Add(ph.selectedEnemy);
+                }
+                if (ph.selectedPlayer.skillStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.enemyPositions)
+                    {
+                        if (ph.enemiesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
+
             ph.selectedPlayer.skillStatus(targets);
             Debug.Log("Skill Attack Debuffed Enemy/ies");
         }
