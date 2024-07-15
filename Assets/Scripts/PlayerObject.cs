@@ -48,15 +48,15 @@ public class PlayerObject : MonoBehaviour
     public bool skillStatusAffectsEnemies;
     public bool skillAttackAffectsAllies;
 
-    public bool ultimateAttackAffectsEnemies;
-    public bool ultimateAttackAffectsAllies;
+    public bool signatureMoveAffectsEnemies;
+    public bool signatureMoveAffectsAllies;
 
     // Checkers if skill status is single target or AOE
     public bool skillStatusAffectsSingle;
     public bool skillStatusAffectsAOE;
 
-    public bool ultimateStatusAffectsSingle;
-    public bool ultimateStatusAffectsAOE;
+    public bool signatureMoveStatusAffectsSingle;
+    public bool signatureMoveStatusAffectsAOE;
 
     //Mana & Resource Script
     public ResourceScript resourceScript;
@@ -70,6 +70,7 @@ public class PlayerObject : MonoBehaviour
     {
         level = 1;
         maxHealth = health;
+        attackStat = 20;
     }
 
     // Update is called once per frame
@@ -109,7 +110,7 @@ public class PlayerObject : MonoBehaviour
     {
     }
 
-    public virtual float signatureMoveAttack(int enemyResistStat)
+    public virtual float signatureMoveAttack(float enemyResistStat)
     {
         return 0;
     }
@@ -156,6 +157,9 @@ public class PlayerObject : MonoBehaviour
 
                 if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+
+                if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                    phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
             }
         }
     }

@@ -115,8 +115,46 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
             {
-                // Handle signature move logic
-                // Placeholder: Insert your signature move logic here
+                selectedAttack = "SignatureMoveAttack";
+                // Get current position indices from AspirantMovement script
+                AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
+                if (aspirantMovement != null)
+                {
+                    int currentXIndex = aspirantMovement.currentXIndex;
+                    int currentYIndex = aspirantMovement.currentYIndex;
+
+                    if (ph.selectedPlayer.signatureMoveAffectsEnemies)
+                    {
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
+                                    out ph.enemiesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+
+                    if (ph.selectedPlayer.signatureMoveAffectsAllies)
+                    {
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
+                                    out ph.alliesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("AspirantMovement script not found on PlayerObject.");
+                }
             }
         }
 
@@ -233,6 +271,7 @@ public class PhasePlayerAspirant : PhaseBase
             Debug.Log("Skill Attack is Used on Enemy");
         }
 
+        //for skills with buffs/debuffs
         if (ph.selectedPlayer.skillStatusExists)
         {
             HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
@@ -254,6 +293,52 @@ public class PhasePlayerAspirant : PhaseBase
                 }
             }
             ph.selectedPlayer.skillStatus(targets);
+            Debug.Log("Skill Attack Debuffed Enemy/ies");
+        }
+
+        ph.selectedEnemy = null;
+    }
+
+    public void SignatureMoveAttackDamage(PhaseHandler ph)
+    {
+        //for skills with damage
+        if (ph.selectedPlayer.signatureMoveAttackExists)
+        {
+            float damage = 0;
+            //Check for damage type
+            if (ph.selectedPlayer.isSignatureMoveAttackPhysical)
+                damage = ph.selectedPlayer.signatureMoveAttack(ph.selectedEnemy.armor);
+            else
+                damage = ph.selectedPlayer.signatureMoveAttack(ph.selectedEnemy.magicResistance);
+
+            ph.selectedEnemy.IsAttacked(damage);
+
+            Debug.Log("Signature Move Attack is Used on Enemy");
+        }
+
+        //for skills with buffs/debuffs
+        if (ph.selectedPlayer.signatureMoveStatusExists)
+        {
+            HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
+            if (ph.selectedPlayer.signatureMoveAffectsEnemies)
+            {
+                if (ph.selectedPlayer.signatureMoveStatusAffectsSingle)
+                {
+                    targets.Add(ph.selectedEnemy);
+                }
+                if (ph.selectedPlayer.signatureMoveStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.enemyPositions)
+                    {
+                        if (ph.enemiesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
+            ph.selectedPlayer.signatureMoveStatus(targets);
+            Debug.Log("Signature Move Debuffed Enemies!");
         }
 
         ph.selectedEnemy = null;

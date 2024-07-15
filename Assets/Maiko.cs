@@ -7,11 +7,13 @@ using static UnityEngine.GraphicsBuffer;
 public class MaikoScript : PlayerObject
 {
     // Checkers for Maiko
-    public bool inAquaHex; // For Maiko Passive and Ultimate Check
+    public bool inAquaHex; // For Maiko Passive and signatureMove Check
+    HashSet<PlayerObject> maikoSelf = new HashSet<PlayerObject>();
 
     // Start is called before the first frame update
     void Start()
     {
+        maikoSelf.Add(this);
 
         //Player Stats
         level = 1;
@@ -48,12 +50,12 @@ public class MaikoScript : PlayerObject
         skillAttackExists = true;
         skillStatusExists = true;
 
-            // Checkers for what hash set to call in the PhaseHandler for targetting
+        // Checkers for what hash set to call in the PhaseHandler for targetting
         skillStatusAffectsEnemies = true;
         skillAttackAffectsAllies = false;
 
-        ultimateAttackAffectsEnemies = true;
-        ultimateAttackAffectsAllies = false;
+        signatureMoveAffectsEnemies = true;
+        signatureMoveAffectsAllies = false;
 
         isSignatureMoveAttackPhysical = false;
         signatureMoveAttackExists = false;
@@ -62,8 +64,8 @@ public class MaikoScript : PlayerObject
         skillStatusAffectsSingle = true;
         skillStatusAffectsAOE = false;
 
-        ultimateStatusAffectsSingle = false;
-        ultimateStatusAffectsAOE = true;
+        signatureMoveStatusAffectsSingle = false;
+        signatureMoveStatusAffectsAOE = true;
 }
 
     // Update is called once per frame
@@ -123,14 +125,26 @@ public class MaikoScript : PlayerObject
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            movement += 1;// For this round only logic to be implemented in the future
-            armor += armor * 0.45f;
-            magicResistance += magicResistance * 0.45f;
 
-            //Target Calculation Goes Here
+            //Buff Maiko Movement
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
+            effect.instantiateAddIntEffect("movement", 1, 2, maikoSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+            Handler.addStatusEffect(effect);
+
+            //Buff Maiko armor
+            effect = new StatusEffect();
+            effect.instantiateMultiFloatEffect("armor", 1.45f, 2, maikoSelf);
+            Handler.addStatusEffect(effect);
+
+            //Buff Maiko magicRes
+            effect = new StatusEffect();
+            effect.instantiateMultiFloatEffect("magicResistance", 1.45f, 2, maikoSelf);
+            Handler.addStatusEffect(effect);
+
+            //Enemy Debuff
+            effect = new StatusEffect();
+            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
             Handler.addStatusEffect(effect);
             //Range code here when implemented
         }
