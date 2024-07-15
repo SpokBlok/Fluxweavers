@@ -8,9 +8,9 @@ public class Dedra : PlayerObject
 {   // Start is called before the first frame update
     public bool wasOnFolia;
     public int checkerForExit;
-    public bool skillActivation; // checks if skill was activated
+    public int skillCounter = 0;
     public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
-    public bool signatureMoveActivation = false; // checks if signature move was activated
+    public bool isSignatureMoveActive = false; // checks if signature move was activated
 
     public HashSet<PlayerObject> targets;
 
@@ -38,86 +38,78 @@ public class Dedra : PlayerObject
 
     }
 
-    public override float basicAttack(float enemyArmor)
+    public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
-        if (!isSkillStillActive && !signatureMoveActivation) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
+        float calculatedBasicAttackDamage = 0;
+        if (!isSkillStillActive && !isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
         {
             basicAttackDamage = attackStat;
             basicAttackMana = 4;
             basicAttackRange = 3;
+            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor) / 100;
+        }
+
+        else if (isSkillStillActive)
+        {
+            // if opponents health is <35%, basic attacks deal 200% of the attackStat
+            if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
+            {
+                skillDamage = attackStat * 2f;
+            }
+
+            // else,  basic attacks deal 165% of the attackStat
+            else 
+            {
+                skillDamage = attackStat * 1.65f;
+            }
+
+            calculatedBasicAttackDamage = skillDamage;
+            skillCounter ++;
+        }
+
+        else if (isSignatureMoveActive)
+        {
+            control += 1;
+            basicAttackMana -= 2;
+            basicAttackRange += 1;
+            isSignatureMoveActive = false;
         }
         
-        return basicAttackDamage * (100 - enemyArmor) / 100; 
+        return calculatedBasicAttackDamage; 
     }
 
-    public void skillAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
+    public override void skillStatus()
     {
         // logic for the skill
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
-            int counter = 0; // this counter will be changed when the turns feature has been implemented
-            while (counter > 3) // the skill lasts 3 turns
+            if (skillCounter < 3) // the skill lasts 3 turns
             {
-                // if opponents health is <35%, basic attacks deal 200% of the attackStat
-                if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
-                {
-                    StatusEffect basicAttackBuffEffect = new StatusEffect();
-                    //Target Calculation Goes Here
-                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 2f, 3, targets);
-                    StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-                    Handler.addStatusEffect(basicAttackBuffEffect);
-                    // basicAttackDamage = attackStat * 2f;
-                }
-
-                // else,  basic attacks deal 165% of the attackStat
-                else 
-                {
-                    StatusEffect basicAttackBuffEffect = new StatusEffect();
-                    //Target Calculation Goes Here
-                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 1.65f, 3, targets);
-                    StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-                    Handler.addStatusEffect(basicAttackBuffEffect);
-                    // basicAttackDamage = attackStat * 1.65f;
-                }
-
-                // set isSkillStillActive to true
                 isSkillStillActive = true;
-                
-                // increment counter
-                counter++; 
-            } 
+            }
+
+            StatusEffect armorPenetrationEffect = new StatusEffect();
+            targets.Add(GetComponent<PlayerObject>());
+            //Target Calculation Goes Here
+            armorPenetrationEffect.instantiateMultiFloatEffect("armorPenetration", this.armorPenetration = this.armorPenetration * 1.2f, 3, targets);
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+            Handler.addStatusEffect(armorPenetrationEffect);
         } 
         
         else
         {
             //Message here not enough mana
         }
-    }
 
-        public override void skillStatus()
-    {
-        
     }
 
     public void PlayerSignatureMove()
     {
         if (wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
-            StatusEffect controlBuffEffect = new StatusEffect();
-            StatusEffect basicAttackManaEffect = new StatusEffect();
-            StatusEffect basicAttackRangeEffect = new StatusEffect();
-
-            controlBuffEffect.instantiateEffect("controlBuff", this.control += 1, 6969, targets);
-            basicAttackManaEffect.instantiateEffect("basicAttackMana", this.basicAttackMana -= 2, 6969, targets);
-            basicAttackRangeEffect.instantiateEffect("basicAttackRange", this.basicAttackRange += 1, 6969, targets);
-            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-
+            isSignatureMoveActive = true;
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            // control += 1;
-            // basicAttackMana -= 2;
-            // basicAttackRange += 1;
-            // signatureMoveActivation = true;
         } 
 
         else

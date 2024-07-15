@@ -72,12 +72,12 @@ public class PlayerObject : MonoBehaviour
         IsDead();
     }
 
-    public virtual float basicAttack(float armor)
+    public virtual float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         return 0;
     }
 
-    public virtual float skillAttack()
+    public virtual float skillAttack(float enemyArmor)
     {
         return 0;
     }
