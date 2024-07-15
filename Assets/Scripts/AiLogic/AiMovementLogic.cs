@@ -217,14 +217,30 @@ public class AiMovementLogic : MonoBehaviour
     }
 
     **/
+    private Hex Vec2ToHex (Vector2Int coords) {
+        try {
+            return Tiles.Tiles[coords.y, coords.x].GetComponent<Hex>();
+        }
+        catch (Exception) {
+            return Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
+        }
+    }
+    
     private int ManhattanDistance (Vector2Int source, Vector2Int destination) {
 
-        Hex sourceTile = Tiles.Tiles[source.y, source.x].GetComponent<Hex>();
-        Hex destinationtTile = Tiles.Tiles[destination.y, destination.x].GetComponent<Hex>();
+        try {
+            Hex sourceTile = Tiles.Tiles[source.y, source.x].GetComponent<Hex>();
+            Hex destinationtTile = Tiles.Tiles[destination.y, destination.x].GetComponent<Hex>();
 
-        return  Math.Abs(destinationtTile.x - sourceTile.x) + 
-                Math.Abs(destinationtTile.y - sourceTile.y);
-                // Math.Abs(destinationtTile.layer - sourceTile.layer)) / 2;
+            return  Math.Abs(destinationtTile.x - sourceTile.x) + 
+                    Math.Abs(destinationtTile.y - sourceTile.y);
+        }
+        catch(Exception) {
+            return 10_000; // Some big number so it doesn't go there
+        }
+        
+        
+        // Math.Abs(destinationtTile.layer - sourceTile.layer)) / 2;
 
         // return (
         //     Math.Abs(destination.x - source.x) + 
@@ -232,6 +248,9 @@ public class AiMovementLogic : MonoBehaviour
         //     // Math.Abs(destination.y + destination.x - source.y - source.x)
         //     ); // 2;
     }
+
+
+    
 
     void CreatePathToTarget(Vector2Int target, Vector2Int[] enemyAi) {
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
@@ -306,10 +325,14 @@ public class AiMovementLogic : MonoBehaviour
             currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
             Vector2Int prevLocation = nodeHistory[currentLocation];
             
-            Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
-            Hex prevTile = Tiles.Tiles[prevLocation.y, prevLocation.x].GetComponent<Hex>();
+            try {
+                Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
+                Hex prevTile = Tiles.Tiles[prevLocation.y, prevLocation.x].GetComponent<Hex>();
 
-            moveCounter += math.abs(currentTile.layer - prevTile.layer);
+                moveCounter += math.abs(currentTile.layer - prevTile.layer);
+            }
+            catch (Exception) {}
+            
 
             // This is inefficient
             HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
