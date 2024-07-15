@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//probably gonna delete this
 public class HealthBar : MonoBehaviour
 {
     public float totalDamage;
