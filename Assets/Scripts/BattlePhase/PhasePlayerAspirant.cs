@@ -251,7 +251,10 @@ public class PhasePlayerAspirant : PhaseBase
 
         Debug.Log("Basic Attack is Used on Enemy");
         if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
+        {
             tiles.HighlightAdjacentTiles(false);
+            ph.enemiesInRange = new HashSet<Vector2Int>();
+        }
     }
 
     public void SkillAttackDamage(PhaseHandler ph)
@@ -297,6 +300,11 @@ public class PhasePlayerAspirant : PhaseBase
         }
 
         ph.selectedEnemy = null;
+        if (ph.selectedPlayer.skillMana > ph.rs.playerManaCount)
+        {
+            tiles.HighlightAdjacentTiles(false);
+            ph.enemiesInRange = new HashSet<Vector2Int>();
+        }
     }
 
     public void SignatureMoveAttackDamage(PhaseHandler ph)
@@ -342,5 +350,10 @@ public class PhasePlayerAspirant : PhaseBase
         }
 
         ph.selectedEnemy = null;
+        if (ph.selectedPlayer.signatureMoveMana > ph.rs.playerManaCount)
+        {
+            tiles.HighlightAdjacentTiles(false);
+            ph.enemiesInRange = new HashSet<Vector2Int>();
+        }
     }
 }
