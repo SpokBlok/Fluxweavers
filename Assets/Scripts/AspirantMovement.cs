@@ -148,7 +148,7 @@ public class AspirantMovement : MonoBehaviour
 
                 AvailableTiles = new HashSet<Vector2Int>();
 
-                if (aspirant.isSkillUsed)
+                if (aspirant.hasUsedSkill)
                     aspirant.TogglePlayerSelection();
             }
 

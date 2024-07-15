@@ -32,7 +32,7 @@ public class PlayerObject : MonoBehaviour
 
     // Checkers
     public bool hasMoved; // Check if the player has moved in that turn
-    public bool isSkillUsed; // Check if the player has used a skill in that turn
+    public bool hasUsedSkill; // Check if the player has used a skill in that turn
     public bool isSelected; //Check if the player is selected
 
     public bool isBasicAttackPhysical;

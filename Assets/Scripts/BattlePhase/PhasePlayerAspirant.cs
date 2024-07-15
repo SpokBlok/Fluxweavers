@@ -193,7 +193,7 @@ public class PhasePlayerAspirant : PhaseBase
         else
             damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.magicResistance);
 
-        ph.selectedPlayer.isSkillUsed = true;
+        ph.selectedPlayer.hasUsedSkill = true;
 
         ph.selectedEnemy.IsAttacked(damage);
 
