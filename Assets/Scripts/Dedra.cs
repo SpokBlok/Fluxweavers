@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
-using UnityEditor.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class Dedra : PlayerObject
 {   // Start is called before the first frame update
@@ -11,6 +11,8 @@ public class Dedra : PlayerObject
     public bool skillActivation; // checks if skill was activated
     public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
     public bool signatureMoveActivation = false; // checks if signature move was activated
+
+    public HashSet<PlayerObject> targets;
 
     void Start()
     {
@@ -62,7 +64,7 @@ public class Dedra : PlayerObject
                 {
                     StatusEffect basicAttackBuffEffect = new StatusEffect();
                     //Target Calculation Goes Here
-                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 2f, 3, this);
+                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 2f, 3, targets);
                     StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
                     Handler.addStatusEffect(basicAttackBuffEffect);
                     // basicAttackDamage = attackStat * 2f;
@@ -73,7 +75,7 @@ public class Dedra : PlayerObject
                 {
                     StatusEffect basicAttackBuffEffect = new StatusEffect();
                     //Target Calculation Goes Here
-                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 1.65f, 3, this);
+                    basicAttackBuffEffect.instantiateEffect("basicAttackBuff", this.basicAttackDamage = this.attackStat * 1.65f, 3, targets);
                     StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
                     Handler.addStatusEffect(basicAttackBuffEffect);
                     // basicAttackDamage = attackStat * 1.65f;
@@ -106,9 +108,9 @@ public class Dedra : PlayerObject
             StatusEffect basicAttackManaEffect = new StatusEffect();
             StatusEffect basicAttackRangeEffect = new StatusEffect();
 
-            controlBuffEffect.instantiateEffect("controlBuff", this.control += 1, 6969, this);
-            basicAttackManaEffect.instantiateEffect("basicAttackMana", this.basicAttackMana -= 2, 6969, this);
-            basicAttackRangeEffect.instantiateEffect("basicAttackRange", this.basicAttackRange += 1, 6969, this);
+            controlBuffEffect.instantiateEffect("controlBuff", this.control += 1, 6969, targets);
+            basicAttackManaEffect.instantiateEffect("basicAttackMana", this.basicAttackMana -= 2, 6969, targets);
+            basicAttackRangeEffect.instantiateEffect("basicAttackRange", this.basicAttackRange += 1, 6969, targets);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
