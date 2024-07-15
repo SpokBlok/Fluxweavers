@@ -45,9 +45,9 @@ public class AiMovementLogic : MonoBehaviour
         DifferentLayerTiles = new List<Vector2Int>();
         RequiredExtraMovement = new List<int>();
 
-        movementStat = GetComponent<PlayerObject>().movement;
+        // movementStat = GetComponent<PlayerObject>().movement;
 
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat);
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, GetComponent<PlayerObject>().movement);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         if (isAvailableHighlighted)
@@ -291,7 +291,7 @@ public class AiMovementLogic : MonoBehaviour
 
         // Queue<Vector2Int> searchSpace = new();
         Dictionary<int, Vector2Int> priorityNodes = new(); // (priority, node)
-        Dictionary<Vector2Int, Vector2Int> nodeHistory= new(); // For back tracking
+        Dictionary<Vector2Int, Vector2Int> nodeHistory = new(); // For back tracking
         // List<Vector2Int> nodefilter = new();
 
         priorityNodes[ManhattanDistance(startLocation, target)] = startLocation;
@@ -316,7 +316,7 @@ public class AiMovementLogic : MonoBehaviour
 
             // moveCounter += math.abs(currentTile.layer - prevTile.layer);
 
-            if (moveCounter > movementStat) {
+            if (moveCounter > GetComponent<PlayerObject>().movement) {
                 target = nodeHistory[currentLocation];
                 break;
             }
@@ -336,14 +336,7 @@ public class AiMovementLogic : MonoBehaviour
                 if (!nodeHistory.Keys.Contains(swappedCoords) && !enemyAi.Contains(swappedCoords)) {
 
                     int priority = ManhattanDistance(swappedCoords, target);
-
-                    // if (nodeFilter.Contains(swappedCoords)) {
-                    //     priority += 1; // swappedCoord.z - currentLocation.z
-                    //     // moveCounter += 1; // swappedCoord.z - currentLocation.z
-                    // }
-
                     priorityNodes[priority] = swappedCoords;
-                    // priorityNodes.OrderBy(node => node.Item1);
                     nodeHistory[swappedCoords] = currentLocation;
                 }
 
