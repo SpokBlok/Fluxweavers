@@ -29,7 +29,7 @@ public class MaikoScript : PlayerObject
         health = 200;
 
         //Attack Stats
-        basicAttackMana = 4;
+        basicAttackMana = 8;
         basicAttackRange = 1;
 
         skillDamage = 0;

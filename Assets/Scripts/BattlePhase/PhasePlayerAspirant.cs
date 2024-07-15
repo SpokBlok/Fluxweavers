@@ -170,5 +170,8 @@ public class PhasePlayerAspirant : PhaseBase
         Debug.Log("Enemy is attacked!");
 
         ph.selectedEnemy = null;
+
+        if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
+            tiles.HighlightAdjacentTiles(false);
     }
 }
