@@ -202,6 +202,9 @@ public class PhasePlayerAspirant : PhaseBase
         ph.selectedEnemy = null;
 
         if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
+        {
             tiles.HighlightAdjacentTiles(false);
+            ph.enemiesInRange = null;
+        }
     }
 }
