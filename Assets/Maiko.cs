@@ -9,9 +9,6 @@ public class MaikoScript : PlayerObject
     // Checkers for Maiko
     public bool inAquaHex; // For Maiko Passive and Ultimate Check
 
-    //Targets
-    public HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
-
     // Start is called before the first frame update
     void Start()
     {
@@ -30,7 +27,7 @@ public class MaikoScript : PlayerObject
         health = 200;
 
         //Attack Stats
-        basicAttackMana = 8;
+        basicAttackMana = 4;
         basicAttackRange = 1;
 
         skillDamage = 0;
@@ -51,17 +48,30 @@ public class MaikoScript : PlayerObject
         skillAttackExists = true;
         skillStatusExists = true;
 
+            // Checkers for what hash set to call in the PhaseHandler for targetting
+        skillStatusAffectsEnemies = true;
+        skillAttackAffectsAllies = false;
+
+        ultimateAttackAffectsEnemies = true;
+        ultimateAttackAffectsAllies = false;
+
         isSignatureMoveAttackPhysical = false;
         signatureMoveAttackExists = false;
         signatureMoveStatusExists = true;
-    }
+
+        skillStatusAffectsSingle = true;
+        skillStatusAffectsAOE = false;
+
+        ultimateStatusAffectsSingle = false;
+        ultimateStatusAffectsAOE = true;
+}
 
     // Update is called once per frame
     void Update()
     {
     }
 
-    public override float basicAttack(float enemyArmor)
+    public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
@@ -73,18 +83,18 @@ public class MaikoScript : PlayerObject
         }
         else
         {
+            Debug.Log("Not Enough Mana Buddy");
             return 0;
-            //Message here not enough mana
         }
     }
 
-    public override float skillAttack(float enemyMagicResistance, float enemyCurrentHealth, float enemyMaximumHealth)
+    public override float skillAttack(float enemyMagicResistance)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
-            float outputDamage = basicAttackDamage * ((100 - enemyMagicResistance) / 100);
+            float outputDamage = skillDamage * ((100 - enemyMagicResistance) / 100);
             return outputDamage;
             //SkillStatus effect here when done
             //Range code here when implemented
@@ -97,16 +107,16 @@ public class MaikoScript : PlayerObject
         //reduce target movement by 1 for 1 round here.
     }
 
-    public override void skillStatus()
+    public override void skillStatus(HashSet<PlayerObject> targets)
     {
         StatusEffect effect = new StatusEffect();
         //Target Calculation Goes Here
-        effect.instantiateAddIntEffect("movement", 1, 1, targets);
+        effect.instantiateAddIntEffect("movement", -1, 1, targets);
         StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         Handler.addStatusEffect(effect);
     }
 
-    public override void signatureMoveStatus()
+    public override void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
         //Check if in aqua hex code here
         // Mana Portion

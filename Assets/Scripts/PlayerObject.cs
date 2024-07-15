@@ -15,6 +15,7 @@ public class PlayerObject : MonoBehaviour
     public int movement;
     public int control; // All players have control over 2 hexes
 
+    public float maxHealth; // Needed for Dedra
     public float health;
 
     //Attack Stats
@@ -43,6 +44,20 @@ public class PlayerObject : MonoBehaviour
     public bool signatureMoveAttackExists;
     public bool signatureMoveStatusExists;
 
+    // Checkers for what hash set to call in the PhaseHandler for targetting
+    public bool skillStatusAffectsEnemies;
+    public bool skillAttackAffectsAllies;
+
+    public bool ultimateAttackAffectsEnemies;
+    public bool ultimateAttackAffectsAllies;
+
+    // Checkers if skill status is single target or AOE
+    public bool skillStatusAffectsSingle;
+    public bool skillStatusAffectsAOE;
+
+    public bool ultimateStatusAffectsSingle;
+    public bool ultimateStatusAffectsAOE;
+
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;
@@ -54,6 +69,7 @@ public class PlayerObject : MonoBehaviour
     void Start()
     {
         level = 1;
+        maxHealth = health;
     }
 
     // Update is called once per frame
@@ -79,17 +95,17 @@ public class PlayerObject : MonoBehaviour
         IsDead();
     }
 
-    public virtual float basicAttack(float armor)
+    public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         return 0;
     }
 
-    public virtual float skillAttack(float enemyResistStat, float enemyCurrentHealth, float enemyMaximumHealth)
+    public virtual float skillAttack(float enemyResistStat)
     {
         return 0;
     }
 
-    public virtual void skillStatus()
+    public virtual void skillStatus(HashSet<PlayerObject> targets)
     {
     }
 
@@ -98,7 +114,7 @@ public class PlayerObject : MonoBehaviour
         return 0;
     }
 
-    public virtual void signatureMoveStatus()
+    public virtual void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
     }
     public void OnMouseDown()
@@ -134,9 +150,12 @@ public class PlayerObject : MonoBehaviour
             if (phaseHandler.enemiesInRange.Contains(enemyIndices))
             {
                 phaseHandler.selectedEnemy = this;
-                phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
-                
-                Debug.Log("Enemy is clicked!");
+
+                if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                    phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+
+                if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
             }
         }
     }

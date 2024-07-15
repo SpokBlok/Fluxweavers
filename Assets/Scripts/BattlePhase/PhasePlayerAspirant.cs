@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PhasePlayerAspirant : PhaseBase
 {
     PhaseBase nextState;
     private TilesCreationScript tiles; 
     private HashSet<Vector2Int> availableTiles;
+    public String selectedAttack;
 
     public override void EnterState(PhaseHandler ph)
     {
@@ -35,6 +38,7 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
             {
+                selectedAttack = "BasicAttack";
                 // Get current position indices from AspirantMovement script
                 AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
                 if (aspirantMovement != null)
@@ -64,8 +68,46 @@ public class PhasePlayerAspirant : PhaseBase
         {
             if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
             {
-                // Handle skill logic
-                // Placeholder: Insert your skill logic here
+                selectedAttack = "SkillAttack";
+                // Get current position indices from AspirantMovement script
+                AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
+                if (aspirantMovement != null)
+                {
+                    int currentXIndex = aspirantMovement.currentXIndex;
+                    int currentYIndex = aspirantMovement.currentYIndex;
+
+                    if (ph.selectedPlayer.skillStatusAffectsEnemies)
+                    {
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
+                                    out ph.enemiesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+
+                    if (ph.selectedPlayer.skillAttackAffectsAllies)
+                    {
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
+                                    out ph.alliesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("AspirantMovement script not found on PlayerObject.");
+                }
             }
         }
 
@@ -161,17 +203,59 @@ public class PhasePlayerAspirant : PhaseBase
         float damage = 0;
         // Check for damage type
         if (ph.selectedPlayer.isBasicAttackPhysical)
-            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.armor);
+            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.armor, ph.selectedEnemy.health, ph.selectedEnemy.maxHealth);
         else
-            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.magicResistance);
+            damage = ph.selectedPlayer.basicAttack(ph.selectedEnemy.magicResistance, ph.selectedEnemy.health, ph.selectedEnemy.maxHealth);
 
         ph.selectedEnemy.IsAttacked(damage);
 
-        Debug.Log("Enemy is attacked!");
-
         ph.selectedEnemy = null;
 
+        Debug.Log("Basic Attack is Used on Enemy");
         if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
             tiles.HighlightAdjacentTiles(false);
+    }
+
+    public void SkillAttackDamage(PhaseHandler ph)
+    {
+        //for skills with damage
+        if (ph.selectedPlayer.skillAttackExists)
+        {
+            float damage = 0;
+            //Check for damage type
+            if (ph.selectedPlayer.isSkillAttackPhysical)
+                damage = ph.selectedPlayer.skillAttack(ph.selectedEnemy.armor);
+            else
+                damage = ph.selectedPlayer.skillAttack(ph.selectedEnemy.magicResistance);
+
+            ph.selectedEnemy.IsAttacked(damage);
+
+            Debug.Log("Skill Attack is Used on Enemy");
+        }
+
+        if (ph.selectedPlayer.skillStatusExists)
+        {
+            HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
+            if (ph.selectedPlayer.skillStatusAffectsEnemies)
+            {
+                if (ph.selectedPlayer.skillStatusAffectsSingle)
+                {
+                    targets.Add(ph.selectedEnemy);
+                }
+                if (ph.selectedPlayer.skillStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.enemyPositions)
+                    {
+                        if (ph.enemiesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
+            ph.selectedPlayer.skillStatus(targets);
+        }
+
+        ph.selectedEnemy = null;
     }
 }
