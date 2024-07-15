@@ -1,18 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Citrine : PlayerObject
 {
     // Checkers
-    public bool hasMoved; // Check if the player has moved in that turn
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
-
+    public float shield; // should be variable for all players
     //Mana & Resource Script
-    public ResourceScript resourceScript;
-    public int mana;
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -88,7 +86,6 @@ public class Citrine : PlayerObject
             StatusEffect effect1 = new StatusEffect();
             effect.instantiateAddFloatEffect("magicPenetration", 10, 2, targets);
 
-            
         
             //Range code here when implemented (3 tile radius)
         }
@@ -106,15 +103,19 @@ public class Citrine : PlayerObject
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            //shield = Citrine.magicResistance * 10
-            //attack += attackStat * 0.4f
+            shield = magicResistance * 10;
 
-            PlayerObject[] targets = new PlayerObject[1];
+            GameObject[] GO = GameObject.FindGameObjectsWithTag("Player");
+            PlayerObject[] targets = new PlayerObject[GO.Count()];
+            for (int i = 0; i < GO.Count(); i++) 
+            {
+                
+            }
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("shield", 10, 2, targets);
+            effect.instantiateAddFloatEffect("shield", shield, 2, targets);
 
             StatusEffect effect1 = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attack", 10, 2, targets);
+            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, targets);
             
         }
         else
