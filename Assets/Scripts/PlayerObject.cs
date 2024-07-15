@@ -159,10 +159,18 @@ public class PlayerObject : MonoBehaviour
             phaseHandler.selectedPlayer = this;
             GetComponent<SpriteRenderer>().sprite = selected;
         }
+
         else
         {
             phaseHandler.selectedPlayer = null;
             GetComponent<SpriteRenderer>().sprite = normal;
+        }
+
+        TilesCreationScript Tiles = GetComponent<AspirantMovement>().Tiles;
+        if (Tiles.GetAdjacentTilesCount() > 0)
+        {
+            Tiles.HighlightAdjacentTiles(false);
+            Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
         }
     }
 }

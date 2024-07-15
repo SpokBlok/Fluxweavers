@@ -28,11 +28,6 @@ public class AspirantMovement : MonoBehaviour
 
     private PhaseHandler phaseHandler;
 
-    private List<AiMovementLogic> Enemies;
-    private List<Vector2Int> EnemyIndices;
-
-    private Dictionary<PlayerObject, Vector2Int> OtherAspirantIndices;
-
     public HashSet<Vector2Int> AvailableTiles;
 
     private Vector2Int targetTile;
@@ -58,27 +53,6 @@ public class AspirantMovement : MonoBehaviour
         movementStat = aspirant.movement;
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
-
-        // to be updated when we get the AiMovementLogic script ready
-        Enemies = new List<AiMovementLogic>();
-        foreach (GameObject Enemy in GameObject.FindGameObjectsWithTag("Enemy"))
-            Enemies.Add(Enemy.GetComponent<AiMovementLogic>());
-
-        SetUpEnemyIndices();
-
-        OtherAspirantIndices = new Dictionary<PlayerObject, Vector2Int>();
-        foreach(PlayerObject player in phaseHandler.players)
-        {
-            AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
-            
-            if (aspirant != this)
-            {
-                int y = aspirant.currentYIndex;
-                int x = aspirant.currentXIndex;
-
-                OtherAspirantIndices[player] = new Vector2Int(y,x);
-            }
-        }
 
         HashSet<Vector2Int> unreachableMountains;
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
@@ -112,15 +86,6 @@ public class AspirantMovement : MonoBehaviour
                 if (Path.Count == 0)
                 {
                     phaseHandler.playerPositions[aspirant] = new Vector2Int(currentYIndex, currentXIndex);
-
-                    foreach(PlayerObject player in phaseHandler.players)
-                    {
-                        if (player != this.aspirant)
-                        {
-                            AspirantMovement OtherAspirant = player.gameObject.GetComponent<AspirantMovement>();
-                            OtherAspirant.UpdateAspirantIndex(aspirant);
-                        }
-                    }
                 }
             }
         }
@@ -162,44 +127,6 @@ public class AspirantMovement : MonoBehaviour
         // might want some UI stuff to happen when hovering over aspirant / tile
         // else
         //     CheckHoverOverAllElements(mouseX, mouseY);
-    }
-
-    void SetUpEnemyIndices()
-    {
-        EnemyIndices = new List<Vector2Int>();
-
-        foreach (AiMovementLogic Enemy in Enemies)
-        {
-            int y = Enemy.GetYIndex();
-            int x = Enemy.GetXIndex();
-
-            EnemyIndices.Add(new Vector2Int(y,x));
-        }
-    }
-
-    public void UpdateEnemyIndex(AiMovementLogic Enemy)
-    {
-        int index = Enemies.IndexOf(Enemy);
-
-        // get new enemy position
-        int enemyY = Enemy.GetYIndex();
-        int enemyX = Enemy.GetXIndex();
-
-        // update running list
-        EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
-
-        AvailableTiles.Clear();
-        HashSet<Vector2Int> unreachableMountains;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
-    }
-
-    public void UpdateAspirantIndex(PlayerObject player)
-    {
-        AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
-        int y = aspirant.currentYIndex;
-        int x = aspirant.currentXIndex;
-
-        OtherAspirantIndices[player] = new Vector2Int(y,x);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -349,8 +276,8 @@ public class AspirantMovement : MonoBehaviour
                 // if it is not occupied by any enemy
                 if (Tiles.Tiles[y,x] != null
                     && !AdjacentTiles.Contains(tile)
-                    && !OtherAspirantIndices.ContainsValue(tile)
-                    && !EnemyIndices.Contains(tile))
+                    && !phaseHandler.playerPositions.ContainsValue(tile)
+                    && !phaseHandler.enemyPositions.ContainsValue(tile))
                 {
                     int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
 
