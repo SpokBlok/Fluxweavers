@@ -170,5 +170,7 @@ public class PhasePlayerAspirant : PhaseBase
         Debug.Log("Enemy is attacked!");
 
         ph.selectedEnemy = null;
+
+        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 }
