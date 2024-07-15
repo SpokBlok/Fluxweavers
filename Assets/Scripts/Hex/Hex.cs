@@ -13,7 +13,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     private FluxInterface fi;
     public int terrainDuration;
     public TerrainNames currentTerrain;
-    private bool clickToCast;
+    public bool clickToCast;
     [SerializeField] Sprite defaultSprite;
     private EnvironmentInterface ei;
     public int layer = 0; // default layer is ground (0)
@@ -25,18 +25,18 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes each hex to the onRoundEnd event seen in PhaseRoundEnd.cs
         ei = GameObject.Find("EnvironmentInterface").GetComponent<EnvironmentInterface>();
         fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();  
-        EnvironmentInterface.onCastAdjacentStart += ClickToCastEnable;
+        EnvironmentInterface.onDisableHexClick += ClickToCastDisable;
         currentTerrain = TerrainNames.None;      
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
         clickToCast = false;
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        hexSprite.color = new Color(0.8f, 0.8f, 0.8f, 1);
+        //hexSprite.color = new Color(0.8f, 0.8f, 0.8f, 1);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        hexSprite.color = Color.white;
+        //hexSprite.color = Color.white;
     }
 
     public void OnDrop(PointerEventData eventData) {
@@ -61,7 +61,8 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         }
     }
 
-    private void ClickToCastEnable() {
-        clickToCast = !clickToCast;
+    private void ClickToCastDisable() {
+        clickToCast = false;
+        hexSprite.color = Color.white;
     }
 }

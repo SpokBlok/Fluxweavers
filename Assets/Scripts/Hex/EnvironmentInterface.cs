@@ -5,36 +5,77 @@ using FluxNamespace;
 using System;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEngine.Tilemaps;
+using Unity.Collections;
+using System.Linq.Expressions;
 public class EnvironmentInterface : MonoBehaviour
 {
-    public delegate void CastAdjacent();
-    public static event CastAdjacent onCastAdjacentStart;
+    public delegate void DisableHexClick();
+    public delegate void ToggleUI();
+    public static event DisableHexClick onDisableHexClick;
+    public static event ToggleUI onToggleUI;
     [SerializeField] TextMeshProUGUI currentFluxNameText;
     [SerializeField] TextMeshProUGUI tilesLeftText;
+    
+    [SerializeField] TilesCreationScript tcs;
     [SerializeField] Sprite waterSprite;
     [SerializeField] Sprite defaultSprite;
     private int tilesLeft;
     private Flux currentFlux;
+    private List<Hex> castedHexes;
 
     void Start() {
         tilesLeft = 0;
         currentFlux = null;
+        castedHexes = new List<Hex>();
         currentFluxNameText.text = "";
         tilesLeftText.text = "";
     }
 
+    //Initial hex drop
     public void SetEnvironment(Hex hex, Flux flux){
         currentFlux = flux;
+        castedHexes.Add(hex);
         tilesLeft = flux.tileLength - 1; // Number of tiles the user can paint over
-
+        
         UpdateText();
 
         hex.hexSprite.sprite = SetSprite(hex, flux);
         hex.terrainDuration = flux.duration;
+        
+        foreach(Hex adjHex in GetAdjacentHex(hex)){
+            adjHex.hexSprite.color = Color.yellow;
+            adjHex.clickToCast = true;
+        }
 
-        if(tilesLeft > 0)
-            onCastAdjacentStart?.Invoke(); //Makes an event signalling to all hexes that a flux has been cast and click is enabled
+        if(tilesLeft > 0){
+            onToggleUI?.Invoke();
+        } else {
+            castedHexes.Clear();
+        }
     }
+
+    // On adjacent hex click
+    public void HexClicked(Hex hex){
+        hex.hexSprite.sprite = SetSprite(hex, currentFlux);
+        hex.terrainDuration = currentFlux.duration;
+        onDisableHexClick?.Invoke();
+        tilesLeft -= 1;
+        if(tilesLeft > 0) {
+            foreach(Hex adjHex in GetAdjacentHex(hex)){
+                if(!castedHexes.Contains(adjHex)) {
+                    adjHex.hexSprite.color = Color.yellow;
+                    adjHex.clickToCast = true;
+                }
+            }
+            castedHexes.Add(hex);
+        } else {
+            onToggleUI?.Invoke();
+            castedHexes.Clear();
+        }
+        UpdateText();
+    }
+
     private Sprite SetSprite(Hex hex, Flux flux){   
         if(CompareFluxName(flux, FluxNames.HighTide) || CompareFluxName(flux, FluxNames.Rivershape))
             return waterSprite;
@@ -42,14 +83,6 @@ public class EnvironmentInterface : MonoBehaviour
             return hex.hexSprite.sprite;
     }
 
-    public void HexClicked(Hex hex){
-        hex.hexSprite.sprite = SetSprite(hex, currentFlux);
-        hex.terrainDuration = currentFlux.duration;
-        tilesLeft -= 1;
-        if(tilesLeft == 0)
-            onCastAdjacentStart?.Invoke();
-        UpdateText();
-    }
 
     //helper method for name comparison
     private bool CompareFluxName(Flux flux, FluxNames fluxName) {
@@ -64,4 +97,31 @@ public class EnvironmentInterface : MonoBehaviour
             tilesLeftText.text = "";
         }
     }
+
+    //gets the adjacent hexes, REALLY INEFFICIENT
+    private List<Hex> GetAdjacentHex(Hex initialHex) {
+        int x = initialHex.x;
+        int y = initialHex.y;
+        List<Hex> adjacentHexes = new List<Hex>();
+        List<(int, int)> coords = new List<(int, int)>{
+            (x-1, y+1),
+            (x  , y+1),
+            (x-1, y  ),
+            (x+1, y  ),
+            (x  , y-1),
+            (x+1, y-1),
+        };
+
+        foreach((int,int) pair in coords){
+            try{
+                Hex newHex = tcs.Tiles[pair.Item2,pair.Item1].GetComponent<Hex>();
+                if(newHex != null) {
+                    adjacentHexes.Add(newHex);
+                    Debug.Log($"{newHex.x}, {newHex.y}"); 
+                }    
+            } catch {}       
+        }
+        return adjacentHexes;
+    }
 }
+
