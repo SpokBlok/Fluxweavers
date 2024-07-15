@@ -52,7 +52,7 @@ public class MaikoScript : PlayerObject
 
         // Checkers for what hash set to call in the PhaseHandler for targetting
         skillStatusAffectsEnemies = true;
-        skillAttackAffectsAllies = false;
+        skillStatusAffectsAllies = false;
 
         signatureMoveAffectsEnemies = true;
         signatureMoveAffectsAllies = false;
@@ -106,16 +106,20 @@ public class MaikoScript : PlayerObject
             return 0;
             //Message here not enough mana
         }
-        //reduce target movement by 1 for 1 round here.
     }
 
     public override void skillStatus(HashSet<PlayerObject> targets)
     {
-        StatusEffect effect = new StatusEffect();
-        //Target Calculation Goes Here
-        effect.instantiateAddIntEffect("movement", -1, 1, targets);
-        StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-        Handler.addStatusEffect(effect);
+        // Mana Portion
+        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
+        {
+            StatusEffect effect = new StatusEffect();
+            //Target Calculation Goes Here
+            effect.instantiateAddIntEffect("movement", -1, 1, targets);
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+            Handler.addStatusEffect(effect);
+        }
+
     }
 
     public override void signatureMoveStatus(HashSet<PlayerObject> targets)

@@ -90,7 +90,7 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.HighlightAdjacentTiles(true);
                     }
 
-                    if (ph.selectedPlayer.skillAttackAffectsAllies)
+                    if (ph.selectedPlayer.skillStatusAffectsAllies)
                     {
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
                                     out ph.alliesInRange);
