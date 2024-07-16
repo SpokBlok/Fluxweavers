@@ -68,6 +68,10 @@ public class MaikoScript : PlayerObject
         signatureMoveStatusAffectsAOE = true;
 
         myAnimator = GetComponent<Animator>();
+        splashArt = GameObject.FindGameObjectWithTag("UltImage");
+        Debug.Log(splashArt);
+
+        splashArt.SetActive(false);
     }
 
     // Update is called once per frame

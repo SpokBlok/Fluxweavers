@@ -73,7 +73,9 @@ public class PlayerObject : MonoBehaviour
     [SerializeField] private Sprite normal;
     [SerializeField] private Sprite selected;
 
+    //Animation related things
     public Animator myAnimator;
+    public GameObject splashArt;
 
     // Start is called before the first frame update
     void Start()
@@ -276,5 +278,17 @@ public class PlayerObject : MonoBehaviour
             Tiles.HighlightAdjacentTiles(false);
             Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
         }
+    }
+
+    public IEnumerator SplashArtDisplay()
+    {
+        phaseHandler.selectedPlayer.splashArt.SetActive(true);
+        yield return new WaitForSeconds(1);
+        phaseHandler.selectedPlayer.splashArt.SetActive(false);
+    }
+
+    public void DisplaySplashArt()
+    {
+        StartCoroutine(SplashArtDisplay());
     }
 }

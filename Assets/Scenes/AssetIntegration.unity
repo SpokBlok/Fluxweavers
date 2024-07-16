@@ -445,6 +445,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3215500089196277133, guid: 49d78eafb053aa342bc3389f4ffa0881, type: 3}
   m_PrefabInstance: {fileID: 177086591}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &187553586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 187553587}
+  - component: {fileID: 187553589}
+  - component: {fileID: 187553588}
+  m_Layer: 5
+  m_Name: MaikoUltImage
+  m_TagString: UltImage
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &187553587
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187553586}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 30, y: 10, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 963168550}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -3, y: 49}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &187553588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187553586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 5cefe48b0a975f541ae4a1a1dd0c2134, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &187553589
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187553586}
+  m_CullTransparentMesh: 1
 --- !u!1 &221760163
 GameObject:
   m_ObjectHideFlags: 0
@@ -455,7 +530,6 @@ GameObject:
   m_Component:
   - component: {fileID: 221760166}
   - component: {fileID: 221760165}
-  - component: {fileID: 221760164}
   - component: {fileID: 221760167}
   m_Layer: 0
   m_Name: 9-Sliced
@@ -464,62 +538,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &221760164
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 221760163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8afc79ee910aa5e42b214f1cc2f71e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 0
-  armor: 0
-  armorPenetration: 0
-  magicResistance: 0
-  magicPenetration: 0
-  attackStat: 0
-  movement: 0
-  control: 0
-  maxHealth: 0
-  health: 0
-  shield: 0
-  basicAttackDamage: 0
-  basicAttackMana: 0
-  basicAttackRange: 0
-  skillDamage: 0
-  skillMana: 0
-  skillRange: 0
-  signatureMoveDamage: 0
-  signatureMoveMana: 0
-  signatureMoveRange: 0
-  actionsUsed: []
-  isSelected: 0
-  isBasicAttackPhysical: 0
-  isSkillAttackPhysical: 0
-  skillAttackExists: 0
-  skillStatusExists: 0
-  isSignatureMoveAttackPhysical: 0
-  signatureMoveAttackExists: 0
-  signatureMoveStatusExists: 0
-  skillStatusAffectsEnemies: 0
-  skillStatusAffectsAllies: 0
-  signatureMoveAffectsEnemies: 0
-  signatureMoveAffectsAllies: 0
-  skillStatusAffectsSingle: 0
-  skillStatusAffectsAOE: 0
-  signatureMoveStatusAffectsSingle: 0
-  signatureMoveStatusAffectsAOE: 0
-  isMovementSkillActivated: 0
-  resourceScript: {fileID: 0}
-  mana: 0
-  phaseHandler: {fileID: 0}
-  normal: {fileID: 0}
-  selected: {fileID: 0}
-  inAquaHex: 0
 --- !u!212 &221760165
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1311,113 +1329,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
   m_PrefabInstance: {fileID: 634258910}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &660119108
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 660119110}
-  - component: {fileID: 660119109}
-  - component: {fileID: 660119111}
-  m_Layer: 0
-  m_Name: Maiko
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &660119109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660119108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8afc79ee910aa5e42b214f1cc2f71e81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  level: 0
-  armor: 0
-  armorPenetration: 0
-  magicResistance: 0
-  magicPenetration: 0
-  attackStat: 0
-  movement: 0
-  control: 0
-  maxHealth: 0
-  health: 0
-  shield: 0
-  basicAttackDamage: 0
-  basicAttackMana: 0
-  basicAttackRange: 0
-  skillDamage: 0
-  skillMana: 0
-  skillRange: 0
-  signatureMoveDamage: 0
-  signatureMoveMana: 0
-  signatureMoveRange: 0
-  actionsUsed: []
-  isSelected: 0
-  isBasicAttackPhysical: 0
-  isSkillAttackPhysical: 0
-  skillAttackExists: 0
-  skillStatusExists: 0
-  isSignatureMoveAttackPhysical: 0
-  signatureMoveAttackExists: 0
-  signatureMoveStatusExists: 0
-  skillStatusAffectsEnemies: 0
-  skillStatusAffectsAllies: 0
-  signatureMoveAffectsEnemies: 0
-  signatureMoveAffectsAllies: 0
-  skillStatusAffectsSingle: 0
-  skillStatusAffectsAOE: 0
-  signatureMoveStatusAffectsSingle: 0
-  signatureMoveStatusAffectsAOE: 0
-  isMovementSkillActivated: 0
-  resourceScript: {fileID: 918580870}
-  mana: 0
-  phaseHandler: {fileID: 0}
-  normal: {fileID: 0}
-  selected: {fileID: 0}
-  inAquaHex: 0
---- !u!4 &660119110
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660119108}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 74.2486, y: 15.429842, z: 0.03662705}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &660119111
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 660119108}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Tiles: {fileID: 0}
-  currentYIndex: 0
-  currentXIndex: 0
-  originalYIndex: 0
-  originalXIndex: 0
-  movementSpeed: 0
 --- !u!1001 &674158151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1736,6 +1647,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 187553587}
   - {fileID: 1151142899}
   - {fileID: 1483612344}
   m_Father: {fileID: 0}
@@ -3381,7 +3293,6 @@ SceneRoots:
   - {fileID: 381136619}
   - {fileID: 7366315986804621949}
   - {fileID: 1853367990}
-  - {fileID: 660119110}
   - {fileID: 221760166}
   - {fileID: 65183167}
   - {fileID: 153763392}

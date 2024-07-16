@@ -204,6 +204,7 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     int currentXIndex = aspirantMovement.currentXIndex;
                     int currentYIndex = aspirantMovement.currentYIndex;
+                    ph.selectedPlayer.DisplaySplashArt();
 
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
