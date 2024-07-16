@@ -50,7 +50,7 @@ public class AiMovementLogic : MonoBehaviour
 
         // movementStat = GetComponent<PlayerObject>().movement;
 
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, GetComponent<PlayerObject>().movement);
+        AvailableTiles = GetAdjacentTiles(new(currentXIndex, currentYIndex), GetComponent<PlayerObject>().movement);
         AvailableTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         if (isAvailableHighlighted)
@@ -64,13 +64,13 @@ public class AiMovementLogic : MonoBehaviour
 
     void Update()
     {
-        HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentXIndex, currentYIndex, attackRange);
+        // HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentXIndex, currentYIndex, attackRange);
 
         
         // Call attack script first if already in range
-        if (neighbors.Contains(new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex))) {
-            attackLogic.attack();
-        }
+        // if (neighbors.Contains(new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex))) {
+        //     attackLogic.attack();
+        // }
 
         if (Path.Count > 0) // Handles movement
         {
@@ -84,36 +84,33 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
-
-                // Whats this?
-                if (Path.Count == 0)
-                {
-                    aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
-// CHANGED
-                    phaseHandler.enemyPositions[this.gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
-                }
             }
         }
 
         if (Path.Count == 0) {
             aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
+            phaseHandler.enemyPositions[gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             enabled = false;
         }
         
     }
 
-    public void Move (List<Vector2Int> obstacles, Vector2Int[] enemyAi) {
+    public void Move (Vector2Int target, Vector2Int[] enemyAi) {
         
-        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
-        attackLogic.canAttack = true; // Change this
+        // Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
+        // attackLogic.canAttack = true; // Change this
         enabled = true;
-        CreatePathToTarget(target, obstacles, enemyAi);
+        CreatePathToTarget(target, enemyAi);
     }
 
-    HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range) {
+    public HashSet<Vector2Int> GetAdjacentTiles(int range) {
+        return GetAdjacentTiles(new(currentXIndex, currentYIndex), range);
+    }
+
+    private HashSet<Vector2Int> GetAdjacentTiles(Vector2Int source, int range) {
         HashSet<Vector2Int> tileSet = new();
-        // int xPos;
-        // int yPos;
+        int xIndex = source.x;
+        int yIndex = source.y;
         // max(-N, -q-N) ≤ r ≤ min(+N, -q+N)
 
         for (int i = xIndex - range; i <= xIndex + range; i++) {
@@ -264,7 +261,7 @@ public class AiMovementLogic : MonoBehaviour
     }
 
 
-    void CreatePathToTarget(Vector2Int target, Vector2Int[] enemyAi) {
+    void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
         Vector2Int currentLocation = startLocation;
 
@@ -278,7 +275,7 @@ public class AiMovementLogic : MonoBehaviour
 
         while (priorityNodes.Count > 0) {
             currentLocation = priorityNodes[priorityNodes.Keys.Min()]; // Node part of the tuple
-            HashSet<Vector2Int> currentNeighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
+            HashSet<Vector2Int> currentNeighbors = GetAdjacentTiles(currentLocation, attackRange);
 
             if (currentNeighbors.Contains(new Vector2Int(target.y, target.x))) {
                 Debug.Log(currentLocation);
@@ -287,7 +284,7 @@ public class AiMovementLogic : MonoBehaviour
             }
 
             Hex currentTile = Tiles.Tiles[currentLocation.y, currentLocation.x].GetComponent<Hex>();
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation, 1)) {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 Hex prevTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<Hex>();
 
@@ -314,7 +311,7 @@ public class AiMovementLogic : MonoBehaviour
         Path = new Queue<Vector2Int>(Path.Reverse());
     }
 
-    void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
+    void CreatePathToTarget(Vector2Int target, Vector2Int[] enemyAi) {
 
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
         Vector2Int currentLocation = startLocation;
@@ -346,7 +343,7 @@ public class AiMovementLogic : MonoBehaviour
             
 
             // This is inefficient
-            HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation.x, currentLocation.y, attackRange);
+            HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation, GetComponent<PlayerObject>().control);
 
             // moveCounter += math.abs(currentTile.layer - prevTile.layer);
 
@@ -363,7 +360,7 @@ public class AiMovementLogic : MonoBehaviour
                 break;
             }
 
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1)) {
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation, 1)) {
 
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 
@@ -399,7 +396,7 @@ public class AiMovementLogic : MonoBehaviour
         int currentY = currentYIndex;
         int currentX = currentXIndex;
 
-        HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentX, currentY, range);
+        HashSet<Vector2Int> neighbors = GetAdjacentTiles(new (currentX, currentY), range);
 
         while (!neighbors.Contains(new Vector2Int(target.y, target.x)) && Path.Count < movement)
         {
@@ -431,7 +428,7 @@ public class AiMovementLogic : MonoBehaviour
             currentX += stepX;
 
             Path.Enqueue(new Vector2Int(currentX, currentY));
-            neighbors = GetAdjacentTiles(currentX, currentY, range);
+            neighbors = GetAdjacentTiles(new (currentX, currentY), range);
         }
     }
 

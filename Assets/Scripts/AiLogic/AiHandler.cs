@@ -10,8 +10,8 @@ public class AiHandler : MonoBehaviour
     private AiMovementLogic[] aiEntities;
     private Vector2Int[] aiComrades;
 
-    [SerializeField] private PlayerObject aspirant;
-    [SerializeField] private List<Vector2Int> obstacles;
+    [SerializeField] private AspirantMovement aspirant;
+    [SerializeField] private ResourceScript rs;
 
     public Dictionary<AiMovementLogic, bool> turnCheck;
 
@@ -20,22 +20,6 @@ public class AiHandler : MonoBehaviour
         aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
         aiComrades = new Vector2Int[aiEntities.Count()];
         turnCheck = new Dictionary<AiMovementLogic, bool>();
-
-        obstacles = new List<Vector2Int>
-        {
-            new(9, 4),
-            new(10, 4),
-            new(11, 5)
-        };
-
-        // foreach (AiMovementLogic ai in aiEntities) {
-        //     ai.enabled = false;
-        // }
-
-        // foreach(AiMovementLogic ai in aiEntities) {
-        //     obstacles.Add(new Vector2Int(ai.GetXIndex(), ai.GetYIndex()));
-        // }
-        
     }
 
     // Update is called once per frame
@@ -54,20 +38,58 @@ public class AiHandler : MonoBehaviour
     }
 
     public IEnumerator MoveAi () {
+        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
+        PlayerObject aspirantStats = aspirant.gameObject.GetComponent<PlayerObject>();
+        Raccoon[] AiWithEnemyInRange = new Raccoon[]{};
+        // int attackCounter = 0;
 
-        // Move Ai First
+        
         foreach (AiMovementLogic ai in aiEntities) {
-            ai.Move(obstacles, aiComrades);
+
+            // Move Ai First
+            ai.Move(target, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
             // yield return StartCoroutine(ai.Move(obstacles));
             UpdateObstacles();
+
+            // 
+
+
+            // Then Attack
+            Raccoon raccoonComponent = ai.gameObject.GetComponent<Raccoon>();
+            HashSet<Vector2Int> neighbors = ai.GetAdjacentTiles(raccoonComponent.control);
+
+            if (neighbors.Contains(new(target.y, target.x))) {
+                AiWithEnemyInRange.Append(ai.gameObject.GetComponent<Raccoon>());
+
+                // if (rs.enemyMana() - raccoonComponent.skillMana > raccoonComponent.basicAttackMana * aiEntities.Length)
+                //     raccoonComponent.skillStatus(new HashSet<PlayerObject>(){raccoonComponent});
+                
+                // raccoonComponent.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
+            }
+
+            // else {
+            //     raccoonComponent.skillStatus(new HashSet<PlayerObject>(){raccoonComponent});
+            // }
         }
 
 
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
         foreach (Raccoon raccoon in raccoons) {
-            raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+            if (
+                AiWithEnemyInRange.Contains(raccoon) && 
+                rs.enemyMana() - raccoon.skillMana > raccoon.basicAttackMana * AiWithEnemyInRange.Count()
+                ) {
+                
+                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+
+                raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
+            }
+
+            else {
+                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+            }
         }
     }
 

@@ -30,8 +30,8 @@ public class Raccoon : PlayerObject
 
     public override float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
-        if (resourceScript.playerAbilityUseCheck(basicAttackMana)) {
-            resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
+        if (resourceScript.enemyAbilityUseCheck(basicAttackMana)) {
+            resourceScript.enemyAbilityUseManaUpdate(basicAttackMana);
             
             float damageOutput = attackStat * 1.5f / armor;
             return damageOutput;
@@ -43,7 +43,9 @@ public class Raccoon : PlayerObject
 
     public override void skillStatus(HashSet<PlayerObject> targets)
     {
-        if (resourceScript.playerAbilityUseCheck(skillMana) == true) {
+        if (resourceScript.enemyAbilityUseCheck(skillMana) == true) {
+            resourceScript.enemyAbilityUseManaUpdate(skillMana);
+
             StatusEffect effect = new();
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 

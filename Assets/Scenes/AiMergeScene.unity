@@ -716,7 +716,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a0f4789b8bace48833859fbc8cea1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstacles: []
+  aspirant: {fileID: 1788826596}
+  rs: {fileID: 1263719812}
 --- !u!4 &786069759
 Transform:
   m_ObjectHideFlags: 0
