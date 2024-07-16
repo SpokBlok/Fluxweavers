@@ -154,6 +154,7 @@ public class PlayerObject : MonoBehaviour
                 if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveAndAbilityCheck();
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
@@ -210,6 +211,7 @@ public class PlayerObject : MonoBehaviour
                 if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveAndAbilityCheck();
                 }
                 
