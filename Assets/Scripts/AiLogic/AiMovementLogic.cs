@@ -30,6 +30,9 @@ public class AiMovementLogic : MonoBehaviour
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
+// CHANGED
+    private PhaseHandler phaseHandler;
+
     [SerializeField] private bool isAvailableHighlighted; // for testing
     [SerializeField] private bool isErrorIgnored;       // to ignore error message in try-catch
 
@@ -54,6 +57,9 @@ public class AiMovementLogic : MonoBehaviour
             Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<SpriteRenderer>().color = Color.yellow;
 
         Path = new Queue<Vector2Int>();
+
+// CHANGED
+        phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
     }
 
     void Update()
@@ -78,6 +84,13 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
+
+                if (Path.Count == 0)
+                {
+                    aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
+// CHANGED
+                    phaseHandler.enemyPositions[this.gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
+                }
             }
         }
 

@@ -32,13 +32,14 @@ public class AspirantMovement : MonoBehaviour
     private PlayerObject aspirant;
     private int movementStat;
 
+    private PhaseHandler phaseHandler;
+
     private List<AiMovementLogic> Enemies;
     private List<Vector2Int> EnemyIndices;
 
     private bool isMovementSkillActivated;
 
-    [SerializeField] private List<AspirantMovement> OtherAspirants;
-    private List<Vector2Int> OtherAspirantIndices;
+    private Dictionary<PlayerObject, Vector2Int> OtherAspirantIndices;
 
     private HashSet<Vector2Int> AvailableTiles;
 
@@ -64,10 +65,12 @@ public class AspirantMovement : MonoBehaviour
         RequiredExtraMovement = new List<int>();
 
         aspirant = GetComponent<PlayerObject>();
-        movementStat = GetComponent<PlayerObject>().movement;
+        movementStat = aspirant.movement;
 
+        phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
+
+        // to be updated when we get the AiMovementLogic script ready
         Enemies = new List<AiMovementLogic>();
-
         foreach (GameObject Enemy in GameObject.FindGameObjectsWithTag("Enemy"))
             Enemies.Add(Enemy.GetComponent<AiMovementLogic>());
 
@@ -75,18 +78,17 @@ public class AspirantMovement : MonoBehaviour
 
         isMovementSkillActivated = false;
 
-        OtherAspirants = new List<AspirantMovement>();
-        OtherAspirantIndices = new List<Vector2Int>();
-        foreach(GameObject Aspirant in GameObject.FindGameObjectsWithTag("Player"))
+        OtherAspirantIndices = new Dictionary<PlayerObject, Vector2Int>();
+        foreach(PlayerObject player in phaseHandler.players)
         {
-            if (Aspirant != this.gameObject)
+            AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
+            
+            if (aspirant != this)
             {
-                AspirantMovement nextAspirant = Aspirant.GetComponent<AspirantMovement>();
-                OtherAspirants.Add(nextAspirant);
+                int y = aspirant.currentYIndex;
+                int x = aspirant.currentXIndex;
 
-                int y = nextAspirant.currentYIndex;
-                int x = nextAspirant.currentXIndex;
-                OtherAspirantIndices.Add(new Vector2Int(y,x));
+                OtherAspirantIndices[player] = new Vector2Int(y,x);
             }
         }
 
@@ -121,8 +123,16 @@ public class AspirantMovement : MonoBehaviour
 
                 if (Path.Count == 0)
                 {
-                    foreach(AspirantMovement OtherAspirant in OtherAspirants)
-                        OtherAspirant.UpdateAspirantIndex(this.gameObject.GetComponent<AspirantMovement>());
+                    phaseHandler.playerPositions[aspirant] = new Vector2Int(currentYIndex, currentXIndex);
+
+                    foreach(PlayerObject player in phaseHandler.players)
+                    {
+                        if (player != this.aspirant)
+                        {
+                            AspirantMovement OtherAspirant = player.gameObject.GetComponent<AspirantMovement>();
+                            OtherAspirant.UpdateAspirantIndex(aspirant);
+                        }
+                    }
                 }
             }
         }
@@ -235,16 +245,13 @@ public class AspirantMovement : MonoBehaviour
         AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
     }
 
-    public void UpdateAspirantIndex(AspirantMovement OtherAspirant)
+    public void UpdateAspirantIndex(PlayerObject player)
     {
-        int index = OtherAspirants.IndexOf(OtherAspirant);
+        AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
+        int y = aspirant.currentYIndex;
+        int x = aspirant.currentXIndex;
 
-        // update running list
-        OtherAspirantIndices[index] = new Vector2Int(OtherAspirant.currentYIndex, OtherAspirant.currentXIndex);
-
-        AvailableTiles.Clear();
-        HashSet<Vector2Int> unreachableMountains;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
+        OtherAspirantIndices[player] = new Vector2Int(y,x);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -396,7 +403,7 @@ public class AspirantMovement : MonoBehaviour
                 // if it is not occupied by any enemy
                 if (Tiles.Tiles[y,x] != null
                     && !AdjacentTiles.Contains(tile)
-                    && !OtherAspirantIndices.Contains(tile)
+                    && !OtherAspirantIndices.ContainsValue(tile)
                     && !EnemyIndices.Contains(tile))
                 {
                     int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
@@ -447,10 +454,14 @@ public class AspirantMovement : MonoBehaviour
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
             {
-                HashSet<Vector2Int> NewMountains;
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
+                if(Tile != new Vector2Int(currentYIndex, currentXIndex) ||
+                    Tile != new Vector2Int(yIndex, xIndex))
+                {
+                    HashSet<Vector2Int> NewMountains;
+                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
 
-                UnreachableMountains.UnionWith(NewMountains);
+                    UnreachableMountains.UnionWith(NewMountains);
+                }
             }
 
             // then add them to the current running list of adjacent tiles
