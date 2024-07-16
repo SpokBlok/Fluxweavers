@@ -11,7 +11,7 @@ public class MaikoScript : PlayerObject
 
     //Targets
     public HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
-
+    
     // Start is called before the first frame update
     void Start()
     {

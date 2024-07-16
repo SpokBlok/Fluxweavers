@@ -9,7 +9,11 @@ public class Citrine : PlayerObject
     // Checkers
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
     public float shield; // should be variable for all players
-    //Mana & Resource Script
+    public HashSet<PlayerObject> targets = new  HashSet<PlayerObject>();
+    public Dedra dedra;
+
+    public MaikoScript maiko;
+
     
     // Start is called before the first frame update
     void Start()
@@ -79,7 +83,9 @@ public class Citrine : PlayerObject
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
 
-            PlayerObject[] targets = new PlayerObject[1];
+            targets.Add(this);
+            targets.Add(this.maiko);
+            targets.Add(this.dedra);
             StatusEffect effect = new StatusEffect();
             effect.instantiateAddFloatEffect("armorPenetration", 10, 2, targets);
 
@@ -105,12 +111,9 @@ public class Citrine : PlayerObject
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
             shield = magicResistance * 10;
 
-            GameObject[] GO = GameObject.FindGameObjectsWithTag("Player");
-            PlayerObject[] targets = new PlayerObject[GO.Count()];
-            for (int i = 0; i < GO.Count(); i++) 
-            {
-                
-            }
+            targets.Add(this);
+            targets.Add(this.maiko);
+            targets.Add(dedra);
             StatusEffect effect = new StatusEffect();
             effect.instantiateAddFloatEffect("shield", shield, 2, targets);
 
