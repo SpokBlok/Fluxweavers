@@ -79,7 +79,7 @@ public class MaikoScript : PlayerObject
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
-            float outputDamage = basicAttackDamage * ((100 - enemyArmor) / 100);
+            float outputDamage = basicAttackDamage * ((100 - enemyArmor + armorPenetration) / 100);
             return outputDamage;
             //range code here when implemented
         }
@@ -96,7 +96,7 @@ public class MaikoScript : PlayerObject
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
-            float outputDamage = skillDamage * ((100 - enemyMagicResistance) / 100);
+            float outputDamage = skillDamage * ((100 - enemyMagicResistance  + magicPenetration) / 100);
             return outputDamage;
             //SkillStatus effect here when done
             //Range code here when implemented
