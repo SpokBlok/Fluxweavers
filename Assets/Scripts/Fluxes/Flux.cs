@@ -22,6 +22,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     };
 
     public String fluxName;
+    public FluxNames fluxCode;
     public Type type;
     public int duration;
     public int tileLength;
@@ -43,6 +44,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     */
     
     private void Start() {
+        //fluxCode = FluxNames.None; //TEMPORARY flux code
         tileLength = 4; //TEMPORARY(?) TILE LENGTH
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
@@ -50,8 +52,6 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     }
 
     public void OnBeginDrag(PointerEventData eventData){
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.75f;
     }
@@ -69,4 +69,8 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     public void Destroy() {
         Destroy(gameObject);
     }
+
+    public void EnvironmentEffect(){
+    }
+
 }

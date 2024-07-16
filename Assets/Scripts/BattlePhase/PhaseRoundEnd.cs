@@ -19,6 +19,15 @@ public class PhaseRoundEnd : PhaseBase
             nextState = ph.playerFlux;
         else
             nextState = ph.enemyFlux;
+
+        //Tile effects
+        foreach((PlayerObject, int, int) tuple in ph.entityPositions) {
+            PlayerObject entity = tuple.Item1;
+            int yPos = tuple.Item2;
+            int xPos = tuple.Item3;
+            Hex occupiedHex = ph.tcs.Tiles[yPos,xPos].GetComponent<Hex>();
+            occupiedHex.TerrainEffect(entity);
+        }
         
         onRoundEnd?.Invoke();
     }

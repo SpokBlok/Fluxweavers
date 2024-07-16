@@ -24,6 +24,8 @@ public class EnvironmentInterface : MonoBehaviour
     private Flux currentFlux;
     private List<Hex> castedHexes;
 
+    [SerializeField] FluxInterface fi;
+
     void Start() {
         tilesLeft = 0;
         currentFlux = null;
@@ -42,7 +44,8 @@ public class EnvironmentInterface : MonoBehaviour
 
         hex.hexSprite.sprite = SetSprite(hex, flux);
         hex.terrainDuration = flux.duration;
-        
+        hex.currentFlux = flux.fluxCode;
+
         foreach(Hex adjHex in GetAdjacentHex(hex)){
             adjHex.hexSprite.color = Color.yellow;
             adjHex.clickToCast = true;
@@ -58,6 +61,7 @@ public class EnvironmentInterface : MonoBehaviour
     // On adjacent hex click
     public void HexClicked(Hex hex){
         hex.hexSprite.sprite = SetSprite(hex, currentFlux);
+        hex.currentFlux = currentFlux.fluxCode;
         hex.terrainDuration = currentFlux.duration;
         castedHexes.Add(hex);
         onDisableHexClick?.Invoke();
@@ -76,6 +80,7 @@ public class EnvironmentInterface : MonoBehaviour
         UpdateText();
     }
 
+    //Helper method for sprite loading
     private Sprite SetSprite(Hex hex, Flux flux){   
         if(CompareFluxName(flux, FluxNames.HighTide) || CompareFluxName(flux, FluxNames.Rivershape))
             return waterSprite;
@@ -83,6 +88,15 @@ public class EnvironmentInterface : MonoBehaviour
             return hex.hexSprite.sprite;
     }
 
+    public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
+        switch(fluxName) {
+            case FluxNames.HighTide:
+                fi.highTide.GetComponent<HighTide>().EnvironmentEffect(entity);
+                break;
+            default:
+                break;
+        }
+    }
 
     //helper method for name comparison
     private bool CompareFluxName(Flux flux, FluxNames fluxName) {
@@ -98,7 +112,7 @@ public class EnvironmentInterface : MonoBehaviour
         }
     }
 
-    //gets the adjacent hexes, REALLY INEFFICIENT
+    //gets the adjacent hexes
     private List<Hex> GetAdjacentHex(Hex initialHex) {
         int x = initialHex.x;
         int y = initialHex.y;
@@ -117,7 +131,6 @@ public class EnvironmentInterface : MonoBehaviour
                 Hex newHex = tcs.Tiles[pair.Item2,pair.Item1].GetComponent<Hex>();
                 if(newHex != null) {
                     adjacentHexes.Add(newHex);
-                    Debug.Log($"{newHex.x}, {newHex.y}"); 
                 }    
             } catch {}       
         }

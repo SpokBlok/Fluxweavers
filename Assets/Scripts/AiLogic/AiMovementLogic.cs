@@ -16,8 +16,8 @@ public class AiMovementLogic : MonoBehaviour
     [SerializeField] private AspirantMovement aspirant;
 
     
-    [SerializeField] private int currentXIndex;
-    [SerializeField] private int currentYIndex;
+    [SerializeField] public int currentXIndex;
+    [SerializeField] public int currentYIndex;
     private Vector3 offset;
 
     private List<Vector2Int> DifferentLayerTiles;

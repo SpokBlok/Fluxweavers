@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerObject : MonoBehaviour
@@ -18,6 +19,7 @@ public class PlayerObject : MonoBehaviour
     // Health Related Stuff
     public HealthBar healthBar;
     public float health;
+    public float maxHealth;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -50,10 +52,16 @@ public class PlayerObject : MonoBehaviour
     void Update()
     {
     }
+    public void AddHealth(float healing){
+        health += healing;
+        if(health > maxHealth)
+            health = maxHealth;
+    }
     public void manaRoundStart(int newMana)
     {
         mana = newMana;
     }
+
     public void IsDead()
     {
         if (health <= 0)

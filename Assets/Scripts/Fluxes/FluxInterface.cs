@@ -22,26 +22,26 @@ public class FluxInterface : MonoBehaviour
     [SerializeField] TextMeshProUGUI castFluxText;
 
     //Flux prefabs
-    [SerializeField] GameObject singe;
-    [SerializeField] GameObject blaze;
-    [SerializeField] GameObject scald;
-    [SerializeField] GameObject wildfire;
-    [SerializeField] GameObject cinderCone;
-    [SerializeField] GameObject scorchingWinds;
-    [SerializeField] GameObject highTide;
-    [SerializeField] GameObject rivershape;
-    [SerializeField] GameObject swamp;
-    [SerializeField] GameObject waterfall;
-    [SerializeField] GameObject rain;
-    [SerializeField] GameObject regrowth;
-    [SerializeField] GameObject reforestation;
-    [SerializeField] GameObject mountainSpires;
-    [SerializeField] GameObject windsweptWoods;
-    [SerializeField] GameObject earthArise;
-    [SerializeField] GameObject seismicWave;
-    [SerializeField] GameObject sandstorm;
-    [SerializeField] GameObject gust;
-    [SerializeField] GameObject tornado;
+    [SerializeField] public GameObject singe;
+    [SerializeField] public GameObject blaze;
+    [SerializeField] public GameObject scald;
+    [SerializeField] public GameObject wildfire;
+    [SerializeField] public GameObject cinderCone;
+    [SerializeField] public GameObject scorchingWinds;
+    [SerializeField] public GameObject highTide;
+    [SerializeField] public GameObject rivershape;
+    [SerializeField] public GameObject swamp;
+    [SerializeField] public GameObject waterfall;
+    [SerializeField] public GameObject rain;
+    [SerializeField] public GameObject regrowth;
+    [SerializeField] public GameObject reforestation;
+    [SerializeField] public GameObject mountainSpires;
+    [SerializeField] public GameObject windsweptWoods;
+    [SerializeField] public GameObject earthArise;
+    [SerializeField] public GameObject seismicWave;
+    [SerializeField] public GameObject sandstorm;
+    [SerializeField] public GameObject gust;
+    [SerializeField] public GameObject tornado;
 
     private List<GameObject> fluxes;
     public enum Elements {
