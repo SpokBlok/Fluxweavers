@@ -59,6 +59,7 @@ public class EnvironmentInterface : MonoBehaviour
     public void HexClicked(Hex hex){
         hex.hexSprite.sprite = SetSprite(hex, currentFlux);
         hex.terrainDuration = currentFlux.duration;
+        castedHexes.Add(hex);
         onDisableHexClick?.Invoke();
         tilesLeft -= 1;
         if(tilesLeft > 0) {
@@ -68,7 +69,6 @@ public class EnvironmentInterface : MonoBehaviour
                     adjHex.clickToCast = true;
                 }
             }
-            castedHexes.Add(hex);
         } else {
             onToggleUI?.Invoke();
             castedHexes.Clear();

@@ -19,6 +19,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     public int layer = 0; // default layer is ground (0)
     public int y;         // y-index in 2d array
     public int x;         // x-index in 2d array
+    private Color currentColor;
 
     void Start()
     {
@@ -32,11 +33,12 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        //hexSprite.color = new Color(0.8f, 0.8f, 0.8f, 1);
+        currentColor = hexSprite.color;
+        hexSprite.color = new Color(0.8f,0.8f,0.8f);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        //hexSprite.color = Color.white;
+        hexSprite.color = currentColor;
     }
 
     public void OnDrop(PointerEventData eventData) {
@@ -47,6 +49,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     public void OnPointerDown(PointerEventData eventData) {
         if(clickToCast){
             ei.HexClicked(this);
+            currentColor = Color.white;
         }
     }
 
