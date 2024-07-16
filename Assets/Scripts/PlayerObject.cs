@@ -8,9 +8,9 @@ public class PlayerObject : MonoBehaviour
     //Player Stats
     public int level;
     public float armor;
-    public float armorPenetration;
+    public int armorPenetration;
     public float magicResistance;
-    public float magicPenetration;
+    public int magicPenetration;
     public float attackStat;
     public int movement;
     public int control; // All players have control over 2 hexes

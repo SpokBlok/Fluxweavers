@@ -9,15 +9,13 @@ public class Citrine : PlayerObject
     // Checkers
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
     public float shield; // should be variable for all players
-    public HashSet<PlayerObject> targets = new  HashSet<PlayerObject>();
-    public Dedra dedra;
+    HashSet<PlayerObject> citrineSelf = new  HashSet<PlayerObject>();
 
-    public MaikoScript maiko;
 
-    
     // Start is called before the first frame update
     void Start()
     {
+        citrineSelf.Add(this);
         //Player Stats
         level = 1;
         armor = 8;
@@ -33,7 +31,15 @@ public class Citrine : PlayerObject
         skillStatusExists = true;
         isSignatureMoveAttackPhysical = false;
         signatureMoveAttackExists = false;
-        signatureMoveStatusExists = true;   
+        signatureMoveStatusExists = true;
+        skillStatusAffectsEnemies = false;   
+        skillStatusAffectsAllies = true;
+        signatureMoveAffectsEnemies = false;
+        signatureMoveAffectsAllies = true;
+        skillStatusAffectsSingle = false;
+        skillStatusAffectsAOE = true;
+        signatureMoveStatusAffectsSingle = false;
+        signatureMoveStatusAffectsAOE = true;  
 
         // Health Related Stuff
         health = 250;
@@ -58,13 +64,13 @@ public class Citrine : PlayerObject
 
     }
 
-    public override float basicAttack(float armor)
+    public override float basicAttack(float mr, float enemyCurrentHealth, float enemyMaximumHealth)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
-            float outputDamage = basicAttackDamage;
+            float outputDamage = basicAttackDamage * (100 - mr + magicPenetration) / 100; // since damage is magic damage
             return outputDamage;
 
             //range code here when implemented
@@ -76,24 +82,32 @@ public class Citrine : PlayerObject
         }
     }
 
-    public override void skillStatus()
+    public override void skillStatus(HashSet<PlayerObject> targets)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
 
-            targets.Add(this);
-            targets.Add(this.maiko);
-            targets.Add(this.dedra);
+            // citrine self buffs
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddFloatEffect("armorPenetration", 10, 2, targets);
+            effect.instantiateAddIntEffect("armorPenetration", 10, 2, citrineSelf);
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+            Handler.addStatusEffect(effect);
 
-            StatusEffect effect1 = new StatusEffect();
-            effect.instantiateAddFloatEffect("magicPenetration", 10, 2, targets);
+            effect = new StatusEffect();
+            effect.instantiateAddIntEffect("magicPenetration", 10, 2, citrineSelf);
+            Handler.addStatusEffect(effect);
 
-        
-            //Range code here when implemented (3 tile radius)
+            // for allies
+            effect = new StatusEffect();
+            effect.instantiateAddIntEffect("magicPenetration", 10, 2, targets);
+            Handler.addStatusEffect(effect);
+
+            effect = new StatusEffect();
+            effect.instantiateAddIntEffect("armorPenetration", 10, 2, targets);
+            Handler.addStatusEffect(effect);
+
         }
         else
         {
@@ -103,7 +117,7 @@ public class Citrine : PlayerObject
        
     }
 
-    public override void signatureMoveStatus()
+    public override void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
@@ -112,8 +126,6 @@ public class Citrine : PlayerObject
             shield = magicResistance * 10;
 
             targets.Add(this);
-            targets.Add(this.maiko);
-            targets.Add(dedra);
             StatusEffect effect = new StatusEffect();
             effect.instantiateAddFloatEffect("shield", shield, 2, targets);
 

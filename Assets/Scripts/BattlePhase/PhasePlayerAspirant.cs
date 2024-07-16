@@ -295,6 +295,23 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
+            if (ph.selectedPlayer.skillStatusAffectsAllies)
+            {
+                if (ph.selectedPlayer.skillStatusAffectsSingle)
+                {
+                    // no skill exists that affects single ally atm
+                }
+                if (ph.selectedPlayer.skillStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.playerPositions)
+                    {
+                        if (ph.alliesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
             ph.selectedPlayer.skillStatus(targets);
             Debug.Log("Skill Attack Debuffed Enemy/ies");
         }
