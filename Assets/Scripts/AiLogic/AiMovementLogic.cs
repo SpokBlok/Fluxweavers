@@ -30,7 +30,6 @@ public class AiMovementLogic : MonoBehaviour
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
-// NEW
     private PhaseHandler phaseHandler;
 
     [SerializeField] private bool isAvailableHighlighted; // for testing
@@ -58,7 +57,6 @@ public class AiMovementLogic : MonoBehaviour
 
         Path = new Queue<Vector2Int>();
 
-// NEW
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
     }
 
@@ -84,17 +82,14 @@ public class AiMovementLogic : MonoBehaviour
                 currentYIndex = nextTile.y;
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
-
-                if (Path.Count == 0)
-                    phaseHandler.enemyPositions[this.gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             }
         }
 
-        if (Path.Count == 0) {
-            aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
+        if (Path.Count == 0)
+        {
+            phaseHandler.enemyPositions[this.gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             enabled = false;
         }
-        
     }
 
     public void Move (List<Vector2Int> obstacles, Vector2Int[] enemyAi) {
