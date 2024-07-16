@@ -146,6 +146,7 @@ public class PlayerObject : MonoBehaviour
                 if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveAndAbilityCheck();
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
@@ -195,6 +196,7 @@ public class PlayerObject : MonoBehaviour
                 if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveAndAbilityCheck();
                 }
 
