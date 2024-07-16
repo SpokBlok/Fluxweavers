@@ -73,6 +73,8 @@ public class PlayerObject : MonoBehaviour
     [SerializeField] private Sprite normal;
     [SerializeField] private Sprite selected;
 
+    public Animator myAnimator;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -198,6 +200,7 @@ public class PlayerObject : MonoBehaviour
 
                 if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
                 {
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
                     MoveAndAbilityCheck();
                 }

@@ -66,7 +66,9 @@ public class MaikoScript : PlayerObject
 
         signatureMoveStatusAffectsSingle = false;
         signatureMoveStatusAffectsAOE = true;
-}
+
+        myAnimator = GetComponent<Animator>();
+    }
 
     // Update is called once per frame
     void Update()

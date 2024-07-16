@@ -43,7 +43,7 @@ public class AspirantMovement : MonoBehaviour
         originalXIndex = currentXIndex;
 
         // position aspirant on current specified tile, with an offset to make it stand on top of it
-        offset = new Vector3(0.0f, 0.22f, 0.0f); 
+        offset = new Vector3(0.0f, 0.4f, 0.0f); 
         aspirantTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset;
 
         DifferentLayerTiles = new List<Vector2Int>();
