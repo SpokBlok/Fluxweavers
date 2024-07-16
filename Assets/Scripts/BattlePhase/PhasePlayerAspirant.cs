@@ -264,11 +264,9 @@ public class PhasePlayerAspirant : PhaseBase
         ph.selectedEnemy = null;
 
         Debug.Log("Basic Attack is Used on Enemy");
-        if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
-        {
-            tiles.HighlightAdjacentTiles(false);
-            ph.enemiesInRange = new HashSet<Vector2Int>();
-        }
+
+        tiles.HighlightAdjacentTiles(false);
+        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 
     public void SkillAttackDamage(PhaseHandler ph)

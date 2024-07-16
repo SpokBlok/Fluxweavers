@@ -166,7 +166,11 @@ public class PlayerObject : MonoBehaviour
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
 
                 if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.isSelected = false;
+                    phaseHandler.selectedPlayer = null;
+                }
 
                 if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
