@@ -91,8 +91,7 @@ public class AspirantMovement : MonoBehaviour
         }
 
         HashSet<Vector2Int> unreachableMountains;
-        HashSet<PlayerObject> enemiesInRange;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -186,8 +185,7 @@ public class AspirantMovement : MonoBehaviour
 
                 AvailableTiles.Clear();
                 HashSet<Vector2Int> unreachableMountains;
-                HashSet<PlayerObject> enemiesInRange;
-                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
+                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
             }
 
             aspirant.hasMoved = !aspirant.hasMoved;
@@ -234,8 +232,7 @@ public class AspirantMovement : MonoBehaviour
 
         AvailableTiles.Clear();
         HashSet<Vector2Int> unreachableMountains;
-        HashSet<PlayerObject> enemiesInRange;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
     }
 
     public void UpdateAspirantIndex(AspirantMovement OtherAspirant)
@@ -247,8 +244,7 @@ public class AspirantMovement : MonoBehaviour
 
         AvailableTiles.Clear();
         HashSet<Vector2Int> unreachableMountains;
-        HashSet<PlayerObject> enemiesInRange;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains, out enemiesInRange);
+        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -347,11 +343,9 @@ public class AspirantMovement : MonoBehaviour
     }
 
     public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range,
-                                                out HashSet<Vector2Int> UnreachableMountains,
-                                                out HashSet<PlayerObject> EnemiesInRange)
+                                                out HashSet<Vector2Int> UnreachableMountains)
     {
         UnreachableMountains = new HashSet<Vector2Int>();
-        EnemiesInRange = new HashSet<PlayerObject>();
 
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
         AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
@@ -439,13 +433,6 @@ public class AspirantMovement : MonoBehaviour
                             UnreachableMountains.Add(tile);
                     }
                 }
-
-                else if (EnemyIndices.Contains(tile))
-                {
-                    int i = EnemyIndices.IndexOf(tile);
-
-                    EnemiesInRange.Add(Enemies[i].gameObject.GetComponent<PlayerObject>());
-                }
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
@@ -461,11 +448,9 @@ public class AspirantMovement : MonoBehaviour
             foreach (Vector2Int Tile in AdjacentTiles)
             {
                 HashSet<Vector2Int> NewMountains;
-                HashSet<PlayerObject> NewEnemies;
-                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains, out NewEnemies));
+                NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
 
                 UnreachableMountains.UnionWith(NewMountains);
-                EnemiesInRange.UnionWith(NewEnemies);
             }
 
             // then add them to the current running list of adjacent tiles
@@ -511,8 +496,7 @@ public class AspirantMovement : MonoBehaviour
                 break;
 
             HashSet<Vector2Int> unreachableMountains;
-            HashSet<PlayerObject> enemiesInRange;
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out unreachableMountains, out enemiesInRange))
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out unreachableMountains))
             {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 
