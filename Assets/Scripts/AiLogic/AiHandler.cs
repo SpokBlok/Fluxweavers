@@ -10,6 +10,7 @@ public class AiHandler : MonoBehaviour
     private AiMovementLogic[] aiEntities;
     private Vector2Int[] aiComrades;
 
+    [SerializeField] private PlayerObject aspirant;
     [SerializeField] private List<Vector2Int> obstacles;
 
     public Dictionary<AiMovementLogic, bool> turnCheck;
@@ -40,19 +41,21 @@ public class AiHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C)) {
-            // foreach (AiMovementLogic ai in aiEntities) {
-            //     ai.enabled = true;
-            //     ai.Move(obstacles);
-            //     UpdateObstacles();
-            // }
+        // if (Input.GetKeyDown(KeyCode.C)) {
+        //     // foreach (AiMovementLogic ai in aiEntities) {
+        //     //     ai.enabled = true;
+        //     //     ai.Move(obstacles);
+        //     //     UpdateObstacles();
+        //     // }
 
-            StartCoroutine(nameof(MoveAi));
-        }
+        //     StartCoroutine(nameof(MoveAi));
+        // }
             
     }
 
-    private IEnumerator MoveAi () {
+    public IEnumerator MoveAi () {
+
+        // Move Ai First
         foreach (AiMovementLogic ai in aiEntities) {
             ai.Move(obstacles, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
@@ -60,8 +63,9 @@ public class AiHandler : MonoBehaviour
             UpdateObstacles();
         }
 
-        Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
 
+        // Then Attack or cast abilities
+        Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
         foreach (Raccoon raccoon in raccoons) {
             raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
         }

@@ -297,6 +297,7 @@ MonoBehaviour:
   playerManaCount: 0
   enemyManaCount: 0
   selectedPlayer: {fileID: 0}
+  aiHandler: {fileID: 786069758}
   selectedEnemy: {fileID: 0}
   rs: {fileID: 1263719812}
   stateText: {fileID: 1143285918}
