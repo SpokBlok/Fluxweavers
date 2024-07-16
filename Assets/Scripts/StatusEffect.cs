@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -154,5 +155,10 @@ public class StatusEffect
                 }
             }
         }
+    }
+
+    internal void instantiateAddFloatEffect(string v1, int v2, int v3, PlayerObject[] targets)
+    {
+        throw new NotImplementedException();
     }
 }

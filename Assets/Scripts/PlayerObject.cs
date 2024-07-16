@@ -8,15 +8,16 @@ public class PlayerObject : MonoBehaviour
     //Player Stats
     public int level;
     public float armor;
-    public float armorPenetration;
+    public int armorPenetration;
     public float magicResistance;
-    public float magicPenetration;
+    public int magicPenetration;
     public float attackStat;
     public int movement;
     public int control; // All players have control over 2 hexes
 
     public float maxHealth; // Needed for Dedra
     public float health;
+    public int shield;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -32,7 +33,7 @@ public class PlayerObject : MonoBehaviour
     public float signatureMoveRange;
 
     // Checkers
-    public bool hasMoved; // Check if the player has moved in that turn
+    public List<string> actionsUsed = new List<string>();
     public bool isSelected; //Check if the player is selected
     public bool isBasicAttackPhysical = false;
 
@@ -58,12 +59,19 @@ public class PlayerObject : MonoBehaviour
     public bool signatureMoveStatusAffectsSingle = false;
     public bool signatureMoveStatusAffectsAOE = false;
 
+    public bool isMovementSkillActivated;
+
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;
 
     // Phase Handler Script
     public PhaseHandler phaseHandler;
+
+    // Sprites
+    // to see if aspirant is selected or not
+    [SerializeField] private Sprite normal;
+    [SerializeField] private Sprite selected;
 
     // Start is called before the first frame update
     void Start()
@@ -91,9 +99,17 @@ public class PlayerObject : MonoBehaviour
     }
 
     public void IsAttacked(float opponentDamage)
-    {
-        health -= opponentDamage;
-        IsDead();
+    {  
+        if (shield == 1) 
+        {
+            shield = 0;
+        }
+
+        else 
+        {
+            health -= opponentDamage;
+            IsDead();
+        } 
     }
 
     public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -108,6 +124,7 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void skillStatus(HashSet<PlayerObject> targets)
     {
+        
     }
 
     public virtual float signatureMoveAttack(float enemyResistStat)
@@ -117,35 +134,56 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
+        
     }
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
-        {
-            // Deselect all other players
-            foreach (PlayerObject player in phaseHandler.players)
+        {   if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if (player != this)
+                if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
-                    player.isSelected = false;
+                    phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                }
+
+                if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                {
+                    phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                }
+
+                else
+                {
+                    // Deselect all other players
+                    foreach (PlayerObject player in phaseHandler.players)
+                    {
+                        if (player != this)
+                        {
+                            player.isSelected = false;
+                        }
+                    }
+
+                    phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
+
+                    // Select this player
+                    isSelected = !isSelected;
+                    Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+
+                    if (isSelected)
+                        phaseHandler.selectedPlayer = this;
+                    else
+                        phaseHandler.selectedPlayer = null;
                 }
             }
-
-            phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
-
-            // Select this player
-            isSelected = !isSelected;
-            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
-
-            if (isSelected)
-                phaseHandler.selectedPlayer = this;
-            else
-                phaseHandler.selectedPlayer = null;
+            
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
         {
-            AiMovementLogic enemy = this.gameObject.GetComponent<AiMovementLogic>();
+            AiMovementLogic enemy = this.GetComponent<AiMovementLogic>();
             Vector2Int enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
 
             if (phaseHandler.enemiesInRange.Contains(enemyIndices))
@@ -153,14 +191,83 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.selectedEnemy = this;
 
                 if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                }
 
                 if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                }
 
                 if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                }
+                
+                Debug.Log("Enemy is clicked!");
             }
+        }
+    }
+
+    public void MoveAndAbilityCheck()
+    {
+        // check if player was flagged to have moved already
+        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("movement"))
+        {
+            AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
+
+            // if they are not in the position they are on in the beginning of the round
+            if (aspirant.currentXIndex != aspirant.originalXIndex ||
+                aspirant.currentYIndex != aspirant.originalYIndex)
+            {
+                // we can say that the player has chosen to lock in that move
+                phaseHandler.selectedPlayer.actionsUsed.Add("movement");
+
+                aspirant.originalXIndex = aspirant.currentXIndex;
+                aspirant.originalYIndex = aspirant.currentYIndex;
+            }
+        }
+
+        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("ability"))
+            phaseHandler.selectedPlayer.actionsUsed.Add("ability");
+    }
+
+    public void TogglePlayerSelection()
+    {
+        // Select or Unselect this player
+        isSelected = !isSelected;
+
+        if (isSelected)
+        {
+            phaseHandler.selectedPlayer = this;
+            GetComponent<SpriteRenderer>().sprite = selected;
+        }
+
+        else
+        {
+            AspirantMovement aspirant = GetComponent<AspirantMovement>();
+            // if they are not in the position they are on in the beginning of the round
+            if (aspirant.currentXIndex != aspirant.originalXIndex ||
+                aspirant.currentYIndex != aspirant.originalYIndex)
+            {
+                aspirant.originalXIndex = aspirant.currentXIndex;
+                aspirant.originalYIndex = aspirant.currentYIndex;
+            }
+
+            isMovementSkillActivated = false;
+            phaseHandler.selectedPlayer = null;
+            GetComponent<SpriteRenderer>().sprite = normal;
+        }
+
+        TilesCreationScript Tiles = GetComponent<AspirantMovement>().Tiles;
+        if (Tiles.GetAdjacentTilesCount() > 0)
+        {
+            Tiles.HighlightAdjacentTiles(false);
+            Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
         }
     }
 }
