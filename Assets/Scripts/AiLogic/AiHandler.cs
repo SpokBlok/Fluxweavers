@@ -59,6 +59,12 @@ public class AiHandler : MonoBehaviour
             // yield return StartCoroutine(ai.Move(obstacles));
             UpdateObstacles();
         }
+
+        Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
+
+        foreach (Raccoon raccoon in raccoons) {
+            raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+        }
     }
 
     private void UpdateObstacles () {
