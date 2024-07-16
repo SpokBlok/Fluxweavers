@@ -2459,7 +2459,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Citrine
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

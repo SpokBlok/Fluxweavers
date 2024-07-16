@@ -89,18 +89,9 @@ public class Citrine : PlayerObject
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
 
-            // citrine self buffs
-            StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("armorPenetration", 10, 2, citrineSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-            Handler.addStatusEffect(effect);
 
-            effect = new StatusEffect();
-            effect.instantiateAddIntEffect("magicPenetration", 10, 2, citrineSelf);
-            Handler.addStatusEffect(effect);
-
-            // for allies
-            effect = new StatusEffect();
+            StatusEffect effect = new StatusEffect();
             effect.instantiateAddIntEffect("magicPenetration", 10, 2, targets);
             Handler.addStatusEffect(effect);
 
