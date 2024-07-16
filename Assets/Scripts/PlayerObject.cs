@@ -123,26 +123,34 @@ public class PlayerObject : MonoBehaviour
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
-        {
-            // Deselect all other players
-            foreach (PlayerObject player in phaseHandler.players)
+        {   
+            if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
             {
-                if (player != this)
-                {
-                    player.isSelected = false;
-                }
+                phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                phaseHandler.playerAspirant.selectedAttack = "Nothing";
             }
-
-            phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
-
-            // Select this player
-            isSelected = !isSelected;
-            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
-
-            if (isSelected)
-                phaseHandler.selectedPlayer = this;
             else
-                phaseHandler.selectedPlayer = null;
+            {
+                // Deselect all other players
+                foreach (PlayerObject player in phaseHandler.players)
+                {
+                    if (player != this)
+                    {
+                        player.isSelected = false;
+                    }
+                }
+
+                phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
+
+                // Select this player
+                isSelected = !isSelected;
+                Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
+
+                if (isSelected)
+                    phaseHandler.selectedPlayer = this;
+                else
+                    phaseHandler.selectedPlayer = null;
+            }
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
