@@ -90,7 +90,7 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
-        else if (Input.GetMouseButtonDown(0) && !aspirant.actionsUsed.Contains("movement"))
+        else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
             if (aspirant.isSelected && aspirant.isMovementSkillActivated)
             {
@@ -101,11 +101,11 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
-            if (!aspirant.actionsUsed.Contains("movement"))
+            if (!aspirant.hasMoved)
             {
                 Debug.Log("Move Locked In!");
 
-                aspirant.actionsUsed.Add("movement");
+                aspirant.hasMoved = true;
 
                 aspirant.isMovementSkillActivated = false;
                 Tiles.HighlightAdjacentTiles(false);
@@ -114,18 +114,13 @@ public class AspirantMovement : MonoBehaviour
                 originalYIndex = currentYIndex;
 
                 AvailableTiles = new HashSet<Vector2Int>();
-
-                // if they already used a skill before they locked in this move,
-                // they already done two types of actions (skill and movement)
-                if (aspirant.actionsUsed.Count == 2)
-                    aspirant.TogglePlayerSelection(); // unselect player
             }
 
             // to be removed i think
             else
             {
                 Debug.Log("Make Your Next Move..");
-                aspirant.actionsUsed = new List<string>();
+                aspirant.hasMoved = false;
             }
         }
 

@@ -954,7 +954,7 @@ PrefabInstance:
       objectReference: {fileID: 1874413892}
     - target: {fileID: 5449534775431675315, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: currentXIndex
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5449534775431675315, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: currentYIndex

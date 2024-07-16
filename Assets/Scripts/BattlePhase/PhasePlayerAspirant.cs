@@ -31,124 +31,50 @@ public class PhasePlayerAspirant : PhaseBase
             Debug.LogError("TilesCreationScript not found in the scene.");
         }
 
-        // reset each player's actionsUsed
+        // reset each player's hasMoved bool
         foreach (PlayerObject aspirant in ph.players)
-            aspirant.actionsUsed = new List<string>();
+            aspirant.hasMoved = false;
     }
 
     public override void UpdateState(PhaseHandler ph)
     {
         if (ph.selectedPlayer != null)
         {
-            int usedActionsCount = ph.selectedPlayer.actionsUsed.Count;
-            string lastAction = "null";
             AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
-            bool isPlayerInStartPosition = true;
 
-            if (usedActionsCount > 0)
+            if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
             {
-                lastAction = ph.selectedPlayer.actionsUsed[usedActionsCount-1];
-
-                int origX = aspirantMovement.originalXIndex;
-                int origY = aspirantMovement.originalYIndex;
-                int currentX = aspirantMovement.currentXIndex;
-                int currentY = aspirantMovement.currentYIndex;
-                isPlayerInStartPosition = (origX == currentX) && (origY == currentY);
-            }
-
-            if ( usedActionsCount == 0 ||
-                ( usedActionsCount == 1 && (lastAction.Equals("movement") || isPlayerInStartPosition ) ) ||
-                ( usedActionsCount == 2 && lastAction.Equals("ability") ) )
-            {
-                if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
-                {
-                    selectedAttack = "BasicAttack";
-                    // Get current position indices from AspirantMovement script
-                    if (aspirantMovement != null)
-                    {
-                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
-                        int currentXIndex = aspirantMovement.currentXIndex;
-                        int currentYIndex = aspirantMovement.currentYIndex;
-
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
-                                                            out ph.enemiesInRange, out emptyAllies);
-
-                        // un-highlight the previous adjacent tiles if there are any
-                        if(tiles.GetAdjacentTilesCount() > 0)
-                            tiles.HighlightAdjacentTiles(false);
-
-                        // set the new adjacent tiles and highlight them
-                        tiles.SetAdjacentTiles(availableTiles);
-                        tiles.HighlightAdjacentTiles(true);
-
-                        ph.selectedPlayer.isMovementSkillActivated = false;
-                    }
-                    else
-                    {
-                        Debug.LogError("AspirantMovement script not found on PlayerObject.");
-                    }
-                }
-                
-                else if (Input.GetKeyDown(KeyCode.S) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
-                {
-                    // Handle skill logic
-                    // Placeholder: Insert your skill logic here
-                }
-
-                else if (Input.GetKeyDown(KeyCode.U) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
-                {
-                    // Handle signature move logic
-                    // Placeholder: Insert your signature move logic here
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.actionsUsed.Contains("movement"))
-            {
+                selectedAttack = "BasicAttack";
+                // Get current position indices from AspirantMovement script
                 if (aspirantMovement != null)
                 {
-                    ph.enemiesInRange = new HashSet<Vector2Int>();
+                    HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
+                    int currentXIndex = aspirantMovement.currentXIndex;
+                    int currentYIndex = aspirantMovement.currentYIndex;
 
-                    if (ph.selectedPlayer.isMovementSkillActivated)
-                    {
-                        ph.selectedPlayer.isMovementSkillActivated = false;
+                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
+                                                        out ph.enemiesInRange, out emptyAllies);
+
+                    // un-highlight the previous adjacent tiles if there are any
+                    if(tiles.GetAdjacentTilesCount() > 0)
                         tiles.HighlightAdjacentTiles(false);
-                    }
 
-                    else
-                    {
-                        int x = aspirantMovement.originalXIndex;
-                        int y = aspirantMovement.originalYIndex;
+                    // set the new adjacent tiles and highlight them
+                    tiles.SetAdjacentTiles(availableTiles);
+                    tiles.HighlightAdjacentTiles(true);
 
-                        HashSet<Vector2Int> unreachableMountains;
-                        aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
-                                                                                            out unreachableMountains);
-
-                        ph.selectedPlayer.isMovementSkillActivated = true;
-
-                        // un-highlight the previous adjacent tiles if there are any
-                        if(tiles.GetAdjacentTilesCount() > 0)
-                            tiles.HighlightAdjacentTiles(false);
-
-                        // set the new adjacent tiles and highlight them
-                        tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
-                        tiles.HighlightAdjacentTiles(true);
-                    }
+                    ph.selectedPlayer.isMovementSkillActivated = false;
                 }
                 else
                 {
                     Debug.LogError("AspirantMovement script not found on PlayerObject.");
                 }
             }
-            //else if ph.selectedPlayer.actionsUsed.Contains("movement") {movement locked! message}
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
+                
+            else if (Input.GetKeyDown(KeyCode.S) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
             {
                 selectedAttack = "SkillAttack";
                 // Get current position indices from AspirantMovement script
-                AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
                 if (aspirantMovement != null)
                 {
                     int currentXIndex = aspirantMovement.currentXIndex;
@@ -182,8 +108,6 @@ public class PhasePlayerAspirant : PhaseBase
                         // set the new adjacent tiles and highlight them
                         tiles.SetAdjacentTiles(availableTiles);
                         tiles.HighlightAdjacentTiles(true);
-
-
                     }
                 }
                 else
@@ -191,15 +115,11 @@ public class PhasePlayerAspirant : PhaseBase
                     Debug.LogError("AspirantMovement script not found on PlayerObject.");
                 }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
+            else if (Input.GetKeyDown(KeyCode.U) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
             {
                 selectedAttack = "SignatureMoveAttack";
                 // Get current position indices from AspirantMovement script
-                AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
                 if (aspirantMovement != null)
                 {
                     int currentXIndex = aspirantMovement.currentXIndex;
@@ -240,6 +160,45 @@ public class PhasePlayerAspirant : PhaseBase
                     Debug.LogError("AspirantMovement script not found on PlayerObject.");
                 }
             }
+
+            else if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
+            {
+                if (aspirantMovement != null)
+                {
+                    ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                    if (ph.selectedPlayer.isMovementSkillActivated)
+                    {
+                        ph.selectedPlayer.isMovementSkillActivated = false;
+                        tiles.HighlightAdjacentTiles(false);
+                    }
+
+                    else
+                    {
+                        int x = aspirantMovement.originalXIndex;
+                        int y = aspirantMovement.originalYIndex;
+
+                        HashSet<Vector2Int> unreachableMountains;
+                        aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
+                                                                                            out unreachableMountains);
+
+                        ph.selectedPlayer.isMovementSkillActivated = true;
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if(tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+                }
+                else
+                {
+                    Debug.LogError("AspirantMovement script not found on PlayerObject.");
+                }
+            }
+            //else if ph.selectedPlayer.actionsUsed.Contains("movement") {movement locked! message}
         }
 
         if (Input.GetKeyDown(KeyCode.Space))

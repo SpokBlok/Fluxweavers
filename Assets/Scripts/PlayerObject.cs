@@ -33,7 +33,7 @@ public class PlayerObject : MonoBehaviour
     public float signatureMoveRange;
 
     // Checkers
-    public List<string> actionsUsed = new List<string>();
+    public bool hasMoved; // Check if the player has moved
     public bool isSelected; //Check if the player is selected
     public bool isBasicAttackPhysical = false;
 
@@ -93,6 +93,17 @@ public class PlayerObject : MonoBehaviour
     {
         if (health <= 0)
         {
+            if (CompareTag("Player"))
+            {
+                phaseHandler.playerPositions.Remove(this);
+                phaseHandler.players.Remove(this);
+            }
+            else if (CompareTag("Enemy"))
+            {
+                phaseHandler.enemyPositions.Remove(this);
+                phaseHandler.enemies.Remove(this);
+            }
+
             Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
             //Death Animation plays
         }
@@ -145,14 +156,14 @@ public class PlayerObject : MonoBehaviour
                 if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck();
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
 
                 if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck();
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
 
@@ -194,19 +205,19 @@ public class PlayerObject : MonoBehaviour
                 if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck();
                 }
 
                 if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
                 {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck();
                 }
 
                 if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck();
                 }
                 
                 Debug.Log("Enemy is clicked!");
@@ -214,10 +225,10 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void MoveAndAbilityCheck()
+    public void MoveCheck()
     {
         // check if player was flagged to have moved already
-        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("movement"))
+        if (!phaseHandler.selectedPlayer.hasMoved)
         {
             AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
 
@@ -226,15 +237,12 @@ public class PlayerObject : MonoBehaviour
                 aspirant.currentYIndex != aspirant.originalYIndex)
             {
                 // we can say that the player has chosen to lock in that move
-                phaseHandler.selectedPlayer.actionsUsed.Add("movement");
+                phaseHandler.selectedPlayer.hasMoved = true;
 
                 aspirant.originalXIndex = aspirant.currentXIndex;
                 aspirant.originalYIndex = aspirant.currentYIndex;
             }
         }
-
-        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("ability"))
-            phaseHandler.selectedPlayer.actionsUsed.Add("ability");
     }
 
     public void TogglePlayerSelection()
