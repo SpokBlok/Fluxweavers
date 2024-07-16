@@ -253,10 +253,42 @@ public class PhasePlayerAspirant : PhaseBase
 
     HashSet<Vector2Int> GetAdjacentTiles(PhaseHandler ph, int xIndex, int yIndex, int range, out HashSet<Vector2Int> EnemiesInRange, out HashSet<Vector2Int> AlliesInRange)
     {
+        HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
         EnemiesInRange = new HashSet<Vector2Int>();
         AlliesInRange = new HashSet<Vector2Int>();
+        
+        if (range == 0) // indicates that the attack / status move is global
+        {
+            // add all tiles
+            for (int i = 0; i < tiles.returnRowCount(); i++)
+            {
+                for (int j = 0; j < tiles.returnColCount(); j++)
+                {
+                    try
+                    {
+                        Hex hexTile = tiles.Tiles[i, j].GetComponent<Hex>();
 
-        HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
+                        AdjacentTiles.Add(new Vector2Int(i,j));
+                    }
+                    catch (Exception){}
+                }
+            }
+
+            // add all enemies
+            foreach(Vector2Int enemy in ph.enemyPositions.Values)
+            {
+                EnemiesInRange.Add(enemy);
+            }
+
+            // add all allies
+            foreach(Vector2Int ally in ph.playerPositions.Values)
+            {
+                AlliesInRange.Add(ally);
+            }
+            
+            return AdjacentTiles;
+        }
+
         AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
 
         // setting up steps from current tile to adjacent tiles

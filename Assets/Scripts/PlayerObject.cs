@@ -139,7 +139,8 @@ public class PlayerObject : MonoBehaviour
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
-        {   if (phaseHandler.currentState == phaseHandler.playerAspirant)
+        {   
+            if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
                 if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
                 {
