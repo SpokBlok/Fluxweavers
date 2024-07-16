@@ -85,6 +85,7 @@ public class AiMovementLogic : MonoBehaviour
                 currentXIndex = nextTile.x;
                 Path.Dequeue();
 
+                // Whats this?
                 if (Path.Count == 0)
                 {
                     aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
@@ -263,8 +264,6 @@ public class AiMovementLogic : MonoBehaviour
     }
 
 
-    
-
     void CreatePathToTarget(Vector2Int target, Vector2Int[] enemyAi) {
         Vector2Int startLocation = new(currentXIndex, currentYIndex);
         Vector2Int currentLocation = startLocation;
@@ -314,7 +313,6 @@ public class AiMovementLogic : MonoBehaviour
 
         Path = new Queue<Vector2Int>(Path.Reverse());
     }
-
 
     void CreatePathToTarget(Vector2Int target, List<Vector2Int> nodeFilter, Vector2Int[] enemyAi) {
 

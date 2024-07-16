@@ -106,7 +106,7 @@ MonoBehaviour:
   attackStat: 0
   movement: 2
   control: 0
-  healthBar: {fileID: 0}
+  maxHealth: 0
   health: 0
   basicAttackDamage: 0
   basicAttackMana: 0
@@ -118,8 +118,25 @@ MonoBehaviour:
   signatureMoveMana: 0
   signatureMoveRange: 0
   hasMoved: 0
+  isSelected: 0
+  isBasicAttackPhysical: 0
+  isSkillAttackPhysical: 0
+  skillAttackExists: 0
+  skillStatusExists: 0
+  isSignatureMoveAttackPhysical: 0
+  signatureMoveAttackExists: 0
+  signatureMoveStatusExists: 0
+  skillStatusAffectsEnemies: 0
+  skillStatusAffectsAllies: 0
+  signatureMoveAffectsEnemies: 0
+  signatureMoveAffectsAllies: 0
+  skillStatusAffectsSingle: 0
+  skillStatusAffectsAOE: 0
+  signatureMoveStatusAffectsSingle: 0
+  signatureMoveStatusAffectsAOE: 0
   resourceScript: {fileID: 0}
   mana: 0
+  phaseHandler: {fileID: 0}
 --- !u!114 &5449534775431675315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,8 +151,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Tiles: {fileID: 0}
   aspirant: {fileID: 0}
-  currentYIndex: 0
   currentXIndex: 0
+  currentYIndex: 0
   attackRange: 1
   movementSpeed: 1
   isAvailableHighlighted: 0
