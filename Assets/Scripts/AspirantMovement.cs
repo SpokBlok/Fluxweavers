@@ -90,7 +90,7 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
-        else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
+        else if (Input.GetMouseButtonDown(0) && !aspirant.actionsUsed.Contains("movement"))
         {    
             if (aspirant.isSelected && aspirant.isMovementSkillActivated)
             {
@@ -101,9 +101,11 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
-            if (!aspirant.hasMoved)
+            if (!aspirant.actionsUsed.Contains("movement"))
             {
                 Debug.Log("Move Locked In!");
+
+                aspirant.actionsUsed.Add("movement");
 
                 aspirant.isMovementSkillActivated = false;
                 Tiles.HighlightAdjacentTiles(false);
@@ -113,15 +115,18 @@ public class AspirantMovement : MonoBehaviour
 
                 AvailableTiles = new HashSet<Vector2Int>();
 
-                if (aspirant.hasUsedSkill)
-                    aspirant.TogglePlayerSelection();
+                // if they already used a skill before they locked in this move,
+                // they already done two types of actions (skill and movement)
+                if (aspirant.actionsUsed.Count == 2)
+                    aspirant.TogglePlayerSelection(); // unselect player
             }
 
             // to be removed i think
             else
+            {
                 Debug.Log("Make Your Next Move..");
-
-            aspirant.hasMoved = !aspirant.hasMoved;
+                aspirant.actionsUsed = new List<string>();
+            }
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
@@ -228,7 +233,7 @@ public class AspirantMovement : MonoBehaviour
         UnreachableMountains = new HashSet<Vector2Int>();
 
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
-        AdjacentTiles.Add(new Vector2Int(originalYIndex, originalXIndex));
+        AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
 
         // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
@@ -327,7 +332,7 @@ public class AspirantMovement : MonoBehaviour
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
             {
-                if(Tile != new Vector2Int(currentYIndex, currentXIndex) ||
+                if(Tile != new Vector2Int(originalYIndex, originalXIndex) ||
                     Tile != new Vector2Int(yIndex, xIndex))
                 {
                     HashSet<Vector2Int> NewMountains;
@@ -340,6 +345,8 @@ public class AspirantMovement : MonoBehaviour
             // then add them to the current running list of adjacent tiles
             AdjacentTiles.UnionWith(NewTiles);
         }
+
+        AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         return AdjacentTiles;
     }

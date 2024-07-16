@@ -31,8 +31,7 @@ public class PlayerObject : MonoBehaviour
     public float signatureMoveRange;
 
     // Checkers
-    public bool hasMoved; // Check if the player has moved in that turn
-    public bool hasUsedSkill; // Check if the player has used a skill in that turn
+    public List<string> actionsUsed = new List<string>();
     public bool isSelected; //Check if the player is selected
 
     public bool isBasicAttackPhysical;
@@ -122,7 +121,7 @@ public class PlayerObject : MonoBehaviour
                     if (player != this)
                     {
                         player.isSelected = false;
-                        player.gameObject.GetComponent<SpriteRenderer>().sprite = normal;
+                        player.GetComponent<SpriteRenderer>().sprite = normal;
                     }
                 }
 
@@ -136,7 +135,7 @@ public class PlayerObject : MonoBehaviour
 
         else if (this.gameObject.CompareTag("Enemy"))
         {
-            AiMovementLogic enemy = this.gameObject.GetComponent<AiMovementLogic>();
+            AiMovementLogic enemy = this.GetComponent<AiMovementLogic>();
             Vector2Int enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
 
             if (phaseHandler.enemiesInRange.Contains(enemyIndices))
@@ -145,6 +144,26 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
                 
                 Debug.Log("Enemy is clicked!");
+
+                // check if player was flagged to have moved already
+                if (!phaseHandler.selectedPlayer.actionsUsed.Contains("movement"))
+                {
+                    AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
+
+                    // if they are not in the position they are on in the beginning of the round
+                    if (aspirant.currentXIndex != aspirant.originalXIndex ||
+                        aspirant.currentYIndex != aspirant.originalYIndex)
+                    {
+                        // we can say that the player has chosen to lock in that move
+                        phaseHandler.selectedPlayer.actionsUsed.Add("movement");
+
+                        aspirant.originalXIndex = aspirant.currentXIndex;
+                        aspirant.originalYIndex = aspirant.currentYIndex;
+                    }
+                }
+
+                if (!phaseHandler.selectedPlayer.actionsUsed.Contains("ability"))
+                    phaseHandler.selectedPlayer.actionsUsed.Add("ability");
             }
         }
     }
@@ -162,6 +181,16 @@ public class PlayerObject : MonoBehaviour
 
         else
         {
+            AspirantMovement aspirant = GetComponent<AspirantMovement>();
+            // if they are not in the position they are on in the beginning of the round
+            if (aspirant.currentXIndex != aspirant.originalXIndex ||
+                aspirant.currentYIndex != aspirant.originalYIndex)
+            {
+                aspirant.originalXIndex = aspirant.currentXIndex;
+                aspirant.originalYIndex = aspirant.currentYIndex;
+            }
+
+            isMovementSkillActivated = false;
             phaseHandler.selectedPlayer = null;
             GetComponent<SpriteRenderer>().sprite = normal;
         }
