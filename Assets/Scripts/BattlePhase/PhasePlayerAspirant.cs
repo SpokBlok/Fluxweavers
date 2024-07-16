@@ -64,7 +64,6 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     selectedAttack = "BasicAttack";
                     // Get current position indices from AspirantMovement script
-                    AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
                     if (aspirantMovement != null)
                     {
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
@@ -140,6 +139,7 @@ public class PhasePlayerAspirant : PhaseBase
                     Debug.LogError("AspirantMovement script not found on PlayerObject.");
                 }
             }
+            //else if ph.selectedPlayer.actionsUsed.Contains("movement") {movement locked! message}
         }
 
         if (Input.GetKeyDown(KeyCode.S))
