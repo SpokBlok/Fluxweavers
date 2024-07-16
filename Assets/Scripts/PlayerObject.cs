@@ -169,25 +169,17 @@ public class PlayerObject : MonoBehaviour
 
                 else
                 {
-                    // Deselect all other players
-                    foreach (PlayerObject player in phaseHandler.players)
+                    // Deselect currently selected player if there is any
+                    if(phaseHandler.selectedPlayer != null)
                     {
-                        if (player != this)
-                        {
-                            player.isSelected = false;
-                        }
+                        if(phaseHandler.selectedPlayer != this)
+                            phaseHandler.selectedPlayer.TogglePlayerSelection();
                     }
 
+                    phaseHandler.alliesInRange = new HashSet<Vector2Int>();
                     phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
 
-                    // Select this player
-                    isSelected = !isSelected;
-                    Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
-
-                    if (isSelected)
-                        phaseHandler.selectedPlayer = this;
-                    else
-                        phaseHandler.selectedPlayer = null;
+                    TogglePlayerSelection();
                 }
             }
             
