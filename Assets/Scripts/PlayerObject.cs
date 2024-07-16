@@ -17,6 +17,7 @@ public class PlayerObject : MonoBehaviour
 
     public float maxHealth; // Needed for Dedra
     public float health;
+    public int shield;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -98,9 +99,17 @@ public class PlayerObject : MonoBehaviour
     }
 
     public void IsAttacked(float opponentDamage)
-    {
-        health -= opponentDamage;
-        IsDead();
+    {  
+        if (shield == 1) 
+        {
+            shield = 0;
+        }
+
+        else 
+        {
+            health -= opponentDamage;
+            IsDead();
+        } 
     }
 
     public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -138,6 +147,14 @@ public class PlayerObject : MonoBehaviour
                     MoveAndAbilityCheck();
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
+
+                if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                {
+                    phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    MoveAndAbilityCheck();
+                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                }
+
                 else
                 {
                     // Deselect all other players

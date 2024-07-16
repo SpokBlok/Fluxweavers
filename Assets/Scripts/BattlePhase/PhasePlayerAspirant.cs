@@ -451,6 +451,24 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
+
+            if (ph.selectedPlayer.signatureMoveAffectsAllies)
+            {
+                if (ph.selectedPlayer.signatureMoveStatusAffectsSingle)
+                {
+                    // dne
+                }
+                if (ph.selectedPlayer.signatureMoveStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.playerPositions)
+                    {
+                        if (ph.alliesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
             ph.selectedPlayer.signatureMoveStatus(targets);
             Debug.Log("Signature Move Debuffed Enemies!");
         }

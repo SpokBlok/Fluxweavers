@@ -8,7 +8,7 @@ public class Citrine : PlayerObject
 {
     // Checkers
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
-    public float shield; // should be variable for all players
+     
     HashSet<PlayerObject> citrineSelf = new  HashSet<PlayerObject>();
 
 
@@ -114,15 +114,17 @@ public class Citrine : PlayerObject
         if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            shield = magicResistance * 10;
 
-            targets.Add(this);
+            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddFloatEffect("shield", shield, 2, targets);
-
-            StatusEffect effect1 = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, targets);
+            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, phaseHandler.players);
+            Handler.addStatusEffect(effect);
             
+            foreach (PlayerObject player in phaseHandler.players) 
+            {
+                player.shield = 1;
+            }
         }
         else
         {
