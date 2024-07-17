@@ -59,8 +59,6 @@ public class PlayerObject : MonoBehaviour
     public bool signatureMoveStatusAffectsSingle = false;
     public bool signatureMoveStatusAffectsAOE = false;
 
-    public bool isMovementSkillActivated;
-
     //Mana & Resource Script
     public ResourceScript resourceScript;
     public int mana;
@@ -153,18 +151,18 @@ public class PlayerObject : MonoBehaviour
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck();
-                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
-                if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck();
-                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else
@@ -194,19 +192,19 @@ public class PlayerObject : MonoBehaviour
             {
                 phaseHandler.selectedEnemy = this;
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck();
                 }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
                 {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
                     MoveCheck();
                 }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck();
@@ -258,8 +256,7 @@ public class PlayerObject : MonoBehaviour
                 aspirant.originalXIndex = aspirant.currentXIndex;
                 aspirant.originalYIndex = aspirant.currentYIndex;
             }
-
-            isMovementSkillActivated = false;
+            
             phaseHandler.selectedPlayer = null;
             GetComponent<SpriteRenderer>().sprite = normal;
         }
@@ -270,5 +267,7 @@ public class PlayerObject : MonoBehaviour
             Tiles.HighlightAdjacentTiles(false);
             Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
         }
+
+        phaseHandler.playerAspirant.selectedAbility = "none";
     }
 }

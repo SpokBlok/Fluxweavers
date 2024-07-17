@@ -93,7 +93,7 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
-            if (aspirant.isSelected && aspirant.isMovementSkillActivated)
+            if (aspirant.isSelected && phaseHandler.playerAspirant.selectedAbility.Equals("movement"))
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
                 Path = CreatePathToTarget(targetTile);
@@ -108,7 +108,7 @@ public class AspirantMovement : MonoBehaviour
 
                 aspirant.hasMoved = true;
 
-                aspirant.isMovementSkillActivated = false;
+                phaseHandler.playerAspirant.selectedAbility = "none";
                 Tiles.HighlightAdjacentTiles(false);
 
                 originalXIndex = currentXIndex;
