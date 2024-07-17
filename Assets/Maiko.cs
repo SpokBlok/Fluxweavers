@@ -135,7 +135,7 @@ public class MaikoScript : PlayerObject
 
             //Buff Maiko Movement
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("movement", 1, 2, maikoSelf);
+            effect.instantiateAddIntEffect("movement", 1, 1, maikoSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(effect);
 

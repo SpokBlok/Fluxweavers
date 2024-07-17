@@ -457,12 +457,12 @@ GameObject:
   - component: {fileID: 187553589}
   - component: {fileID: 187553588}
   m_Layer: 5
-  m_Name: MaikoUltImage
+  m_Name: CitrineUltImage
   m_TagString: MaikoUltImage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &187553587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1508,6 +1508,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &804055507 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4265260459612829, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
+  m_PrefabInstance: {fileID: 7366315986804621949}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &915346193
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2769,12 +2774,91 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8378164602717887835, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
   m_PrefabInstance: {fileID: 7366315986804621949}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 804055507}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &1824707804
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804055507}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 51fef3c7675d70e4a947377edaffc47a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1824707805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 804055507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb12d13bd8b81684eb9474855f3b86c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  armor: 0
+  armorPenetration: 0
+  magicResistance: 0
+  magicPenetration: 0
+  attackStat: 0
+  movement: 0
+  control: 0
+  maxHealth: 0
+  health: 0
+  shield: 0
+  basicAttackDamage: 0
+  basicAttackMana: 0
+  basicAttackRange: 3
+  skillDamage: 0
+  skillMana: 0
+  skillRange: 0
+  signatureMoveDamage: 0
+  signatureMoveMana: 0
+  signatureMoveRange: 0
+  actionsUsed: []
+  isSelected: 0
+  isBasicAttackPhysical: 0
+  isSkillAttackPhysical: 0
+  skillAttackExists: 0
+  skillStatusExists: 0
+  isSignatureMoveAttackPhysical: 0
+  signatureMoveAttackExists: 0
+  signatureMoveStatusExists: 0
+  skillStatusAffectsEnemies: 0
+  skillStatusAffectsAllies: 0
+  signatureMoveAffectsEnemies: 0
+  signatureMoveAffectsAllies: 0
+  skillStatusAffectsSingle: 0
+  skillStatusAffectsAOE: 0
+  signatureMoveStatusAffectsSingle: 0
+  signatureMoveStatusAffectsAOE: 0
+  isMovementSkillActivated: 0
+  resourceScript: {fileID: 0}
+  mana: 0
+  phaseHandler: {fileID: 0}
+  normal: {fileID: 0}
+  selected: {fileID: 0}
+  myAnimator: {fileID: 0}
+  splashArt: {fileID: 0}
+  inTerraHex: 0
 --- !u!1 &1829007479
 GameObject:
   m_ObjectHideFlags: 0
@@ -3196,7 +3280,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4265260459612829, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
       propertyPath: m_Name
-      value: MAIKOTHEBEAST
+      value: Citrine
       objectReference: {fileID: 0}
     - target: {fileID: 858366111198274849, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
       propertyPath: phaseHandler
@@ -3259,6 +3343,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1002510715}
     - target: {fileID: 8829566873775900390, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 694bece0f76234943929ba4f05d2f981, type: 3}
+    - target: {fileID: 8829566873775900390, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
@@ -3274,10 +3362,18 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 858366111198274849, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
+    - {fileID: 7821435481868513760, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4265260459612829, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1824707805}
+    - targetCorrespondingSourceObject: {fileID: 4265260459612829, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1824707804}
   m_SourcePrefab: {fileID: 100100000, guid: 01ad22d7572b0824ab638557b5261919, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

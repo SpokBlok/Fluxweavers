@@ -56,6 +56,9 @@ public class Citrine : PlayerObject
         signatureMoveRange = 0;
 
         basicAttackDamage = attackStat * 1.1f;
+
+        //Animation Stuff
+        myAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
