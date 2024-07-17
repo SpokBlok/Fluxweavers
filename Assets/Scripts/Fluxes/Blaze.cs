@@ -30,11 +30,19 @@ public class Blaze : Flux
 
     void Awake() {
         fluxName = "Blaze";
+        fluxCode = FluxNamespace.FluxNames.Blaze;
         type = Type.Spell;
         duration = 0;
-        manaCost = 10;
-        damage = 10;
+        manaCost = 22;
+        damage = 40;
+        tileLength = 3;
         effectTiming = EffectTimings.OnCast;
         description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+    }
+
+    public override void SpellCast(Hex hex) {
+        hex.AugmentDuration(-1);
+        PlayerObject aspirant = hex.HexOccupant();
+        aspirant.IsAttacked(damage);
     }
 }

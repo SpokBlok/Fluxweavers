@@ -115,9 +115,7 @@ public class FluxInterface : MonoBehaviour
         castedFlux = fluxObject.GetComponent<Flux>();
         Destroy(fluxObject);
         Clear();
-        if(castedFlux.type == Flux.Type.Environment) {
-            ei.SetEnvironment(hex, castedFlux);
-        }
+        ei.SetFlux(hex, castedFlux);
     }
 
     public void Cast(FluxNames fluxName){

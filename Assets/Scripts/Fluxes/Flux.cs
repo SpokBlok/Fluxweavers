@@ -70,7 +70,10 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
         Destroy(gameObject);
     }
 
-    public void EnvironmentEffect(){
+    public virtual void EnvironmentEffect(PlayerObject aspirant){
+        
     }
 
+    public virtual void SpellCast(Hex hex) {
+    }
 }

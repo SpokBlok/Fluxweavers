@@ -9,12 +9,14 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Unity.Collections;
 using System.Linq.Expressions;
+using UnityEngine.UIElements;
 public class EnvironmentInterface : MonoBehaviour
 {
     public delegate void DisableHexClick();
     public delegate void ToggleUI();
     public static event DisableHexClick onDisableHexClick;
     public static event ToggleUI onToggleUI;
+    [SerializeField] PhaseHandler ph;
     [SerializeField] TextMeshProUGUI currentFluxNameText;
     [SerializeField] TextMeshProUGUI tilesLeftText;
     
@@ -36,25 +38,25 @@ public class EnvironmentInterface : MonoBehaviour
     }
 
     //Initial hex drop
-    public void SetEnvironment(Hex hex, Flux flux){
+    public void SetFlux(Hex hex, Flux flux){
         if(flux.type == Flux.Type.Environment) {
-        currentFlux = flux;
-        castedHexes.Add(hex);
-        tilesLeft = flux.tileLength - 1; // Number of tiles the user can paint over
-        UpdateText();
-        hex.hexSprite.sprite = SetSprite(hex, flux);
-        //hex.hexSprite.sprite = currentFlux.gameObject.GetComponent<Image>().sprite;
-        hex.terrainDuration = flux.duration;
-        hex.currentFlux = flux.fluxCode;
+            currentFlux = flux;
+            castedHexes.Add(hex);
+            tilesLeft = flux.tileLength - 1; // Number of tiles the user can paint over
+            UpdateText();
+            hex.hexSprite.sprite = SetSprite(hex, flux);
+            //hex.hexSprite.sprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+            hex.terrainDuration = flux.duration;
+            hex.currentFlux = flux.fluxCode;
+        } else {
+            flux.SpellCast(hex);
         }
         
-
-        foreach(Hex adjHex in GetAdjacentHex(hex)){
-            adjHex.hexSprite.color = Color.yellow;
-            adjHex.clickToCast = true;
-        }
-
         if(tilesLeft > 0){
+            foreach(Hex adjHex in GetAdjacentHex(hex)){
+                adjHex.hexSprite.color = Color.yellow;
+                adjHex.clickToCast = true;
+            }
             onToggleUI?.Invoke();
         } else {
             castedHexes.Clear();
@@ -84,14 +86,6 @@ public class EnvironmentInterface : MonoBehaviour
         UpdateText();
     }
 
-    //Helper method for sprite loading
-    private Sprite SetSprite(Hex hex, Flux flux){   
-        if(CompareFluxName(flux, FluxNames.HighTide) || CompareFluxName(flux, FluxNames.Rivershape))
-            return waterSprite;
-        else 
-            return hex.hexSprite.sprite;
-    }
-
     //self explanatory method for affecting a player on a terrain
     public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
@@ -106,11 +100,34 @@ public class EnvironmentInterface : MonoBehaviour
         }
     }
 
+    public PlayerObject GetHexOccupant(Hex hex){
+        Vector2Int pos = new Vector2Int(hex.y, hex.x);
+        foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
+            if(pair.Value == pos){
+                return pair.Key;
+            }
+        }
+        foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions){
+            if(pair.Value == pos){
+                return pair.Key;
+            }
+        }
+        return null;
+    }
+
+    //Helper method for sprite loading
+    private Sprite SetSprite(Hex hex, Flux flux){   
+        if(CompareFluxName(flux, FluxNames.HighTide) || CompareFluxName(flux, FluxNames.Rivershape))
+            return waterSprite;
+        else 
+            return hex.hexSprite.sprite;
+    }
+
     //helper method for name comparison
     private bool CompareFluxName(Flux flux, FluxNames fluxName) {
         return flux.fluxName.Replace(" ","") == fluxName.ToString();
     }
-
+    
     private void UpdateText() {
         currentFluxNameText.text = currentFlux.fluxName;
         tilesLeftText.text = tilesLeft.ToString();

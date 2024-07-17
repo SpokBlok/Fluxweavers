@@ -154,8 +154,8 @@ MonoBehaviour:
   currentRound: 0
   playerManaCount: 0
   enemyManaCount: 0
-  player: {fileID: 0}
-  enemy: {fileID: 0}
+  selectedPlayer: {fileID: 0}
+  selectedEnemy: {fileID: 0}
   rs: {fileID: 1753433710}
   tcs: {fileID: 1481221385}
   stateText: {fileID: 828863071}
@@ -2462,6 +2462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85fad85fcf2a5d942b3adc88213ba948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1481221386
 Transform:
   m_ObjectHideFlags: 0
@@ -2519,6 +2520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c1637d5b81954d47b981cec5a985943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ph: {fileID: 106829296}
   currentFluxNameText: {fileID: 811181729}
   tilesLeftText: {fileID: 723623803}
   tcs: {fileID: 1481221385}
@@ -2840,6 +2842,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5fbb3d6673e5464d9c97bb16fc9b252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerManaCount: 0
+  enemyManaCount: 0
 --- !u!4 &1753433711
 Transform:
   m_ObjectHideFlags: 0

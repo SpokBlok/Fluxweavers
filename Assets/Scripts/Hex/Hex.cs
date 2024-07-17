@@ -55,15 +55,18 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
 
     //subtracts duration by 1 on round end
     private void RoundEnd() {
+        AugmentDuration(-1);
+    }
+
+    public void AugmentDuration(int length){
         if (terrainDuration > 0) {
-            terrainDuration -= 1;
-            if(terrainDuration == 0){
+            terrainDuration += length;
+            if(terrainDuration <= 0){
                 hexSprite.sprite = defaultSprite;
                 currentFlux = FluxNames.None;
             }
         }
     }
-
     private void ClickToCastDisable() {
         clickToCast = false;
         hexSprite.color = Color.white;
@@ -72,5 +75,9 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     //Next part of the hex code is activated on round end. passes it to the environment interface
     public void TerrainEffect(PlayerObject entity){
         ei.TerrainEffect(entity, currentFlux);
+    }
+
+    public PlayerObject HexOccupant(){
+        return ei.GetHexOccupant(this);
     }
 }
