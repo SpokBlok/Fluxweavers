@@ -15,10 +15,7 @@ public class PhaseRoundEnd : PhaseBase
         ph.rs.roundStart(ph.currentRound);
         ph.stateText.text = "Round End";
         
-        if (ph.currentRound%2==0) 
-            nextState = ph.playerFlux;
-        else
-            nextState = ph.enemyFlux;
+        nextState = ph.playerFlux;
         
         onRoundEnd?.Invoke();
     }

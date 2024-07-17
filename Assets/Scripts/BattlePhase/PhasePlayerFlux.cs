@@ -6,10 +6,7 @@ public class PhasePlayerFlux : PhaseBase
 {
     PhaseBase nextState;
     public override void EnterState(PhaseHandler ph) {
-        if(ph.currentRound%2==0) 
-            nextState = ph.enemyFlux;
-        else
-            nextState = ph.enemyAspirant;
+        nextState = ph.playerAspirant;
         
         ph.stateText.text = "Player Flux";
     }
