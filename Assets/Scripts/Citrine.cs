@@ -68,7 +68,7 @@ public class Citrine : PlayerObject
 
         splashArt.SetActive(false);
 
-        //Shield
+        //Shield from Citrine
         shieldFromCitrine = this.transform.GetChild(0).gameObject;
         shieldFromCitrine.SetActive(false);
     }

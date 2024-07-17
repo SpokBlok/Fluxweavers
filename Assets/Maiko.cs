@@ -9,10 +9,14 @@ public class MaikoScript : PlayerObject
     // Checkers for Maiko
     public bool inAquaHex; // For Maiko Passive and signatureMove Check
     HashSet<PlayerObject> maikoSelf = new HashSet<PlayerObject>();
+    GameObject shieldFromCitrine;
 
     // Start is called before the first frame update
     void Start()
     {
+        //Getting the managers
+        resourceScript = GameObject.FindObjectOfType<ResourceScript>();
+        phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         maikoSelf.Add(this);
 
         //Player Stats
@@ -72,11 +76,17 @@ public class MaikoScript : PlayerObject
         Debug.Log(splashArt);
 
         splashArt.SetActive(false);
+
+        //Shield from Citrine
+        shieldFromCitrine = this.transform.GetChild(0).gameObject;
+        shieldFromCitrine.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
+        //for Citrine Shield
+        makeShieldActive();
     }
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -160,5 +170,18 @@ public class MaikoScript : PlayerObject
             //Message here not enough mana
         }
         //range code here when implemented
+    }
+
+    //for Citrine shield
+    public void makeShieldActive()
+    {
+        if (shield == 1)
+        {
+            shieldFromCitrine.SetActive(true);
+        }
+        else
+        {
+            shieldFromCitrine.SetActive(false);
+        }
     }
 }
