@@ -25,11 +25,14 @@ public class CameraControl : MonoBehaviour
     private float maxOrthographicSize;
     private bool isFullMapInView = false;
 
+    public float clampedX;
+    public float clampedY;
+
     void Start()
     {
         cam = Camera.main;
+        maxOrthographicSize = 8;
         InitializeTiles(); // Initialize Tiles here
-        CalculateMaxOrthographicSize();
         CalculateCameraConstraints();
     }
 
@@ -37,6 +40,7 @@ public class CameraControl : MonoBehaviour
     {
         HandleMovement();
         HandleZoom();
+
     }
 
     void InitializeTiles()
@@ -83,6 +87,7 @@ public class CameraControl : MonoBehaviour
             float clampedX = Mathf.Clamp(cam.transform.position.x, mapMinX, mapMaxX);
             float clampedY = Mathf.Clamp(cam.transform.position.y, mapMinY, mapMaxY);
 
+            // Set the clamped camera position
             cam.transform.position = new Vector3(clampedX, clampedY, cam.transform.position.z);
         }
     }
@@ -132,41 +137,9 @@ public class CameraControl : MonoBehaviour
 
     void CalculateCameraConstraints()
     {
-        if (Tiles == null)
-        {
-            Debug.LogError("TilesCreationScript not initialized.");
-            return;
-        }
-
-        // Calculate camera's half-width and half-height based on orthographic size and aspect ratio
-        float cameraHalfWidth = cam.orthographicSize * cam.aspect;
-        float cameraHalfHeight = cam.orthographicSize;
-
-        // Calculate actual map bounds accounting for hexagon shape
-        float mapHalfWidth = (Tiles.returnColCount() - 1) * (hexWidth * 0.75f);
-        float mapHalfHeight = (Tiles.returnRowCount() - 1) * (hexHeight + hexHeight / 2f);
-
-        // Update clamp values for camera position based on new orthographic size
-        mapMinX = -mapHalfWidth + cameraHalfWidth;
-        mapMaxX = mapHalfWidth - cameraHalfWidth;
-        mapMinY = -mapHalfHeight + cameraHalfHeight;
-        mapMaxY = mapHalfHeight - cameraHalfHeight;
-    }
-
-    void CalculateMaxOrthographicSize()
-    {
-        if (Tiles == null)
-        {
-            Debug.LogError("TilesCreationScript not initialized.");
-            return;
-        }
-
-        float mapWidth = (Tiles.returnColCount() - 1) * (hexWidth * 0.75f);
-        float mapHeight = (Tiles.returnRowCount() - 1) * (hexHeight + hexHeight / 2f);
-
-        float maxOrthographicSizeBasedOnWidth = mapWidth / (2 * cam.aspect);
-        float maxOrthographicSizeBasedOnHeight = mapHeight / 2f;
-
-        maxOrthographicSize = Mathf.Max(maxOrthographicSizeBasedOnWidth, maxOrthographicSizeBasedOnHeight);
+        mapMinX = -(maxOrthographicSize - cam.orthographicSize) * cam.aspect;
+        mapMaxX = (maxOrthographicSize - cam.orthographicSize) * cam.aspect;
+        mapMinY = -(maxOrthographicSize - cam.orthographicSize) / (cam.aspect * 2);
+        mapMaxY = (maxOrthographicSize - cam.orthographicSize) / (cam.aspect * 2);
     }
 }
