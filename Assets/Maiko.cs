@@ -116,15 +116,12 @@ public class MaikoScript : PlayerObject
 
     public override void skillStatus(HashSet<PlayerObject> targets)
     {
-        // Mana Portion
-        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
-        {
-            StatusEffect effect = new StatusEffect();
-            //Target Calculation Goes Here
-            effect.instantiateAddIntEffect("movement", -1, 1, targets);
-            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-            Handler.addStatusEffect(effect);
-        }
+        //No need to check mana since mana is already checked in skillAttack
+        StatusEffect effect = new StatusEffect();
+        //Target Calculation Goes Here
+        effect.instantiateAddIntEffect("movement", -1, 1, targets);
+        StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+        Handler.addStatusEffect(effect);
 
     }
 
