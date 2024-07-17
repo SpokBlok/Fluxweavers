@@ -68,7 +68,7 @@ public class MaikoScript : PlayerObject
         signatureMoveStatusAffectsAOE = true;
 
         myAnimator = GetComponent<Animator>();
-        splashArt = GameObject.FindGameObjectWithTag("UltImage");
+        splashArt = GameObject.FindGameObjectWithTag("MaikoUltImage");
         Debug.Log(splashArt);
 
         splashArt.SetActive(false);
