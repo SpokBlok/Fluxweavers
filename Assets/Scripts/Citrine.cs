@@ -12,11 +12,14 @@ public class Citrine : PlayerObject
     HashSet<PlayerObject> citrineSelf = new  HashSet<PlayerObject>();
     GameObject shieldFromCitrine;
 
-
     // Start is called before the first frame update
     void Start()
     {
+        //Getting the managers
+        resourceScript = GameObject.FindObjectOfType<ResourceScript>();
+        phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         citrineSelf.Add(this);
+
         //Player Stats
         level = 1;
         armor = 8;
