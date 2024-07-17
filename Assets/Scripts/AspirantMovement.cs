@@ -280,10 +280,10 @@ public class AspirantMovement : MonoBehaviour
                 // if it is not occupied by any enemy
                 if (Tiles.Tiles[y,x] != null
                     && !AdjacentTiles.Contains(tile)
-                    && !phaseHandler.playerPositions.ContainsValue(tile)
                     && !phaseHandler.enemyPositions.ContainsValue(tile))
                 {
-                    bool isPassingCheckers = true;
+                    bool isPassingCheckers = !phaseHandler.playerPositions.ContainsValue(tile) ||
+                                              tile == new Vector2Int(currentYIndex, currentXIndex);
 
                     if(!isForPathFinding)
                     {
@@ -293,7 +293,7 @@ public class AspirantMovement : MonoBehaviour
                         if(isCheckedTile)
                             isCheckedAtLowerRange = CheckedTiles[tile] < range;
 
-                        isPassingCheckers = !isCheckedTile || isCheckedAtLowerRange;
+                        isPassingCheckers = isPassingCheckers && (!isCheckedTile || isCheckedAtLowerRange);
                     }
 
                     if (isPassingCheckers)
@@ -354,10 +354,8 @@ public class AspirantMovement : MonoBehaviour
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
 
-        range--;
-
         // if there is more "movement" left,
-        if (range > 0)
+        if (range > 1)
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
 
@@ -367,7 +365,7 @@ public class AspirantMovement : MonoBehaviour
                 if(Tile != new Vector2Int(yIndex, xIndex))
                 {
                     HashSet<Vector2Int> NewMountains;
-                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, false, out NewMountains));
+                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-1, false, out NewMountains));
 
                     UnreachableMountains.UnionWith(NewMountains);
                 }
@@ -376,8 +374,6 @@ public class AspirantMovement : MonoBehaviour
             // then add them to the current running list of adjacent tiles
             AdjacentTiles.UnionWith(NewTiles);
         }
-
-        AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
 
         return AdjacentTiles;
     }
