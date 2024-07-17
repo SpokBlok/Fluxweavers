@@ -192,7 +192,7 @@ public class PhasePlayerAspirant : PhaseBase
                         aspirantMovement.CheckedTiles = new Dictionary<Vector2Int, int>();
 
                         HashSet<Vector2Int> unreachableMountains;
-                        aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
+                        aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement, false,
                                                                                             out unreachableMountains);
 
                         ph.selectedPlayer.isMovementSkillActivated = true;

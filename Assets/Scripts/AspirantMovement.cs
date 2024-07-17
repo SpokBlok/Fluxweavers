@@ -223,7 +223,7 @@ public class AspirantMovement : MonoBehaviour
         return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range,
+    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range, bool isForPathFinding,
                                                 out HashSet<Vector2Int> UnreachableMountains)
     {
         UnreachableMountains = new HashSet<Vector2Int>();
@@ -241,7 +241,8 @@ public class AspirantMovement : MonoBehaviour
                 Vector2Int tile = DifferentLayerTiles[i];
                 AdjacentTiles.Add(tile);
 
-                CheckedTiles[tile] = range;
+                if(!isForPathFinding)
+                    CheckedTiles[tile] = range;
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
@@ -282,13 +283,20 @@ public class AspirantMovement : MonoBehaviour
                     && !phaseHandler.playerPositions.ContainsValue(tile)
                     && !phaseHandler.enemyPositions.ContainsValue(tile))
                 {
-                    bool isCheckedTile = CheckedTiles.ContainsKey(tile);
-                    bool isCheckedAtLowerRange = false;
+                    bool isPassingCheckers = true;
 
-                    if(isCheckedTile)
-                        isCheckedAtLowerRange = CheckedTiles[tile] < range;
+                    if(!isForPathFinding)
+                    {
+                        bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                        bool isCheckedAtLowerRange = false;
 
-                    if (!isCheckedTile || isCheckedAtLowerRange)
+                        if(isCheckedTile)
+                            isCheckedAtLowerRange = CheckedTiles[tile] < range;
+
+                        isPassingCheckers = !isCheckedTile || isCheckedAtLowerRange;
+                    }
+
+                    if (isPassingCheckers)
                     {
                         int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
 
@@ -315,12 +323,19 @@ public class AspirantMovement : MonoBehaviour
                         // if it was not yet considered to be a tile on a different layer
                         else if (!DifferentLayerTiles.Contains(tile))
                         {
-                            isCheckedAtLowerRange = false;
+                            
+                            if(!isForPathFinding)
+                            {
+                                bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                                bool isCheckedAtLowerRange = false;
 
-                            if(isCheckedTile)
-                                isCheckedAtLowerRange = CheckedTiles[tile] < (range - Math.Abs(currentLayer-tileLayer));
+                                if(isCheckedTile)
+                                    isCheckedAtLowerRange = CheckedTiles[tile] < (range - Math.Abs(currentLayer-tileLayer));
 
-                            if(!isCheckedTile || isCheckedAtLowerRange)
+                                isPassingCheckers = !isCheckedTile || isCheckedAtLowerRange;
+                            }
+
+                            if(isPassingCheckers)
                             {
                                 // check if it can be traversed given the "movement" left, if yes:
                                 if(Math.Abs(currentLayer-tileLayer) < range)
@@ -352,7 +367,7 @@ public class AspirantMovement : MonoBehaviour
                 if(Tile != new Vector2Int(yIndex, xIndex))
                 {
                     HashSet<Vector2Int> NewMountains;
-                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
+                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, false, out NewMountains));
 
                     UnreachableMountains.UnionWith(NewMountains);
                 }
@@ -403,7 +418,7 @@ public class AspirantMovement : MonoBehaviour
                 break;
 
             HashSet<Vector2Int> unreachableMountains;
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out unreachableMountains))
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, true, out unreachableMountains))
             {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 
