@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ public class AiHandler : MonoBehaviour
     private AiMovementLogic[] aiEntities;
     private Vector2Int[] aiComrades;
 
-    [SerializeField] private AspirantMovement aspirant;
+    [SerializeField] private GameObject[] aspirants;
     [SerializeField] private ResourceScript rs;
 
     public Dictionary<AiMovementLogic, bool> turnCheck;
@@ -19,6 +20,8 @@ public class AiHandler : MonoBehaviour
     {
         aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
         aiComrades = new Vector2Int[aiEntities.Count()];
+        aspirants = GameObject.FindGameObjectsWithTag("Player");
+        Debug.Log(aspirants.Length);
     }
 
     // Update is called once per frame
@@ -36,17 +39,21 @@ public class AiHandler : MonoBehaviour
             
     }
 
-    public IEnumerator MoveAi () {
-        Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
-        PlayerObject aspirantStats = aspirant.gameObject.GetComponent<PlayerObject>();
+    public IEnumerator MoveAi (HashSet<PlayerObject> aspirants) {
+        // AspirantMovement aspirant = aspirants[0].GetComponent<AspirantMovement>();
+        
+        AspirantMovement target = null;
+        PlayerObject aspirantStats;
         HashSet<Raccoon> AiWithEnemyInRange = new();
         // int attackCounter = 0;
 
         
         foreach (AiMovementLogic ai in aiEntities) {
+            target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
+            Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
 
             // Move Ai First
-            ai.Move(target, aiComrades);
+            ai.Move(targetPosition, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
             // yield return StartCoroutine(ai.Move(obstacles));
             UpdateObstacles();
@@ -56,27 +63,52 @@ public class AiHandler : MonoBehaviour
             Raccoon raccoonComponent = ai.gameObject.GetComponent<Raccoon>();
             HashSet<Vector2Int> neighbors = ai.GetAdjacentTiles((int) raccoonComponent.basicAttackRange);
      
-            if (neighbors.Contains(new Vector2Int(target.y, target.x))) {
-                Debug.Log(neighbors.Contains(new Vector2Int(target.y, target.x)));
+            if (neighbors.Contains(new Vector2Int(targetPosition.y, targetPosition.x))) {
                 AiWithEnemyInRange.Add(raccoonComponent);
             }
         }
 
-        Debug.Log(AiWithEnemyInRange.Count);
-
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
+        int manaPerRaccon = rs.enemyMana() / AiWithEnemyInRange.Count;
         float damageDealt = 0;
-        
+        Debug.Log(manaPerRaccon);
         foreach (Raccoon raccoon in AiWithEnemyInRange) {
-            // if (AiWithEnemyInRange.Contains(raccoon)) {
-            if (rs.enemyMana() - raccoon.skillMana > raccoon.basicAttackMana * AiWithEnemyInRange.Count)
+            AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
+            target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
+            aspirantStats = target.gameObject.GetComponent<PlayerObject>();
+
+            // Better to attack first instead of buff when able to attack
+            if (manaPerRaccon - raccoon.skillMana > raccoon.basicAttackMana)
                 raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
-                
-            damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
-            aspirantStats.IsAttacked(damageDealt);
+            
+            while (rs.enemyMana() > raccoon.basicAttackMana) {
+                damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
+                aspirantStats.IsAttacked(damageDealt);
+            }
         }
         
+    }
+
+    private PlayerObject GetClosestAspirant(AiMovementLogic enemyPosition, HashSet<PlayerObject> aspirantPositions) {
+        int currentMinimum = 10_000; // Some big number
+        Vector2Int enemy = new(enemyPosition.GetXIndex(), enemyPosition.GetYIndex());
+        PlayerObject closestAspirant = null;
+
+        foreach(PlayerObject aspirant in aspirantPositions) {
+
+            AspirantMovement movementScript = aspirant.GetComponent<AspirantMovement>();
+            Vector2Int aspirantPosition = new(movementScript.currentXIndex, movementScript.currentYIndex);
+            int distance = Math.Abs(aspirantPosition.x - enemy.x) + Math.Abs(aspirantPosition.y - enemy.y);
+
+            if (distance < currentMinimum) {
+                currentMinimum = distance;
+                closestAspirant = aspirant;
+            }
+        }
+
+        // If null?
+        return closestAspirant;
     }
 
     private void UpdateObstacles () {
