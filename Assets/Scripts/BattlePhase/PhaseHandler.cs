@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class PhaseHandler : MonoBehaviour
 {
-    PhaseBase currentState;
+    public PhaseBase currentState;
     public PhaseEnemyAspirant enemyAspirant = new PhaseEnemyAspirant();
     public PhasePlayerAspirant playerAspirant = new PhasePlayerAspirant();
     public PhaseEnemyFlux enemyFlux = new PhaseEnemyFlux();
@@ -19,8 +19,18 @@ public class PhaseHandler : MonoBehaviour
     public int playerManaCount;
     public int enemyManaCount;
 
-    public PlayerObject player;
-    public PlayerObject enemy;
+    public Dictionary<PlayerObject, Vector2Int> playerPositions;
+    public HashSet<PlayerObject> players;
+
+    public PlayerObject selectedPlayer;
+    public HashSet<Vector2Int> alliesInRange = new HashSet<Vector2Int>(); 
+
+    public Dictionary<PlayerObject, Vector2Int> enemyPositions;
+    public HashSet<PlayerObject> enemies;
+
+    public PlayerObject selectedEnemy;
+    public HashSet<Vector2Int> enemiesInRange = new HashSet<Vector2Int>();
+
     public ResourceScript rs;
     
 
@@ -32,9 +42,34 @@ public class PhaseHandler : MonoBehaviour
     
     void Start()
     {
-        
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerObject>();
-        enemy = GameObject.FindGameObjectWithTag("Enemy").GetComponent<PlayerObject>(); 
+        playerPositions = new Dictionary<PlayerObject, Vector2Int>();
+
+        players = new HashSet<PlayerObject>();
+        foreach(GameObject aspirant in GameObject.FindGameObjectsWithTag("Player"))
+        {
+            players.Add(aspirant.GetComponent<PlayerObject>());
+
+            AspirantMovement aspirantIndices = aspirant.GetComponent<AspirantMovement>();
+            int y = aspirantIndices.currentYIndex;
+            int x = aspirantIndices.currentXIndex;
+
+            playerPositions[aspirant.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
+        }
+
+        enemyPositions = new Dictionary<PlayerObject, Vector2Int>();
+
+        enemies = new HashSet<PlayerObject>();
+        foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+        {
+            enemies.Add(enemy.GetComponent<PlayerObject>());
+
+            AiMovementLogic enemyIndices = enemy.GetComponent<AiMovementLogic>();
+            int y = enemyIndices.GetYIndex();
+            int x = enemyIndices.GetXIndex();
+
+            enemyPositions[enemy.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
+        }
+
         rs = GameObject.FindObjectOfType<ResourceScript>();
         
         //Stores the position of the entities for hex effects

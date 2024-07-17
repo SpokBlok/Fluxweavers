@@ -15,19 +15,7 @@ public class PhaseRoundEnd : PhaseBase
         ph.rs.roundStart(ph.currentRound);
         ph.stateText.text = "Round End";
         
-        if (ph.currentRound%2==0) 
-            nextState = ph.playerFlux;
-        else
-            nextState = ph.enemyFlux;
-
-        //Tile effects for end of round shenanigans
-        foreach((PlayerObject, int, int) tuple in ph.entityPositions) {
-            PlayerObject entity = tuple.Item1;
-            int yPos = tuple.Item2;
-            int xPos = tuple.Item3;
-            Hex occupiedHex = ph.tcs.Tiles[yPos,xPos].GetComponent<Hex>();
-            occupiedHex.TerrainEffect(entity);
-        }
+        nextState = ph.playerFlux;
         
         onRoundEnd?.Invoke();
     }
