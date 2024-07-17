@@ -206,7 +206,10 @@ public class PhasePlayerAspirant : PhaseBase
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (ph.selectedPlayer != null)
-                ph.selectedPlayer.TogglePlayerSelection();
+            {
+                ph.selectedPlayer.MoveCheck();
+                ph.selectedPlayer.TogglePlayerSelection();            
+            }
 
             ph.SwitchState(nextState);
         }

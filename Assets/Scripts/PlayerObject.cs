@@ -249,13 +249,6 @@ public class PlayerObject : MonoBehaviour
         else
         {
             AspirantMovement aspirant = GetComponent<AspirantMovement>();
-            // if they are not in the position they are on in the beginning of the round
-            if (aspirant.currentXIndex != aspirant.originalXIndex ||
-                aspirant.currentYIndex != aspirant.originalYIndex)
-            {
-                aspirant.originalXIndex = aspirant.currentXIndex;
-                aspirant.originalYIndex = aspirant.currentYIndex;
-            }
             
             phaseHandler.selectedPlayer = null;
             GetComponent<SpriteRenderer>().sprite = normal;
