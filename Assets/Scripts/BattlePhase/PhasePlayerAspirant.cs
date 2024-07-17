@@ -30,38 +30,116 @@ public class PhasePlayerAspirant : PhaseBase
         {
             Debug.LogError("TilesCreationScript not found in the scene.");
         }
+
+        // reset each player's actionsUsed
+        foreach (PlayerObject aspirant in ph.players)
+            aspirant.actionsUsed = new List<string>();
     }
 
     public override void UpdateState(PhaseHandler ph)
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (ph.selectedPlayer != null)
         {
-            if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
+            int usedActionsCount = ph.selectedPlayer.actionsUsed.Count;
+            string lastAction = "null";
+            AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
+            bool isPlayerInStartPosition = true;
+
+            if (usedActionsCount > 0)
             {
-                selectedAttack = "BasicAttack";
-                // Get current position indices from AspirantMovement script
-                AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
+                lastAction = ph.selectedPlayer.actionsUsed[usedActionsCount-1];
+
+                int origX = aspirantMovement.originalXIndex;
+                int origY = aspirantMovement.originalYIndex;
+                int currentX = aspirantMovement.currentXIndex;
+                int currentY = aspirantMovement.currentYIndex;
+                isPlayerInStartPosition = (origX == currentX) && (origY == currentY);
+            }
+
+            if ( usedActionsCount == 0 ||
+                ( usedActionsCount == 1 && (lastAction.Equals("movement") || isPlayerInStartPosition ) ) ||
+                ( usedActionsCount == 2 && lastAction.Equals("ability") ) )
+            {
+                if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
+                {
+                    selectedAttack = "BasicAttack";
+                    // Get current position indices from AspirantMovement script
+                    if (aspirantMovement != null)
+                    {
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
+                        int currentXIndex = aspirantMovement.currentXIndex;
+                        int currentYIndex = aspirantMovement.currentYIndex;
+
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
+                                                            out ph.enemiesInRange, out emptyAllies);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if(tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+
+                        ph.selectedPlayer.isMovementSkillActivated = false;
+                    }
+                    else
+                    {
+                        Debug.LogError("AspirantMovement script not found on PlayerObject.");
+                    }
+                }
+                
+                else if (Input.GetKeyDown(KeyCode.S) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
+                {
+                    // Handle skill logic
+                    // Placeholder: Insert your skill logic here
+                }
+
+                else if (Input.GetKeyDown(KeyCode.U) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
+                {
+                    // Handle signature move logic
+                    // Placeholder: Insert your signature move logic here
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.actionsUsed.Contains("movement"))
+            {
                 if (aspirantMovement != null)
                 {
-                    int currentXIndex = aspirantMovement.currentXIndex;
-                    int currentYIndex = aspirantMovement.currentYIndex;
+                    ph.enemiesInRange = new HashSet<Vector2Int>();
 
-                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
-                                                        out ph.enemiesInRange);
-
-                    // un-highlight the previous adjacent tiles if there are any
-                    if(tiles.GetAdjacentTilesCount() > 0)
+                    if (ph.selectedPlayer.isMovementSkillActivated)
+                    {
+                        ph.selectedPlayer.isMovementSkillActivated = false;
                         tiles.HighlightAdjacentTiles(false);
+                    }
 
-                    // set the new adjacent tiles and highlight them
-                    tiles.SetAdjacentTiles(availableTiles);
-                    tiles.HighlightAdjacentTiles(true);
+                    else
+                    {
+                        int x = aspirantMovement.originalXIndex;
+                        int y = aspirantMovement.originalYIndex;
+
+                        HashSet<Vector2Int> unreachableMountains;
+                        aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
+                                                                                            out unreachableMountains);
+
+                        ph.selectedPlayer.isMovementSkillActivated = true;
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if(tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
                 }
                 else
                 {
                     Debug.LogError("AspirantMovement script not found on PlayerObject.");
                 }
             }
+            //else if ph.selectedPlayer.actionsUsed.Contains("movement") {movement locked! message}
         }
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -78,8 +156,9 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.skillStatusAffectsEnemies)
                     {
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
-                                    out ph.enemiesInRange);
+                                    out ph.enemiesInRange, out emptyAllies);
 
                         // un-highlight the previous adjacent tiles if there are any
                         if (tiles.GetAdjacentTilesCount() > 0)
@@ -92,7 +171,8 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.skillStatusAffectsAllies)
                     {
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
+                        HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange, out emptyEnemies,
                                     out ph.alliesInRange);
 
                         // un-highlight the previous adjacent tiles if there are any
@@ -102,6 +182,8 @@ public class PhasePlayerAspirant : PhaseBase
                         // set the new adjacent tiles and highlight them
                         tiles.SetAdjacentTiles(availableTiles);
                         tiles.HighlightAdjacentTiles(true);
+
+
                     }
                 }
                 else
@@ -125,8 +207,9 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>(); 
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
-                                    out ph.enemiesInRange);
+                                    out ph.enemiesInRange, out emptyAllies);
 
                         // un-highlight the previous adjacent tiles if there are any
                         if (tiles.GetAdjacentTilesCount() > 0)
@@ -139,7 +222,8 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsAllies)
                     {
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
+                        HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange, out emptyEnemies,
                                     out ph.alliesInRange);
 
                         // un-highlight the previous adjacent tiles if there are any
@@ -160,15 +244,51 @@ public class PhasePlayerAspirant : PhaseBase
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (ph.selectedPlayer != null)
+                ph.selectedPlayer.TogglePlayerSelection();
+
             ph.SwitchState(nextState);
         }
     }
 
-    HashSet<Vector2Int> GetAdjacentTiles(PhaseHandler ph, int xIndex, int yIndex, int range, out HashSet<Vector2Int> EnemiesInRange)
+    HashSet<Vector2Int> GetAdjacentTiles(PhaseHandler ph, int xIndex, int yIndex, int range, out HashSet<Vector2Int> EnemiesInRange, out HashSet<Vector2Int> AlliesInRange)
     {
-        EnemiesInRange = new HashSet<Vector2Int>();
-
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
+        EnemiesInRange = new HashSet<Vector2Int>();
+        AlliesInRange = new HashSet<Vector2Int>();
+        
+        if (range == 0) // indicates that the attack / status move is global
+        {
+            // add all tiles
+            for (int i = 0; i < tiles.returnRowCount(); i++)
+            {
+                for (int j = 0; j < tiles.returnColCount(); j++)
+                {
+                    try
+                    {
+                        Hex hexTile = tiles.Tiles[i, j].GetComponent<Hex>();
+
+                        AdjacentTiles.Add(new Vector2Int(i,j));
+                    }
+                    catch (Exception){}
+                }
+            }
+
+            // add all enemies
+            foreach(Vector2Int enemy in ph.enemyPositions.Values)
+            {
+                EnemiesInRange.Add(enemy);
+            }
+
+            // add all allies
+            foreach(Vector2Int ally in ph.playerPositions.Values)
+            {
+                AlliesInRange.Add(ally);
+            }
+            
+            return AdjacentTiles;
+        }
+
         AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
 
         // setting up steps from current tile to adjacent tiles
@@ -205,6 +325,10 @@ public class PhasePlayerAspirant : PhaseBase
                     {
                         EnemiesInRange.Add(tile);
                     }
+                    if (ph.playerPositions.ContainsValue(tile))
+                    {
+                        AlliesInRange.Add(tile);
+                    }
                 }
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
@@ -223,9 +347,11 @@ public class PhasePlayerAspirant : PhaseBase
                 if(Tile != new Vector2Int(yIndex, xIndex))
                 {
                     HashSet<Vector2Int> FurtherEnemies;
-                    NewTiles.UnionWith(GetAdjacentTiles(ph, Tile.y, Tile.x, range, out FurtherEnemies));
+                    HashSet<Vector2Int> FurtherAllies;
+                    NewTiles.UnionWith(GetAdjacentTiles(ph, Tile.y, Tile.x, range, out FurtherEnemies, out FurtherAllies));
 
                     EnemiesInRange.UnionWith(FurtherEnemies);
+                    AlliesInRange.UnionWith(FurtherAllies);
                 }
             }
 
@@ -250,11 +376,9 @@ public class PhasePlayerAspirant : PhaseBase
         ph.selectedEnemy = null;
 
         Debug.Log("Basic Attack is Used on Enemy");
-        if (ph.selectedPlayer.basicAttackMana > ph.rs.playerManaCount)
-        {
-            tiles.HighlightAdjacentTiles(false);
-            ph.enemiesInRange = new HashSet<Vector2Int>();
-        }
+
+        tiles.HighlightAdjacentTiles(false);
+        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 
     public void SkillAttackDamage(PhaseHandler ph)
@@ -295,35 +419,30 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
-
             if (ph.selectedPlayer.skillStatusAffectsAllies)
             {
                 if (ph.selectedPlayer.skillStatusAffectsSingle)
                 {
-                    targets.Add(ph.selectedEnemy);
+                    // no skill exists that affects single ally atm
                 }
                 if (ph.selectedPlayer.skillStatusAffectsAOE)
                 {
-                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.enemyPositions)
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.playerPositions)
                     {
-                        if (ph.enemiesInRange.Contains(entry.Value))
+                        if (ph.alliesInRange.Contains(entry.Value))
                         {
                             targets.Add(entry.Key);
                         }
                     }
                 }
             }
-
             ph.selectedPlayer.skillStatus(targets);
             Debug.Log("Skill Attack Debuffed Enemy/ies");
         }
 
         ph.selectedEnemy = null;
-        if (ph.selectedPlayer.skillMana > ph.rs.playerManaCount)
-        {
-            tiles.HighlightAdjacentTiles(false);
-            ph.enemiesInRange = new HashSet<Vector2Int>();
-        }
+        tiles.HighlightAdjacentTiles(false);
+        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 
     public void SignatureMoveAttackDamage(PhaseHandler ph)
@@ -364,15 +483,30 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
+
+            if (ph.selectedPlayer.signatureMoveAffectsAllies)
+            {
+                if (ph.selectedPlayer.signatureMoveStatusAffectsSingle)
+                {
+                    // dne
+                }
+                if (ph.selectedPlayer.signatureMoveStatusAffectsAOE)
+                {
+                    foreach (KeyValuePair<PlayerObject, Vector2Int> entry in ph.playerPositions)
+                    {
+                        if (ph.alliesInRange.Contains(entry.Value))
+                        {
+                            targets.Add(entry.Key);
+                        }
+                    }
+                }
+            }
             ph.selectedPlayer.signatureMoveStatus(targets);
             Debug.Log("Signature Move Debuffed Enemies!");
         }
 
         ph.selectedEnemy = null;
-        if (ph.selectedPlayer.signatureMoveMana > ph.rs.playerManaCount)
-        {
-            tiles.HighlightAdjacentTiles(false);
-            ph.enemiesInRange = new HashSet<Vector2Int>();
-        }
+        tiles.HighlightAdjacentTiles(false);
+        ph.enemiesInRange = new HashSet<Vector2Int>();
     }
 }
