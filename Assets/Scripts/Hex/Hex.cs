@@ -9,10 +9,16 @@ using UnityEngine.UIElements;
 
 public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDropHandler, IPointerDownHandler
 {
+    public enum HexEffects{
+        Scorched,
+        Desecrated
+    }
     public SpriteRenderer hexSprite;   
     private FluxInterface fi;
     public int terrainDuration;
     public FluxNames currentFlux;
+    public int effectDuration;
+    public HexEffects currentEffect;
     public bool clickToCast;
     [SerializeField] Sprite defaultSprite;
     private EnvironmentInterface ei;

@@ -37,12 +37,13 @@ public class Blaze : Flux
         damage = 40;
         tileLength = 3;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Rains a volley of fireballs at three adjacent tiles, dealing {damage} Magic DMG to units and reduces the duration of environments by 1 Round.";
     }
 
     public override void SpellCast(Hex hex) {
         hex.AugmentDuration(-1);
         PlayerObject aspirant = hex.HexOccupant();
-        aspirant.IsAttacked(damage);
+        if(aspirant != null)
+            aspirant.IsAttacked(damage);
     }
 }

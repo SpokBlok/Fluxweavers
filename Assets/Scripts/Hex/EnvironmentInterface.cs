@@ -9,7 +9,6 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Unity.Collections;
 using System.Linq.Expressions;
-using UnityEngine.UIElements;
 public class EnvironmentInterface : MonoBehaviour
 {
     public delegate void DisableHexClick();
@@ -25,6 +24,7 @@ public class EnvironmentInterface : MonoBehaviour
     [SerializeField] Sprite defaultSprite;
     private int tilesLeft;
     private Flux currentFlux;
+    private Sprite currentFluxSprite;
     private List<Hex> castedHexes;
 
     [SerializeField] FluxInterface fi;
@@ -39,13 +39,14 @@ public class EnvironmentInterface : MonoBehaviour
 
     //Initial hex drop
     public void SetFlux(Hex hex, Flux flux){
+        
+        currentFlux = flux;
+        tilesLeft = flux.tileLength - 1;
+        castedHexes.Add(hex);
+        
         if(flux.type == Flux.Type.Environment) {
-            currentFlux = flux;
-            castedHexes.Add(hex);
-            tilesLeft = flux.tileLength - 1; // Number of tiles the user can paint over
-            UpdateText();
-            hex.hexSprite.sprite = SetSprite(hex, flux);
-            //hex.hexSprite.sprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+            currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+            hex.hexSprite.sprite = currentFluxSprite;
             hex.terrainDuration = flux.duration;
             hex.currentFlux = flux.fluxCode;
         } else {
@@ -53,6 +54,7 @@ public class EnvironmentInterface : MonoBehaviour
         }
         
         if(tilesLeft > 0){
+            UpdateText();
             foreach(Hex adjHex in GetAdjacentHex(hex)){
                 adjHex.hexSprite.color = Color.yellow;
                 adjHex.clickToCast = true;
@@ -65,10 +67,14 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
+        if(currentFlux.type == Flux.Type.Environment) {
+            hex.hexSprite.sprite = currentFluxSprite;
+            hex.terrainDuration = currentFlux.duration;
+            hex.currentFlux = currentFlux.fluxCode;
+        } else {
+            currentFlux.SpellCast(hex);
+        }
 
-        hex.hexSprite.sprite = SetSprite(hex, currentFlux);
-        hex.currentFlux = currentFlux.fluxCode;
-        hex.terrainDuration = currentFlux.duration;
         castedHexes.Add(hex);
         onDisableHexClick?.Invoke();
         tilesLeft -= 1;

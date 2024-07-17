@@ -26,15 +26,15 @@ public class Regrowth : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
         fluxName = "Regrowth";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
+        fluxCode = FluxNamespace.FluxNames.Regrowth;
+        type = Type.Environment;
+        duration = 2;
+        manaCost = 12;
+        tileLength = 4;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Create a Forest on {tileLength} adjacent tiles. Lasts {duration} Rounds. Traversing within Forests within does not consume Movement.";
     }
 }

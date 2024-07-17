@@ -41,6 +41,7 @@ public class Singe : Flux
     }
     public override void SpellCast(Hex hex) {
         PlayerObject aspirant = hex.HexOccupant();
-        aspirant.IsAttacked(damage);
+        if(aspirant != null)
+            aspirant.IsAttacked(damage);
     }
 }

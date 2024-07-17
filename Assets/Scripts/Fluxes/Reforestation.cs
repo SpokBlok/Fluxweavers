@@ -26,15 +26,14 @@ public class Reforestation : Flux
     public String description;
 
     */
-    float damage;
-
     void Awake() {
         fluxName = "Reforestation";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
+        fluxCode = FluxNamespace.FluxNames.Reforestation;
+        type = Type.Environment;
+        duration = 3;
+        manaCost = 12;  
+        tileLength = 6;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Create a Forest on {tileLength} adjacent tiles. Lasts {duration} Rounds. Traversing within Forests within does not consume Movement.";
     }
 }
