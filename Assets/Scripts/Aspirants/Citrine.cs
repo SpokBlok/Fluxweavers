@@ -15,6 +15,8 @@ public class Citrine : PlayerObject
     // Start is called before the first frame update
     void Start()
     {
+        resourceScript = GameObject.FindObjectOfType<ResourceScript>();
+        phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         citrineSelf.Add(this);
         //Player Stats
         level = 1;

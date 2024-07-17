@@ -154,8 +154,8 @@ MonoBehaviour:
   currentRound: 0
   playerManaCount: 0
   enemyManaCount: 0
-  player: {fileID: 0}
-  enemy: {fileID: 0}
+  selectedPlayer: {fileID: 0}
+  selectedEnemy: {fileID: 0}
   rs: {fileID: 1753433710}
   stateText: {fileID: 828863071}
 --- !u!4 &106829297
@@ -378,6 +378,14 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 713427250919861106, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 848487921229932551, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 989342982866929869, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -466,9 +474,17 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2017637774074339028, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2229962374526438836, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2648651344548992912, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -489,6 +505,10 @@ PrefabInstance:
     - target: {fileID: 2907763768982049669, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3109143642555724590, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 3183285655675083094, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -525,6 +545,10 @@ PrefabInstance:
     - target: {fileID: 3573519862670262468, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3889030147885913127, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 3966435541672076791, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -578,6 +602,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4500136815956927610, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4688647615696353030, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -609,10 +637,22 @@ PrefabInstance:
     - target: {fileID: 4841819441004541043, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4993696315280348345, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5091630441306244064, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5157112033300076458, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5221288133248217876, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 5281905555589916510, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -625,6 +665,10 @@ PrefabInstance:
     - target: {fileID: 5921033583982111342, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5945905082769803615, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 6122609306486768288, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -662,9 +706,21 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6543720576772147077, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6728407381277519329, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6759831961858985680, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6966371369396490225, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7192833337605222234, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -681,6 +737,14 @@ PrefabInstance:
     - target: {fileID: 7192833337605222234, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7267326643686163746, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7352342022774234963, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7632695282112936941, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -698,6 +762,10 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8332062456539688936, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8540026605236156430, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -713,6 +781,10 @@ PrefabInstance:
     - target: {fileID: 8540026605236156430, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8551308290237972059, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8739334460643351269, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -777,6 +849,10 @@ PrefabInstance:
     - target: {fileID: 9011538154036856915, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Color.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9222363201102969219, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1449,6 +1525,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828863069}
   m_CullTransparentMesh: 1
+--- !u!1 &903350485 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+  m_PrefabInstance: {fileID: 1874413891}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &986821558
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2106,6 +2187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85fad85fcf2a5d942b3adc88213ba948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1481221386
 Transform:
   m_ObjectHideFlags: 0
@@ -2505,6 +2587,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5fbb3d6673e5464d9c97bb16fc9b252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerManaCount: 0
+  enemyManaCount: 0
 --- !u!4 &1753433711
 Transform:
   m_ObjectHideFlags: 0
@@ -2716,17 +2800,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8125132267018391186, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1874413898}
+    - targetCorrespondingSourceObject: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1874413899}
   m_SourcePrefab: {fileID: 100100000, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
 --- !u!114 &1874413892 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
   m_PrefabInstance: {fileID: 1874413891}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 903350485}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
@@ -2737,6 +2828,106 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
   m_PrefabInstance: {fileID: 1874413891}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1874413898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903350485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb12d13bd8b81684eb9474855f3b86c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  level: 0
+  armor: 0
+  armorPenetration: 0
+  magicResistance: 0
+  magicPenetration: 0
+  attackStat: 0
+  movement: 0
+  control: 0
+  maxHealth: 0
+  health: 0
+  shield: 0
+  basicAttackDamage: 0
+  basicAttackMana: 0
+  basicAttackRange: 3
+  skillDamage: 0
+  skillMana: 0
+  skillRange: 0
+  signatureMoveDamage: 0
+  signatureMoveMana: 0
+  signatureMoveRange: 0
+  hasMoved: 0
+  isSelected: 0
+  isBasicAttackPhysical: 0
+  isSkillAttackPhysical: 0
+  skillAttackExists: 0
+  skillStatusExists: 0
+  isSignatureMoveAttackPhysical: 0
+  signatureMoveAttackExists: 0
+  signatureMoveStatusExists: 0
+  skillStatusAffectsEnemies: 0
+  skillStatusAffectsAllies: 0
+  signatureMoveAffectsEnemies: 0
+  signatureMoveAffectsAllies: 0
+  skillStatusAffectsSingle: 0
+  skillStatusAffectsAOE: 0
+  signatureMoveStatusAffectsSingle: 0
+  signatureMoveStatusAffectsAOE: 0
+  resourceScript: {fileID: 0}
+  mana: 0
+  phaseHandler: {fileID: 0}
+  normal: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  selected: {fileID: -5177388603050735206, guid: 71ebafeef3c03457483266a33ab2b270, type: 3}
+  inTerraHex: 0
+--- !u!61 &1874413899
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 903350485}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1001 &2026314773
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3006,6 +3197,14 @@ PrefabInstance:
     - target: {fileID: 6137268053167940411, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6543720576772147077, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6759831961858985680, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_LocalPosition.x
