@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -8,10 +9,11 @@ public class Dedra : PlayerObject
 {   // Start is called before the first frame update
     public bool wasOnFolia;
     public int checkerForExit;
-    public int skillCounter = 0;
-    public bool isSkillStillActive = false; // checks if skill is still active (should last only 3 turns)
-    public bool isSignatureMoveActive = false; // checks if signature move was activated
+    public int skillCounter;
+    public bool isSkillStillActive; // checks if skill is still active (should last only 3 turns)
+    public bool isSignatureMoveActive; // checks if signature move was activated
     HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
+    public float calculatedBasicAttackDamage;
 
     void Start()
     {
@@ -35,7 +37,7 @@ public class Dedra : PlayerObject
         basicAttackRange = 3;
 
         skillMana = 5;
-        skillRange = 6;
+        skillRange = 0;
         signatureMoveMana = 12;
 
         //checkers
@@ -52,17 +54,26 @@ public class Dedra : PlayerObject
         signatureMoveAffectsAllies = true;
         signatureMoveStatusAffectsSingle = true;
 
+        // skill and signature move activation checkers
+        isSkillStillActive = false;
+        isSignatureMoveActive = true;
+
+        // variables specific to dedra
+        skillCounter = 0;
+        calculatedBasicAttackDamage = 0;
     }
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
-        float calculatedBasicAttackDamage = 0;
+
         if (!isSkillStillActive && !isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
         {
             basicAttackDamage = attackStat;
             basicAttackMana = 4;
             basicAttackRange = 3;
-            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor) / 100;
+            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
+            skillDamage = attackStat * 1.65f;
+            Debug.Log("WHAT THE FUCK WHY NOT WORK");
         }
 
         else if (isSkillStillActive)
@@ -74,23 +85,26 @@ public class Dedra : PlayerObject
             }
 
             // else,  basic attacks deal 165% of the attackStat
-            else 
+            else if (enemyCurrentHealth > enemyMaximumHealth * 0.35f)
             {
                 skillDamage = attackStat * 1.65f;
             }
-
-            calculatedBasicAttackDamage = skillDamage;
+            Debug.Log("fuck u");
+            calculatedBasicAttackDamage = skillDamage * (100 - enemyArmor + armorPenetration) / 100;
             skillCounter ++;
         }
 
         else if (isSignatureMoveActive)
         {
-            control += 1;
-            basicAttackMana -= 2;
-            basicAttackRange += 1;
+            control = 3;
+            basicAttackMana = 2;
+            basicAttackRange = 4;
             isSignatureMoveActive = false;
+            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
+            Debug.Log("sugma");
         }
         
+    
         resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
         return calculatedBasicAttackDamage; 
     }
@@ -108,7 +122,7 @@ public class Dedra : PlayerObject
 
             StatusEffect armorPenetrationEffect = new StatusEffect();
             //Target Calculation Goes Here
-            armorPenetrationEffect.instantiateMultiFloatEffect("armorPenetration", 1.2f, 3, targets);
+            armorPenetrationEffect.instantiateMultiIntEffect("armorPenetration", 1.2f, 3, dedraSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(armorPenetrationEffect);
         } 
