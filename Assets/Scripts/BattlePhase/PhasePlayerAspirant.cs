@@ -15,10 +15,7 @@ public class PhasePlayerAspirant : PhaseBase
 
     public override void EnterState(PhaseHandler ph)
     {
-        if (ph.currentRound % 2 == 0)
-            nextState = ph.enemyAspirant;
-        else
-            nextState = ph.roundEnd;
+        nextState = ph.enemyAspirant;
 
         ph.stateText.text = "Player Aspirant";
 
