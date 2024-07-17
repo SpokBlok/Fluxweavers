@@ -10,6 +10,7 @@ public class PhasePlayerAspirant : PhaseBase
     PhaseBase nextState;
     private TilesCreationScript tiles; 
     private HashSet<Vector2Int> availableTiles;
+    private Dictionary<Vector2Int, int> CheckedTiles;
     public String selectedAttack;
 
     public override void EnterState(PhaseHandler ph)
@@ -52,6 +53,8 @@ public class PhasePlayerAspirant : PhaseBase
                     int currentXIndex = aspirantMovement.currentXIndex;
                     int currentYIndex = aspirantMovement.currentYIndex;
 
+                    CheckedTiles = new Dictionary<Vector2Int,int>();
+
                     availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
                                                         out ph.enemiesInRange, out emptyAllies);
 
@@ -79,6 +82,8 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     int currentXIndex = aspirantMovement.currentXIndex;
                     int currentYIndex = aspirantMovement.currentYIndex;
+
+                    CheckedTiles = new Dictionary<Vector2Int,int>();
 
                     if (ph.selectedPlayer.skillStatusAffectsEnemies)
                     {
@@ -109,6 +114,8 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.SetAdjacentTiles(availableTiles);
                         tiles.HighlightAdjacentTiles(true);
                     }
+
+                    ph.selectedPlayer.isMovementSkillActivated = false;
                 }
                 else
                 {
@@ -125,6 +132,8 @@ public class PhasePlayerAspirant : PhaseBase
                     int currentXIndex = aspirantMovement.currentXIndex;
                     int currentYIndex = aspirantMovement.currentYIndex;
 
+                    CheckedTiles = new Dictionary<Vector2Int,int>();
+                    
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>(); 
@@ -154,6 +163,8 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.SetAdjacentTiles(availableTiles);
                         tiles.HighlightAdjacentTiles(true);
                     }
+
+                    ph.selectedPlayer.isMovementSkillActivated = false;
                 }
                 else
                 {
@@ -177,6 +188,8 @@ public class PhasePlayerAspirant : PhaseBase
                     {
                         int x = aspirantMovement.originalXIndex;
                         int y = aspirantMovement.originalYIndex;
+
+                        aspirantMovement.CheckedTiles = new Dictionary<Vector2Int, int>();
 
                         HashSet<Vector2Int> unreachableMountains;
                         aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement,
@@ -272,21 +285,29 @@ public class PhasePlayerAspirant : PhaseBase
 
             try
             {
-                // if it is inside the hex map,
-                // if it was not yet determined to be an adjacent tile, and
-                // **if it is not occupied by any enemy
+                // if it is inside the hex map, and
+                // if it was not yet determined to be an adjacent tile
                 if (tiles.Tiles[y,x] != null && !AdjacentTiles.Contains(tile))
                 {
-                    // add to collection of adjacent tiles
-                    AdjacentTiles.Add(tile);
+                    bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                    bool isCheckedAtLowerRange = false;
 
-                    if (ph.enemyPositions.ContainsValue(tile))
+                    if(isCheckedTile)
+                        isCheckedAtLowerRange = CheckedTiles[tile] < range;
+
+                    if (!isCheckedTile || isCheckedAtLowerRange)
                     {
-                        EnemiesInRange.Add(tile);
-                    }
-                    if (ph.playerPositions.ContainsValue(tile))
-                    {
-                        AlliesInRange.Add(tile);
+                        // add to collection of adjacent tiles
+                        AdjacentTiles.Add(tile);
+
+                        if (ph.enemyPositions.ContainsValue(tile))
+                        {
+                            EnemiesInRange.Add(tile);
+                        }
+                        if (ph.playerPositions.ContainsValue(tile))
+                        {
+                            AlliesInRange.Add(tile);
+                        }
                     }
                 }
             }

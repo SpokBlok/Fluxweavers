@@ -29,6 +29,7 @@ public class AspirantMovement : MonoBehaviour
     private PhaseHandler phaseHandler;
 
     public HashSet<Vector2Int> AvailableTiles;
+    public Dictionary<Vector2Int, int> CheckedTiles;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -54,8 +55,8 @@ public class AspirantMovement : MonoBehaviour
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
 
-        HashSet<Vector2Int> unreachableMountains;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
+        AvailableTiles = new HashSet<Vector2Int>();
+        CheckedTiles = new Dictionary<Vector2Int, int>();
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -240,6 +241,8 @@ public class AspirantMovement : MonoBehaviour
                 Vector2Int tile = DifferentLayerTiles[i];
                 AdjacentTiles.Add(tile);
 
+                CheckedTiles[tile] = range;
+
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
             }
@@ -279,38 +282,57 @@ public class AspirantMovement : MonoBehaviour
                     && !phaseHandler.playerPositions.ContainsValue(tile)
                     && !phaseHandler.enemyPositions.ContainsValue(tile))
                 {
-                    int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
+                    bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                    bool isCheckedAtLowerRange = false;
 
-                    // if same layer
-                    if(tileLayer == currentLayer)
+                    if(isCheckedTile)
+                        isCheckedAtLowerRange = CheckedTiles[tile] < range;
+
+                    if (!isCheckedTile || isCheckedAtLowerRange)
                     {
-                        // add to collection of adjacent tiles
-                        AdjacentTiles.Add(tile);
+                        int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
 
-                        // if it was determined as a tile from a different layer before,
-                        if (DifferentLayerTiles.Contains(tile))
+                        // if same layer
+                        if(tileLayer == currentLayer)
                         {
-                            int i = DifferentLayerTiles.IndexOf(tile);
+                            // add to collection of adjacent tiles
+                            AdjacentTiles.Add(tile);
 
-                            // remove it from that list
-                            DifferentLayerTiles.RemoveAt(i);
-                            RequiredExtraMovement.RemoveAt(i);
+                            CheckedTiles[tile] = range;
+
+                            // if it was determined as a tile from a different layer before,
+                            if (DifferentLayerTiles.Contains(tile))
+                            {
+                                int i = DifferentLayerTiles.IndexOf(tile);
+
+                                // remove it from that list
+                                DifferentLayerTiles.RemoveAt(i);
+                                RequiredExtraMovement.RemoveAt(i);
+                            }
                         }
-                    }
 
-                    // else (different layer)
-                    // if it was not yet considered to be a tile on a different layer
-                    else if (!DifferentLayerTiles.Contains(tile))
-                    {
-                        // check if it can be traversed given the "movement" left, if yes:
-                        if(Math.Abs(currentLayer-tileLayer) < range)
+                        // else (different layer)
+                        // if it was not yet considered to be a tile on a different layer
+                        else if (!DifferentLayerTiles.Contains(tile))
                         {
-                            // add to collection of tiles on a different layer
-                            DifferentLayerTiles.Add(tile);
-                            RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
+                            isCheckedAtLowerRange = false;
+
+                            if(isCheckedTile)
+                                isCheckedAtLowerRange = CheckedTiles[tile] < (range - Math.Abs(currentLayer-tileLayer));
+
+                            if(!isCheckedTile || isCheckedAtLowerRange)
+                            {
+                                // check if it can be traversed given the "movement" left, if yes:
+                                if(Math.Abs(currentLayer-tileLayer) < range)
+                                {
+                                    // add to collection of tiles on a different layer
+                                    DifferentLayerTiles.Add(tile);
+                                    RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
+                                }
+                                else
+                                    UnreachableMountains.Add(tile);
+                            }
                         }
-                        else
-                            UnreachableMountains.Add(tile);
                     }
                 }
             }
@@ -327,8 +349,7 @@ public class AspirantMovement : MonoBehaviour
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
             {
-                if(Tile != new Vector2Int(originalYIndex, originalXIndex) ||
-                    Tile != new Vector2Int(yIndex, xIndex))
+                if(Tile != new Vector2Int(yIndex, xIndex))
                 {
                     HashSet<Vector2Int> NewMountains;
                     NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
