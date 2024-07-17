@@ -52,6 +52,8 @@ public class PlayerObject : MonoBehaviour
     void Update()
     {
     }
+
+    //Adds healths
     public void AddHealth(float healing){
         health += healing;
         if(health > maxHealth)

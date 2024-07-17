@@ -88,6 +88,7 @@ public class EnvironmentInterface : MonoBehaviour
             return hex.hexSprite.sprite;
     }
 
+    //self explanatory method for affecting a player on a terrain
     public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
             case FluxNames.HighTide:

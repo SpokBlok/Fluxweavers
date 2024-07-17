@@ -20,7 +20,7 @@ public class PhaseRoundEnd : PhaseBase
         else
             nextState = ph.enemyFlux;
 
-        //Tile effects
+        //Tile effects for end of round shenanigans
         foreach((PlayerObject, int, int) tuple in ph.entityPositions) {
             PlayerObject entity = tuple.Item1;
             int yPos = tuple.Item2;
