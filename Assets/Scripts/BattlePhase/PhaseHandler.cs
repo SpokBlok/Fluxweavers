@@ -37,6 +37,7 @@ public class PhaseHandler : MonoBehaviour
     // This is for position detection. REMEMBER ITS (PlayerObject, Y, X)
     public List<(PlayerObject, int,int)> entityPositions;
     [SerializeField] public TilesCreationScript tcs;
+    
     //This text field is meant only to test the funcitonality of the state machine
     [SerializeField] public TextMeshProUGUI stateText;
     
@@ -71,14 +72,6 @@ public class PhaseHandler : MonoBehaviour
         }
 
         rs = GameObject.FindObjectOfType<ResourceScript>();
-        
-        //Stores the position of the entities for hex effects
-        AspirantMovement playerMovement = player.gameObject.GetComponent<AspirantMovement>();
-        AiMovementLogic enemyMovement = enemy.gameObject.GetComponent<AiMovementLogic>(); 
-        entityPositions = new List<(PlayerObject, int, int)>(){
-            (player, playerMovement.currentYIndex, playerMovement.currentXIndex),
-            (enemy, enemyMovement.currentYIndex, enemyMovement.currentXIndex)
-        };
 
         currentRound = 1;
         rs.roundStart(currentRound);

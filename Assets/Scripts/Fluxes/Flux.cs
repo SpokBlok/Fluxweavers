@@ -45,7 +45,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     
     private void Start() {
         //fluxCode = FluxNames.None; //TEMPORARY flux code
-        tileLength = 4; //TEMPORARY(?) TILE LENGTH
+        //tileLength = 4; //TEMPORARY(?) TILE LENGTH
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         initialPosition = transform.position;

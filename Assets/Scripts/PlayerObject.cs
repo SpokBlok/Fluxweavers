@@ -19,7 +19,6 @@ public class PlayerObject : MonoBehaviour
     public float maxHealth; // Needed for Dedra
     public float health;
     public int shield;
-    public float maxHealth;
 
     //Attack Stats
     public float basicAttackDamage;

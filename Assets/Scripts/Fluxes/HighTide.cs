@@ -44,8 +44,8 @@ public class HighTide : Flux
                     );
     }
 
-    public void EnvironmentEffect(PlayerObject hexOccupant) {
+    public void EnvironmentEffect(PlayerObject aspirant) {
         float healPercent = 0.075f;
-        hexOccupant.AddHealth(hexOccupant.maxHealth * healPercent);
+        aspirant.AddHealth(aspirant.maxHealth * healPercent);
     }
 }

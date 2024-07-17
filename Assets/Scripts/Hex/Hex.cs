@@ -13,7 +13,6 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     private FluxInterface fi;
     public int terrainDuration;
     public FluxNames currentFlux;
-    public FluxNames currentFlux;
     public bool clickToCast;
     [SerializeField] Sprite defaultSprite;
     private EnvironmentInterface ei;
@@ -28,7 +27,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         ei = GameObject.Find("EnvironmentInterface").GetComponent<EnvironmentInterface>();
         fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();  
         EnvironmentInterface.onDisableHexClick += ClickToCastDisable;
-        currentFlux = FluxNames.None;      
+        //currentFlux = FluxNames.None;      
         hexSprite = gameObject.GetComponent<SpriteRenderer>();
         clickToCast = false;
     }
@@ -60,7 +59,6 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
             terrainDuration -= 1;
             if(terrainDuration == 0){
                 hexSprite.sprite = defaultSprite;
-                currentFlux = FluxNames.None;
                 currentFlux = FluxNames.None;
             }
         }

@@ -6,6 +6,7 @@ using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Unity.Collections;
 using System.Linq.Expressions;
 public class EnvironmentInterface : MonoBehaviour
@@ -36,15 +37,17 @@ public class EnvironmentInterface : MonoBehaviour
 
     //Initial hex drop
     public void SetEnvironment(Hex hex, Flux flux){
+        if(flux.type == Flux.Type.Environment) {
         currentFlux = flux;
         castedHexes.Add(hex);
         tilesLeft = flux.tileLength - 1; // Number of tiles the user can paint over
-        
         UpdateText();
-
         hex.hexSprite.sprite = SetSprite(hex, flux);
+        //hex.hexSprite.sprite = currentFlux.gameObject.GetComponent<Image>().sprite;
         hex.terrainDuration = flux.duration;
         hex.currentFlux = flux.fluxCode;
+        }
+        
 
         foreach(Hex adjHex in GetAdjacentHex(hex)){
             adjHex.hexSprite.color = Color.yellow;
@@ -60,6 +63,7 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
+
         hex.hexSprite.sprite = SetSprite(hex, currentFlux);
         hex.currentFlux = currentFlux.fluxCode;
         hex.terrainDuration = currentFlux.duration;
@@ -93,6 +97,9 @@ public class EnvironmentInterface : MonoBehaviour
         switch(fluxName) {
             case FluxNames.HighTide:
                 fi.highTide.GetComponent<HighTide>().EnvironmentEffect(entity);
+                break;
+            case FluxNames.Rivershape:
+                fi.rivershape.GetComponent<Rivershape>().EnvironmentEffect(entity);
                 break;
             default:
                 break;

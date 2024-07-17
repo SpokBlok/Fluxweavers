@@ -26,15 +26,21 @@ public class Rivershape : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
         fluxName = "Rivershape";
+        fluxCode = FluxNamespace.FluxNames.Rivershape;
         type = Type.Environment;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
-        effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        duration = 5;
+        manaCost = 7;
+        tileLength = 2;
+        effectTiming = EffectTimings.RoundEnd;
+        description = String.Format("Creates a small body of water on two adjacent tiles. Round End: Heal units here for 7.5% of their Max HP. Lasts 5 rounds.");
     }
+
+    public void EnvironmentEffect(PlayerObject aspirant) {
+        float healPercent = 0.075f;
+        aspirant.AddHealth(aspirant.maxHealth * healPercent);
+    }
+
 }
