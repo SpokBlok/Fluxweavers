@@ -10,6 +10,7 @@ public class Citrine : PlayerObject
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
      
     HashSet<PlayerObject> citrineSelf = new  HashSet<PlayerObject>();
+    GameObject shieldFromCitrine;
 
 
     // Start is called before the first frame update
@@ -63,12 +64,17 @@ public class Citrine : PlayerObject
         Debug.Log(splashArt);
 
         splashArt.SetActive(false);
+
+        //Shield
+        shieldFromCitrine = this.transform.GetChild(0).gameObject;
+        shieldFromCitrine.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //for Citrine Shield
+        makeShieldActive();
     }
 
     public override float basicAttack(float mr, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -139,5 +145,19 @@ public class Citrine : PlayerObject
             //Message here not enough mana
         }
         //range code here when implemented
+    }
+
+
+    //for Citrine shield
+    public void makeShieldActive()
+    {
+        if (shield == 1)
+        {
+            shieldFromCitrine.SetActive(true);
+        }
+        else
+        {
+            shieldFromCitrine.SetActive(false);
+        }
     }
 }
