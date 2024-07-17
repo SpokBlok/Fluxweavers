@@ -10,6 +10,7 @@ public class Dedra : PlayerObject
     public bool wasOnFolia;
     public int checkerForExit;
     public int skillCounter;
+    public int signatureMoveCounter;
     public bool isSkillStillActive; // checks if skill is still active (should last only 3 turns)
     public bool isSignatureMoveActive; // checks if signature move was activated
     HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
@@ -56,10 +57,11 @@ public class Dedra : PlayerObject
 
         // skill and signature move activation checkers
         isSkillStillActive = false;
-        isSignatureMoveActive = true;
+        isSignatureMoveActive = false;
 
         // variables specific to dedra
         skillCounter = 0;
+        signatureMoveCounter = 0;
         calculatedBasicAttackDamage = 0;
     }
 
@@ -69,10 +71,15 @@ public class Dedra : PlayerObject
         if (!isSkillStillActive && !isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
         {
             basicAttackDamage = attackStat;
+            control = 2;
             basicAttackMana = 4;
             basicAttackRange = 3;
             calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
             skillDamage = attackStat * 1.65f;
+
+            // reset counters
+            skillCounter = 0;
+            signatureMoveCounter = 0;
             Debug.Log("WHAT THE FUCK WHY NOT WORK");
         }
 
@@ -96,12 +103,9 @@ public class Dedra : PlayerObject
 
         else if (isSignatureMoveActive)
         {
-            control = 3;
-            basicAttackMana = 2;
-            basicAttackRange = 4;
-            isSignatureMoveActive = false;
-            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
             Debug.Log("sugma");
+            calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
+            signatureMoveCounter ++;
         }
         
     
@@ -134,17 +138,21 @@ public class Dedra : PlayerObject
 
     }
 
-    public void PlayerSignatureMove()
+    public override void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
-        if (wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
+        if (!wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true && signatureMoveCounter < 1)
         {
+            control = 3; // originally 2
+            basicAttackMana = 2; // originally 4
+            basicAttackRange = 4; // originally 3
             isSignatureMoveActive = true;
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
+            Debug.Log("ur mum");
         } 
 
         else
         {
-            //Message here not enough mana
+            Debug.Log("ur trash");
         }
     }
 
