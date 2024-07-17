@@ -331,9 +331,8 @@ public class AspirantMovement : MonoBehaviour
                             {
                                 // add to collection of adjacent tiles
                                 AdjacentTiles.Add(tile);
+                                CheckedTiles[tile] = range;
                             }
-
-                            CheckedTiles[tile] = range;
 
                             // if it was determined as a tile from a different layer before,
                             if (DifferentLayerTiles.Contains(tile))
@@ -350,7 +349,6 @@ public class AspirantMovement : MonoBehaviour
                         // if it was not yet considered to be a tile on a different layer
                         else if (!DifferentLayerTiles.Contains(tile))
                         {
-                            
                             if(!isForPathFinding)
                             {
                                 bool isCheckedTile = CheckedTiles.ContainsKey(tile);

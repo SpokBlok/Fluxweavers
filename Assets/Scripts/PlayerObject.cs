@@ -154,14 +154,14 @@ public class PlayerObject : MonoBehaviour
                 if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
-                    MoveCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
-                    MoveCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
@@ -195,19 +195,19 @@ public class PlayerObject : MonoBehaviour
                 if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
-                    MoveCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
                 {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
-                    MoveCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
-                    MoveCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
                 
                 Debug.Log("Enemy is clicked!");
@@ -215,19 +215,19 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void MoveCheck()
+    public void MoveCheck(PlayerObject player)
     {
         // check if player was flagged to have moved already
-        if (!phaseHandler.selectedPlayer.hasMoved)
+        if (!player.hasMoved)
         {
-            AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
+            AspirantMovement aspirant = player.GetComponent<AspirantMovement>();
 
             // if they are not in the position they are on in the beginning of the round
             if (aspirant.currentXIndex != aspirant.originalXIndex ||
                 aspirant.currentYIndex != aspirant.originalYIndex)
             {
                 // we can say that the player has chosen to lock in that move
-                phaseHandler.selectedPlayer.hasMoved = true;
+                player.hasMoved = true;
 
                 aspirant.originalXIndex = aspirant.currentXIndex;
                 aspirant.originalYIndex = aspirant.currentYIndex;

@@ -34,7 +34,10 @@ public class PhasePlayerAspirant : PhaseBase
 
         // reset each player's hasMoved bool
         foreach (PlayerObject aspirant in ph.players)
+        {
+            aspirant.MoveCheck(aspirant);
             aspirant.hasMoved = false;
+        }
     }
 
     public override void UpdateState(PhaseHandler ph)
@@ -206,10 +209,7 @@ public class PhasePlayerAspirant : PhaseBase
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (ph.selectedPlayer != null)
-            {
-                ph.selectedPlayer.MoveCheck();
-                ph.selectedPlayer.TogglePlayerSelection();            
-            }
+                ph.selectedPlayer.TogglePlayerSelection();
 
             ph.SwitchState(nextState);
         }
