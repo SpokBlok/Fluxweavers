@@ -20,8 +20,8 @@ public class AiHandler : MonoBehaviour
     {
         aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
         aiComrades = new Vector2Int[aiEntities.Count()];
-        aspirants = GameObject.FindGameObjectsWithTag("Player");
-        Debug.Log(aspirants.Length);
+        // aspirants = GameObject.FindGameObjectsWithTag("Player");
+        // Debug.Log(aspirants.Length);
     }
 
     // Update is called once per frame
@@ -72,19 +72,24 @@ public class AiHandler : MonoBehaviour
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
         int manaPerRaccon = rs.enemyMana() / AiWithEnemyInRange.Count;
         float damageDealt = 0;
-        Debug.Log(manaPerRaccon);
         foreach (Raccoon raccoon in AiWithEnemyInRange) {
             AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
+            int manaAllocated = manaPerRaccon; // Important
             target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
             aspirantStats = target.gameObject.GetComponent<PlayerObject>();
-
-            // Better to attack first instead of buff when able to attack
-            if (manaPerRaccon - raccoon.skillMana > raccoon.basicAttackMana)
-                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
             
-            while (rs.enemyMana() > raccoon.basicAttackMana) {
+            Debug.Log(manaPerRaccon);
+            // Better to attack first instead of buff when able to attack
+            if (manaAllocated - raccoon.skillMana > raccoon.basicAttackMana) {
+                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+                manaAllocated -= raccoon.skillMana;
+            }
+            
+            // Keep basic attacking as long as mana allotted still allows for it
+            while (manaAllocated > raccoon.basicAttackMana) {
                 damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
                 aspirantStats.IsAttacked(damageDealt);
+                manaAllocated -= raccoon.basicAttackMana;
             }
         }
         
