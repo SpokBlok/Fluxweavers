@@ -5,8 +5,12 @@ using UnityEngine;
 public class CameraControl : MonoBehaviour
 {
     public Camera cam;
+
+    public float zoom;
+    public float velocity = 0f;
+    public float smoothTime = 0.25f;
     public float moveSpeed = 5f;
-    public float zoomSpeed = 1f;
+    public float zoomSpeed = 5f;
     public float minOrthographicSize = 1f;
 
     private float accumulatedScroll = 0f;
@@ -102,7 +106,7 @@ public class CameraControl : MonoBehaviour
 
             if (newOrthographicSize != cam.orthographicSize)
             {
-                cam.orthographicSize = newOrthographicSize;
+                cam.orthographicSize = Mathf.SmoothDamp(newOrthographicSize, zoomSpeed, ref velocity, smoothTime);
 
                 // Recalculate camera movement constraints based on updated orthographic size
                 CalculateCameraConstraints();

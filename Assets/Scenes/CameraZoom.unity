@@ -621,10 +621,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
+  zoom: 0
+  velocity: 0
+  smoothTime: 0.25
   moveSpeed: 5
-  zoomSpeed: 1
+  zoomSpeed: 12
   minOrthographicSize: 1
-  maxOrthographicSize: 10
   Tiles: {fileID: 0}
   hexWidth: 1
   hexHeight: 1
