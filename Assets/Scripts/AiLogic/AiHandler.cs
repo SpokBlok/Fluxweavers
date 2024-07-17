@@ -19,7 +19,6 @@ public class AiHandler : MonoBehaviour
     {
         aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
         aiComrades = new Vector2Int[aiEntities.Count()];
-        turnCheck = new Dictionary<AiMovementLogic, bool>();
     }
 
     // Update is called once per frame
@@ -40,12 +39,12 @@ public class AiHandler : MonoBehaviour
     public IEnumerator MoveAi () {
         Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
         PlayerObject aspirantStats = aspirant.gameObject.GetComponent<PlayerObject>();
-        Raccoon[] AiWithEnemyInRange = new Raccoon[]{};
+        HashSet<Raccoon> AiWithEnemyInRange = new();
         // int attackCounter = 0;
 
         
         foreach (AiMovementLogic ai in aiEntities) {
-
+            
             // Move Ai First
             ai.Move(target, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
@@ -57,15 +56,14 @@ public class AiHandler : MonoBehaviour
 
             // Then Attack
             Raccoon raccoonComponent = ai.gameObject.GetComponent<Raccoon>();
-            HashSet<Vector2Int> neighbors = ai.GetAdjacentTiles(raccoonComponent.control);
-
-            if (neighbors.Contains(new(target.y, target.x))) {
-                AiWithEnemyInRange.Append(ai.gameObject.GetComponent<Raccoon>());
-
-                // if (rs.enemyMana() - raccoonComponent.skillMana > raccoonComponent.basicAttackMana * aiEntities.Length)
-                //     raccoonComponent.skillStatus(new HashSet<PlayerObject>(){raccoonComponent});
-                
-                // raccoonComponent.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
+            HashSet<Vector2Int> neighbors = ai.GetAdjacentTiles((int) raccoonComponent.basicAttackRange);
+            // foreach (Vector2Int tile in neighbors) {
+            //     Debug.Log(tile);
+            //     Debug.Log(neighbors.Contains(new Vector2Int(target.y, target.x)));
+            // }
+            if (neighbors.Contains(new Vector2Int(target.y, target.x))) {
+                Debug.Log(neighbors.Contains(new Vector2Int(target.y, target.x)));
+                AiWithEnemyInRange.Add(raccoonComponent);
             }
 
             // else {
@@ -73,24 +71,25 @@ public class AiHandler : MonoBehaviour
             // }
         }
 
+        Debug.Log(AiWithEnemyInRange.Count);
 
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
-        foreach (Raccoon raccoon in raccoons) {
-            if (
-                AiWithEnemyInRange.Contains(raccoon) && 
-                rs.enemyMana() - raccoon.skillMana > raccoon.basicAttackMana * AiWithEnemyInRange.Count()
-                ) {
+        float damageDealt = 0;
+        
+        foreach (Raccoon raccoon in AiWithEnemyInRange) {
+            // if (AiWithEnemyInRange.Contains(raccoon)) {
+            if (rs.enemyMana() - raccoon.skillMana > raccoon.basicAttackMana * AiWithEnemyInRange.Count)
+                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
                 
-                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
-
-                raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
-            }
-
-            else {
-                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
-            }
+            damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
+            aspirantStats.IsAttacked(damageDealt);
         }
+
+            // do {
+            //     raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+            // }
+        
     }
 
     private void UpdateObstacles () {

@@ -343,7 +343,7 @@ public class AiMovementLogic : MonoBehaviour
             
 
             // This is inefficient
-            HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation, GetComponent<PlayerObject>().control);
+            HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentLocation, (int) GetComponent<PlayerObject>().basicAttackRange);
 
             // moveCounter += math.abs(currentTile.layer - prevTile.layer);
 
