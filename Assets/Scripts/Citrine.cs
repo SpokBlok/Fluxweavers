@@ -59,6 +59,10 @@ public class Citrine : PlayerObject
 
         //Animation Stuff
         myAnimator = GetComponent<Animator>();
+        splashArt = GameObject.FindGameObjectWithTag("CitrineUltImage");
+        Debug.Log(splashArt);
+
+        splashArt.SetActive(false);
     }
 
     // Update is called once per frame
