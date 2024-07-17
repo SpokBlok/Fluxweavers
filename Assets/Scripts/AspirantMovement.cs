@@ -318,8 +318,13 @@ public class AspirantMovement : MonoBehaviour
                         // if same layer
                         if(tileLayer == currentLayer)
                         {
-                            // add to collection of adjacent tiles
-                            AdjacentTiles.Add(tile);
+                            bool isNeighborAForest = ForestMakingFluxes.Contains(Tiles.Tiles[y,x].GetComponent<Hex>().currentFlux);
+
+                            if (range >= 1 || isNeighborAForest)
+                            {
+                                // add to collection of adjacent tiles
+                                AdjacentTiles.Add(tile);
+                            }
 
                             CheckedTiles[tile] = range;
 
@@ -369,11 +374,13 @@ public class AspirantMovement : MonoBehaviour
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
 
-        // if there is more "movement" left,
-        if (range >= 1)
+        Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
+
+        // if there is more "movement" left
+        // or if the current tile is a forest tile,
+        if (range >= 1 || ForestMakingFluxes.Contains(currentHex.currentFlux))
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
-            Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
 
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
@@ -382,15 +389,13 @@ public class AspirantMovement : MonoBehaviour
                 {
                     int movementUsed = 1;
 
-                    if (ForestMakingFluxes.Contains(currentHex.currentFlux))
-                    {
-                        Hex neighborHex = Tiles.Tiles[Tile.x, Tile.y].GetComponent<Hex>();
+                    Hex neighborHex = Tiles.Tiles[Tile.x, Tile.y].GetComponent<Hex>();
 
-                        if (ForestMakingFluxes.Contains(neighborHex.currentFlux))
-                            movementUsed = 0;
-                    }
+                    if (ForestMakingFluxes.Contains(currentHex.currentFlux) &&
+                        ForestMakingFluxes.Contains(neighborHex.currentFlux))
+                        movementUsed = 0;
 
-                    if (range - movementUsed > 0)
+                    if (range - movementUsed > 0 || ForestMakingFluxes.Contains(neighborHex.currentFlux))
                     {
                         HashSet<Vector2Int> NewMountains;
                         NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-movementUsed, false, out NewMountains));
