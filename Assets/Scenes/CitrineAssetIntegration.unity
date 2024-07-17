@@ -458,11 +458,11 @@ GameObject:
   - component: {fileID: 187553588}
   m_Layer: 5
   m_Name: CitrineUltImage
-  m_TagString: MaikoUltImage
+  m_TagString: CitrineUltImage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &187553587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -502,7 +502,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5cefe48b0a975f541ae4a1a1dd0c2134, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8740aae495b06394ca799eaa87164124, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -723,8 +723,16 @@ PrefabInstance:
       value: Enemy (2)
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: healthBar
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: maxHealth
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: phaseHandler
@@ -883,8 +891,16 @@ PrefabInstance:
       value: Enemy (1)
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: healthBar
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: maxHealth
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: phaseHandler
@@ -1076,8 +1092,16 @@ PrefabInstance:
       value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: health
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: healthBar
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
+      propertyPath: maxHealth
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7189669083911608561, guid: fa560344fa1055c4a9a141e0493758eb, type: 3}
       propertyPath: phaseHandler
@@ -2851,9 +2875,9 @@ MonoBehaviour:
   signatureMoveStatusAffectsSingle: 0
   signatureMoveStatusAffectsAOE: 0
   isMovementSkillActivated: 0
-  resourceScript: {fileID: 0}
+  resourceScript: {fileID: 918580870}
   mana: 0
-  phaseHandler: {fileID: 0}
+  phaseHandler: {fileID: 381136618}
   normal: {fileID: 0}
   selected: {fileID: 0}
   myAnimator: {fileID: 0}
