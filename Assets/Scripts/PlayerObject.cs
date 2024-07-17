@@ -158,7 +158,7 @@ public class PlayerObject : MonoBehaviour
                     phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
-                if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
