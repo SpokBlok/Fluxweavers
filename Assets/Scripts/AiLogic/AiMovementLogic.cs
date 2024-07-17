@@ -13,15 +13,10 @@ public class AiMovementLogic : MonoBehaviour
     private AiAttackLogic attackLogic;
 
     public TilesCreationScript Tiles;
-    [SerializeField] private AspirantMovement aspirant;
 
-    
     [SerializeField] private int currentXIndex;
     [SerializeField] private int currentYIndex;
     private Vector3 offset;
-
-    private List<Vector2Int> DifferentLayerTiles;
-    private List<int> RequiredExtraMovement;
 
     private int movementStat;
     [SerializeField] public int attackRange;
@@ -45,9 +40,6 @@ public class AiMovementLogic : MonoBehaviour
         offset = new Vector3(0.0f, 0.22f, 0.0f); 
         aiTransform.position = Tiles.Tiles[currentYIndex,currentXIndex].transform.position + offset; //  
 
-        DifferentLayerTiles = new List<Vector2Int>();
-        RequiredExtraMovement = new List<int>();
-
         // movementStat = GetComponent<PlayerObject>().movement;
 
         AvailableTiles = GetAdjacentTiles(new(currentXIndex, currentYIndex), GetComponent<PlayerObject>().movement);
@@ -66,12 +58,6 @@ public class AiMovementLogic : MonoBehaviour
     {
         // HashSet<Vector2Int> neighbors = GetAdjacentTiles(currentXIndex, currentYIndex, attackRange);
 
-        
-        // Call attack script first if already in range
-        // if (neighbors.Contains(new Vector2Int(aspirant.currentYIndex, aspirant.currentXIndex))) {
-        //     attackLogic.attack();
-        // }
-
         if (Path.Count > 0) // Handles movement
         {
             Vector2Int nextTile = Path.Peek();
@@ -88,7 +74,6 @@ public class AiMovementLogic : MonoBehaviour
         }
 
         if (Path.Count == 0) {
-            aspirant.UpdateEnemyIndex(GetComponent<AiMovementLogic>());
             phaseHandler.enemyPositions[gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             enabled = false;
         }
@@ -96,9 +81,6 @@ public class AiMovementLogic : MonoBehaviour
     }
 
     public void Move (Vector2Int target, Vector2Int[] enemyAi) {
-        
-        // Vector2Int target = new(aspirant.currentXIndex, aspirant.currentYIndex);
-        // attackLogic.canAttack = true; // Change this
         enabled = true;
         CreatePathToTarget(target, enemyAi);
     }

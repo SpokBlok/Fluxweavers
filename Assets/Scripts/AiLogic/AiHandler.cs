@@ -44,7 +44,7 @@ public class AiHandler : MonoBehaviour
 
         
         foreach (AiMovementLogic ai in aiEntities) {
-            
+
             // Move Ai First
             ai.Move(target, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
@@ -53,22 +53,13 @@ public class AiHandler : MonoBehaviour
 
             // 
 
-
-            // Then Attack
             Raccoon raccoonComponent = ai.gameObject.GetComponent<Raccoon>();
             HashSet<Vector2Int> neighbors = ai.GetAdjacentTiles((int) raccoonComponent.basicAttackRange);
-            // foreach (Vector2Int tile in neighbors) {
-            //     Debug.Log(tile);
-            //     Debug.Log(neighbors.Contains(new Vector2Int(target.y, target.x)));
-            // }
+     
             if (neighbors.Contains(new Vector2Int(target.y, target.x))) {
                 Debug.Log(neighbors.Contains(new Vector2Int(target.y, target.x)));
                 AiWithEnemyInRange.Add(raccoonComponent);
             }
-
-            // else {
-            //     raccoonComponent.skillStatus(new HashSet<PlayerObject>(){raccoonComponent});
-            // }
         }
 
         Debug.Log(AiWithEnemyInRange.Count);
@@ -85,10 +76,6 @@ public class AiHandler : MonoBehaviour
             damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
             aspirantStats.IsAttacked(damageDealt);
         }
-
-            // do {
-            //     raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
-            // }
         
     }
 

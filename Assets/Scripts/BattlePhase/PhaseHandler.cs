@@ -51,6 +51,7 @@ public class PhaseHandler : MonoBehaviour
 
             playerPositions[aspirant.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
         }
+        Debug.Log(players.Count);
 
         enemyPositions = new Dictionary<PlayerObject, Vector2Int>();
 
