@@ -242,9 +242,16 @@ public class AspirantMovement : MonoBehaviour
                                                 out HashSet<Vector2Int> UnreachableMountains)
     {
         UnreachableMountains = new HashSet<Vector2Int>();
-
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
-        AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
+
+        Vector2Int currentTileIndices = new Vector2Int(yIndex, xIndex);
+        
+        if (( !phaseHandler.playerPositions.ContainsValue(currentTileIndices) ||
+                currentTileIndices == new Vector2Int(currentYIndex, currentXIndex) ) &&
+             !phaseHandler.enemyPositions.ContainsValue(currentTileIndices))
+        {
+            AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
+        }
 
         // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
