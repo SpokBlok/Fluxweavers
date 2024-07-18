@@ -8,6 +8,7 @@ TagManager:
   - StatusEffectHandler
   - MaikoUltImage
   - CitrineUltImage
+  - DedraUltImage
   layers:
   - Default
   - TransparentFX
