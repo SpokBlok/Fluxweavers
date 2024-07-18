@@ -160,7 +160,7 @@ public class PlayerObject : MonoBehaviour
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
@@ -168,7 +168,7 @@ public class PlayerObject : MonoBehaviour
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAttack = "Nothing";
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else
