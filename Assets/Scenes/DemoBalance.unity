@@ -150,6 +150,18 @@ PrefabInstance:
       propertyPath: Enemies.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.b
+      value: 0.9056604
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.g
+      value: 0.47449532
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.r
+      value: 0.03844783
+      objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.0310929
@@ -3087,6 +3099,18 @@ PrefabInstance:
       propertyPath: Enemies.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.g
+      value: 0.66928816
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8962264
+      objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.0310929
@@ -3294,6 +3318,18 @@ PrefabInstance:
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.data[0]
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.b
+      value: 0.011764705
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.g
+      value: 0.94509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 752628253737265630, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_Color.r
+      value: 0.37923062
       objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
