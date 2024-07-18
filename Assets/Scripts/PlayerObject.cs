@@ -181,6 +181,11 @@ public class PlayerObject : MonoBehaviour
                 }
             }
             
+            
+        }
+        if(this.gameObject.CompareTag("PlayerNexus")) 
+        {
+            // the buttons are unselectable (cannot move or do anything), will pop-up the nexus HP
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
