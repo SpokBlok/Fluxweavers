@@ -33,7 +33,7 @@ public class PlayerObject : MonoBehaviour
     public float signatureMoveRange;
 
     // Checkers
-    public List<string> actionsUsed = new List<string>();
+    public bool hasMoved; // Check if the player has moved
     public bool isSelected; //Check if the player is selected
     public bool isBasicAttackPhysical = false;
 
@@ -58,8 +58,6 @@ public class PlayerObject : MonoBehaviour
 
     public bool signatureMoveStatusAffectsSingle = false;
     public bool signatureMoveStatusAffectsAOE = false;
-
-    public bool isMovementSkillActivated;
 
     //Mana & Resource Script
     public ResourceScript resourceScript;
@@ -97,6 +95,17 @@ public class PlayerObject : MonoBehaviour
     {
         if (health <= 0)
         {
+            if (CompareTag("Player"))
+            {
+                phaseHandler.playerPositions.Remove(this);
+                phaseHandler.players.Remove(this);
+            }
+            else if (CompareTag("Enemy"))
+            {
+                phaseHandler.enemyPositions.Remove(this);
+                phaseHandler.enemies.Remove(this);
+            }
+
             Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
             //Death Animation plays
         }
@@ -143,45 +152,38 @@ public class PlayerObject : MonoBehaviour
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
-        {   if (phaseHandler.currentState == phaseHandler.playerAspirant)
+        {   
+            if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if(phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
-                    MoveAndAbilityCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
 
-                if(phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
-                    MoveAndAbilityCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAttack = "Nothing";
                 }
 
                 else
                 {
-                    // Deselect all other players
-                    foreach (PlayerObject player in phaseHandler.players)
+                    // Deselect currently selected player if there is any
+                    if(phaseHandler.selectedPlayer != null)
                     {
-                        if (player != this)
-                        {
-                            player.isSelected = false;
-                        }
+                        if(phaseHandler.selectedPlayer != this)
+                            phaseHandler.selectedPlayer.TogglePlayerSelection();
                     }
 
+                    phaseHandler.alliesInRange = new HashSet<Vector2Int>();
                     phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
 
-                    // Select this player
-                    isSelected = !isSelected;
-                    Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
-
-                    if (isSelected)
-                        phaseHandler.selectedPlayer = this;
-                    else
-                        phaseHandler.selectedPlayer = null;
+                    TogglePlayerSelection();
                 }
             }
             
@@ -196,25 +198,25 @@ public class PlayerObject : MonoBehaviour
             {
                 phaseHandler.selectedEnemy = this;
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
-                    MoveAndAbilityCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
                 {
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
-                    MoveAndAbilityCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
-                    MoveAndAbilityCheck();
+                    MoveCheck(phaseHandler.selectedPlayer);
                 }
                 
                 Debug.Log("Enemy is clicked!");
@@ -222,27 +224,24 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void MoveAndAbilityCheck()
+    public void MoveCheck(PlayerObject player)
     {
         // check if player was flagged to have moved already
-        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("movement"))
+        if (!player.hasMoved)
         {
-            AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
+            AspirantMovement aspirant = player.GetComponent<AspirantMovement>();
 
             // if they are not in the position they are on in the beginning of the round
             if (aspirant.currentXIndex != aspirant.originalXIndex ||
                 aspirant.currentYIndex != aspirant.originalYIndex)
             {
                 // we can say that the player has chosen to lock in that move
-                phaseHandler.selectedPlayer.actionsUsed.Add("movement");
+                player.hasMoved = true;
 
                 aspirant.originalXIndex = aspirant.currentXIndex;
                 aspirant.originalYIndex = aspirant.currentYIndex;
             }
         }
-
-        if (!phaseHandler.selectedPlayer.actionsUsed.Contains("ability"))
-            phaseHandler.selectedPlayer.actionsUsed.Add("ability");
     }
 
     public void TogglePlayerSelection()
@@ -259,15 +258,7 @@ public class PlayerObject : MonoBehaviour
         else
         {
             AspirantMovement aspirant = GetComponent<AspirantMovement>();
-            // if they are not in the position they are on in the beginning of the round
-            if (aspirant.currentXIndex != aspirant.originalXIndex ||
-                aspirant.currentYIndex != aspirant.originalYIndex)
-            {
-                aspirant.originalXIndex = aspirant.currentXIndex;
-                aspirant.originalYIndex = aspirant.currentYIndex;
-            }
-
-            isMovementSkillActivated = false;
+            
             phaseHandler.selectedPlayer = null;
             GetComponent<SpriteRenderer>().sprite = normal;
         }
@@ -278,6 +269,8 @@ public class PlayerObject : MonoBehaviour
             Tiles.HighlightAdjacentTiles(false);
             Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
         }
+
+        phaseHandler.playerAspirant.selectedAbility = "none";
     }
 
     public IEnumerator SplashArtDisplay()
