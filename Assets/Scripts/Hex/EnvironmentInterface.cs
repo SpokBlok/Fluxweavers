@@ -105,7 +105,7 @@ public class EnvironmentInterface : MonoBehaviour
     }
 
     //self explanatory method for affecting a player on a terrain
-    public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
+    public void TerrainEffectRoundEnd(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
             case FluxNames.HighTide:
                 fi.highTide.GetComponent<HighTide>().EnvironmentEffect(entity);

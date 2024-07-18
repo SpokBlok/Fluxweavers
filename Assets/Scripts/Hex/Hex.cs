@@ -84,8 +84,8 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     }
 
     //Next part of the hex code is activated on round end. passes it to the environment interface
-    public void TerrainEffect(PlayerObject entity){
-        ei.TerrainEffect(entity, currentFlux);
+    public void TerrainEffectRoundEnd(PlayerObject entity){
+        ei.TerrainEffectRoundEnd(entity, currentFlux);
     }
 
     public PlayerObject HexOccupant(){

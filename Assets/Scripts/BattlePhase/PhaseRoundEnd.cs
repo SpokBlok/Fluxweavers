@@ -23,7 +23,7 @@ public class PhaseRoundEnd : PhaseBase
             int x = pair.Value.x;
             int y = pair.Value.y;
             Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffect(entity);
+            occupiedHex.TerrainEffectRoundEnd(entity);
         }
 
         foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions){
@@ -31,7 +31,7 @@ public class PhaseRoundEnd : PhaseBase
             int x = pair.Value.x;
             int y = pair.Value.y;
             Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffect(entity);
+            occupiedHex.TerrainEffectRoundEnd(entity);
         }
 
         onRoundEnd?.Invoke();
