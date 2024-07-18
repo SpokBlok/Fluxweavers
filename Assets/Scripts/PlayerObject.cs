@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerObject : MonoBehaviour
 {
@@ -65,11 +66,6 @@ public class PlayerObject : MonoBehaviour
 
     // Phase Handler Script
     public PhaseHandler phaseHandler;
-
-    // Sprites
-    // to see if aspirant is selected or not
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
 
     // Start is called before the first frame update
     void Start()
@@ -185,8 +181,18 @@ public class PlayerObject : MonoBehaviour
 
         else if (this.gameObject.CompareTag("Enemy"))
         {
-            AiMovementLogic enemy = this.GetComponent<AiMovementLogic>();
-            Vector2Int enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
+
+            Vector2Int enemyIndices = new Vector2Int(0, 0);
+            try
+            {
+                AiMovementLogic enemy = this.GetComponent<AiMovementLogic>();   
+                enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
+            }
+            catch (Exception)
+            {
+                Nexus enemyNexus = this.GetComponent<Nexus>();
+                enemyIndices = new Vector2Int(enemyNexus.y, enemyNexus.x);
+            }
 
             if (phaseHandler.enemiesInRange.Contains(enemyIndices))
             {
@@ -243,7 +249,6 @@ public class PlayerObject : MonoBehaviour
         if (isSelected)
         {
             phaseHandler.selectedPlayer = this;
-            GetComponent<SpriteRenderer>().sprite = selected;
         }
 
         else
@@ -251,7 +256,6 @@ public class PlayerObject : MonoBehaviour
             AspirantMovement aspirant = GetComponent<AspirantMovement>();
             
             phaseHandler.selectedPlayer = null;
-            GetComponent<SpriteRenderer>().sprite = normal;
         }
 
         TilesCreationScript Tiles = GetComponent<AspirantMovement>().Tiles;
