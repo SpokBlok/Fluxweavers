@@ -98,7 +98,7 @@ public class AspirantMovement : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
-            if (aspirant.isSelected && phaseHandler.playerAspirant.selectedAbility.Equals("movement"))
+            if (aspirant.isSelected && phaseHandler.playerAspirant.selectedAbility.Equals("Traverse"))
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
                 Path = CreatePathToTarget(targetTile);
@@ -381,7 +381,7 @@ public class AspirantMovement : MonoBehaviour
 
         Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
 
-        // if there is more "movement" left
+        // if there is "more movement" left
         // or if the current tile is a forest tile,
         if (range >= 1 || ForestMakingFluxes.Contains(currentHex.currentFlux))
         {

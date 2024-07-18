@@ -151,14 +151,14 @@ public class PlayerObject : MonoBehaviour
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                if(phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
-                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
@@ -192,7 +192,7 @@ public class PlayerObject : MonoBehaviour
             {
                 phaseHandler.selectedEnemy = this;
 
-                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
@@ -204,7 +204,7 @@ public class PlayerObject : MonoBehaviour
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
-                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);

@@ -50,7 +50,42 @@ public class PhasePlayerAspirant : PhaseBase
             int currentXIndex = aspirantMovement.currentXIndex;
             int currentYIndex = aspirantMovement.currentYIndex;
 
-            if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
+            if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
+            {
+                ph.alliesInRange = new HashSet<Vector2Int>();
+                ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                // un-highlight the previous adjacent tiles if there are any
+                if(tiles.GetAdjacentTilesCount() > 0)
+                    tiles.HighlightAdjacentTiles(false);
+
+                if (selectedAbility.Equals("Traverse"))
+                    selectedAbility = "none";
+                else
+                {
+                    selectedAbility = "Traverse";
+
+                    int x = aspirantMovement.originalXIndex;
+                    int y = aspirantMovement.originalYIndex;
+
+                    aspirantMovement.CheckedTiles = new Dictionary<Vector2Int, int>();
+
+                    HashSet<Vector2Int> unreachableMountains;
+                    aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement, false,
+                                                                                        out unreachableMountains);
+
+                    // un-highlight the previous adjacent tiles if there are any
+                    if(tiles.GetAdjacentTilesCount() > 0)
+                        tiles.HighlightAdjacentTiles(false);
+
+                    // set the new adjacent tiles and highlight them
+                    tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
+                    tiles.HighlightAdjacentTiles(true);
+                }
+            }
+            //else if ph.selectedPlayer.actionsUsed.Contains("Traverse") {movement locked! message}
+
+            else if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
             {
                 ph.alliesInRange = new HashSet<Vector2Int>();
                 ph.enemiesInRange = new HashSet<Vector2Int>();
@@ -86,11 +121,11 @@ public class PhasePlayerAspirant : PhaseBase
                 if(tiles.GetAdjacentTilesCount() > 0)
                     tiles.HighlightAdjacentTiles(false);
 
-                if (selectedAbility.Equals("SkillAttack"))
+                if (selectedAbility.Equals("Skill"))
                     selectedAbility = "none";
                 else
                 {
-                    selectedAbility = "SkillAttack";
+                    selectedAbility = "Skill";
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
 
@@ -131,11 +166,11 @@ public class PhasePlayerAspirant : PhaseBase
                 if(tiles.GetAdjacentTilesCount() > 0)
                     tiles.HighlightAdjacentTiles(false);
 
-                if (selectedAbility.Equals("SignatureMoveAttack"))
+                if (selectedAbility.Equals("SignatureMove"))
                     selectedAbility = "none";
                 else
                 {
-                    selectedAbility = "SignatureMoveAttack";
+                    selectedAbility = "SignatureMove";
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
                     
@@ -166,41 +201,6 @@ public class PhasePlayerAspirant : PhaseBase
                     }
                 }
             }
-
-            else if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
-            {
-                ph.alliesInRange = new HashSet<Vector2Int>();
-                ph.enemiesInRange = new HashSet<Vector2Int>();
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
-                    tiles.HighlightAdjacentTiles(false);
-
-                if (selectedAbility.Equals("movement"))
-                    selectedAbility = "none";
-                else
-                {
-                    selectedAbility = "movement";
-
-                    int x = aspirantMovement.originalXIndex;
-                    int y = aspirantMovement.originalYIndex;
-
-                    aspirantMovement.CheckedTiles = new Dictionary<Vector2Int, int>();
-
-                    HashSet<Vector2Int> unreachableMountains;
-                    aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement, false,
-                                                                                        out unreachableMountains);
-
-                    // un-highlight the previous adjacent tiles if there are any
-                    if(tiles.GetAdjacentTilesCount() > 0)
-                        tiles.HighlightAdjacentTiles(false);
-
-                    // set the new adjacent tiles and highlight them
-                    tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
-                    tiles.HighlightAdjacentTiles(true);
-                }
-            }
-            //else if ph.selectedPlayer.actionsUsed.Contains("movement") {movement locked! message}
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -305,7 +305,7 @@ public class PhasePlayerAspirant : PhaseBase
 
         range--;
 
-        // if there is more "movement" left,
+        // if there is "more movement" left,
         if (range > 0)
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
