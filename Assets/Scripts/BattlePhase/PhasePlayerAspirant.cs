@@ -50,6 +50,12 @@ public class PhasePlayerAspirant : PhaseBase
             int currentXIndex = aspirantMovement.currentXIndex;
             int currentYIndex = aspirantMovement.currentYIndex;
 
+            int additionalRange = 0;
+            Hex currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
+            
+            if(currentHex.layer == 1) // if aspirant is currently on a mountain
+                additionalRange = 1; // there is an additional 1 range for attacks and moves
+
             if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
             {
                 ph.alliesInRange = new HashSet<Vector2Int>();
