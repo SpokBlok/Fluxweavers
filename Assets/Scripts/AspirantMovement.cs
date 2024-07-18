@@ -5,7 +5,6 @@ using System.Linq;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
-using FluxNamespace;
 
 public class AspirantMovement : MonoBehaviour
 {
@@ -28,8 +27,6 @@ public class AspirantMovement : MonoBehaviour
     private int movementStat;
 
     private PhaseHandler phaseHandler;
-
-    private HashSet<FluxNames> ForestMakingFluxes;
 
     public HashSet<Vector2Int> AvailableTiles;
     public Dictionary<Vector2Int, int> CheckedTiles;
@@ -57,8 +54,6 @@ public class AspirantMovement : MonoBehaviour
         movementStat = aspirant.movement;
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
-
-        SetupForestMakingFluxes();
 
         AvailableTiles = new HashSet<Vector2Int>();
         CheckedTiles = new Dictionary<Vector2Int, int>();
@@ -133,16 +128,6 @@ public class AspirantMovement : MonoBehaviour
         // might want some UI stuff to happen when hovering over aspirant / tile
         // else
         //     CheckHoverOverAllElements(mouseX, mouseY);
-    }
-
-    void SetupForestMakingFluxes()
-    {
-        ForestMakingFluxes = new HashSet<FluxNames>();
-
-        ForestMakingFluxes.Add(FluxNames.Swamp);
-        ForestMakingFluxes.Add(FluxNames.Regrowth);
-        ForestMakingFluxes.Add(FluxNames.Reforestation);
-        ForestMakingFluxes.Add(FluxNames.WindsweptWoods);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -325,7 +310,7 @@ public class AspirantMovement : MonoBehaviour
                         // if same layer
                         if(tileLayer == currentLayer)
                         {
-                            bool isNeighborAForest = ForestMakingFluxes.Contains(Tiles.Tiles[y,x].GetComponent<Hex>().currentFlux);
+                            bool isNeighborAForest = phaseHandler.forestMakingFluxes.Contains(Tiles.Tiles[y,x].GetComponent<Hex>().currentFlux);
 
                             if (range >= 1 || isNeighborAForest)
                             {
@@ -383,7 +368,7 @@ public class AspirantMovement : MonoBehaviour
 
         // if there is "more movement" left
         // or if the current tile is a forest tile,
-        if (range >= 1 || ForestMakingFluxes.Contains(currentHex.currentFlux))
+        if (range >= 1 || phaseHandler.forestMakingFluxes.Contains(currentHex.currentFlux))
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
 
@@ -396,11 +381,11 @@ public class AspirantMovement : MonoBehaviour
 
                     Hex neighborHex = Tiles.Tiles[Tile.x, Tile.y].GetComponent<Hex>();
 
-                    if (ForestMakingFluxes.Contains(currentHex.currentFlux) &&
-                        ForestMakingFluxes.Contains(neighborHex.currentFlux))
+                    if (phaseHandler.forestMakingFluxes.Contains(currentHex.currentFlux) &&
+                        phaseHandler.forestMakingFluxes.Contains(neighborHex.currentFlux))
                         movementUsed = 0;
 
-                    if (range - movementUsed > 0 || ForestMakingFluxes.Contains(neighborHex.currentFlux))
+                    if (range - movementUsed > 0 || phaseHandler.forestMakingFluxes.Contains(neighborHex.currentFlux))
                     {
                         HashSet<Vector2Int> NewMountains;
                         NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-movementUsed, false, out NewMountains));

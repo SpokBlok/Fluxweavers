@@ -103,7 +103,11 @@ public class PhasePlayerAspirant : PhaseBase
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
 
-                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
+                    int range = (int)ph.selectedPlayer.basicAttackRange;
+                    if(range > 0)
+                        range += additionalRange;
+
+                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
                                                         out ph.enemiesInRange, out emptyAllies);
 
                     // set the new adjacent tiles and highlight them
@@ -129,11 +133,15 @@ public class PhasePlayerAspirant : PhaseBase
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
 
+                    int range = (int)ph.selectedPlayer.skillRange;
+                    if(range > 0)
+                        range += additionalRange;
+
                     if (ph.selectedPlayer.skillStatusAffectsEnemies)
                     {
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
-                                    out ph.enemiesInRange, out emptyAllies);
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
+                                                            out ph.enemiesInRange, out emptyAllies);
 
                         // set the new adjacent tiles and highlight them
                         tiles.SetAdjacentTiles(availableTiles);
@@ -143,8 +151,8 @@ public class PhasePlayerAspirant : PhaseBase
                     if (ph.selectedPlayer.skillStatusAffectsAllies)
                     {
                         HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange, out emptyEnemies,
-                                    out ph.alliesInRange);
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
+                                                            out emptyEnemies, out ph.alliesInRange);
 
                         // un-highlight the previous adjacent tiles if there are any
                         if (tiles.GetAdjacentTilesCount() > 0)
@@ -173,12 +181,16 @@ public class PhasePlayerAspirant : PhaseBase
                     selectedAbility = "SignatureMove";
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
+
+                    int range = (int)ph.selectedPlayer.signatureMoveRange;
+                    if(range > 0)
+                        range += additionalRange;
                     
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>(); 
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
-                                    out ph.enemiesInRange, out emptyAllies);
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
+                                                            out ph.enemiesInRange, out emptyAllies);
 
                         // set the new adjacent tiles and highlight them
                         tiles.SetAdjacentTiles(availableTiles);
@@ -188,8 +200,8 @@ public class PhasePlayerAspirant : PhaseBase
                     if (ph.selectedPlayer.signatureMoveAffectsAllies)
                     {
                         HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange, out emptyEnemies,
-                                    out ph.alliesInRange);
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
+                                                            out emptyEnemies, out ph.alliesInRange);
 
                         // un-highlight the previous adjacent tiles if there are any
                         if (tiles.GetAdjacentTilesCount() > 0)
@@ -218,7 +230,7 @@ public class PhasePlayerAspirant : PhaseBase
         EnemiesInRange = new HashSet<Vector2Int>();
         AlliesInRange = new HashSet<Vector2Int>();
         
-        if (range == 0) // indicates that the attack / status move is global
+        if (range == -1) // indicates that the attack / status move is global
         {
             // add all tiles
             for (int i = 0; i < tiles.returnRowCount(); i++)
@@ -251,6 +263,9 @@ public class PhasePlayerAspirant : PhaseBase
         }
 
         AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
+
+        if (range == 0)
+            return AdjacentTiles;
 
         // setting up steps from current tile to adjacent tiles
         // upper-left, upper-right,
