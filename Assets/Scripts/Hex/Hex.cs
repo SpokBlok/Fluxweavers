@@ -78,6 +78,11 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         hexSprite.color = Color.white;
     }
 
+    public void TerrainEffectRoundStart(PlayerObject entity)
+    {
+        ei.TerrainEffectRoundStart(entity, currentFlux);
+    }
+
     //Next part of the hex code is activated on round end. passes it to the environment interface
     public void TerrainEffect(PlayerObject entity){
         ei.TerrainEffect(entity, currentFlux);

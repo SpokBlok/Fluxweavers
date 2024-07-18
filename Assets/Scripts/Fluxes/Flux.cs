@@ -18,6 +18,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     public enum EffectTimings {
         OnCast,
         AspirantPhase,
+        RoundStart,
         RoundEnd
     };
 

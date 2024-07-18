@@ -92,6 +92,18 @@ public class EnvironmentInterface : MonoBehaviour
         UpdateText();
     }
 
+    public void TerrainEffectRoundStart(PlayerObject entity, FluxNames fluxName)
+    {
+        switch (fluxName)
+        {
+            case FluxNames.WindsweptWoods:
+                fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffect(entity);
+                break;
+            default:
+                break;
+        }
+    }
+
     //self explanatory method for affecting a player on a terrain
     public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
