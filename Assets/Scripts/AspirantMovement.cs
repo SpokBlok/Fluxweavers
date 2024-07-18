@@ -267,8 +267,9 @@ public class AspirantMovement : MonoBehaviour
             new Vector2Int(-1, 0), new Vector2Int(1, 0)
         };
 
+        Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
         // get current layer of current tile
-        int currentLayer = Tiles.Tiles[yIndex,xIndex].GetComponent<Hex>().layer;
+        int currentLayer = currentHex.layer;
 
         // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
@@ -305,7 +306,8 @@ public class AspirantMovement : MonoBehaviour
 
                     if (isPassingCheckers)
                     {
-                        int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
+                        Hex neighborHex = Tiles.Tiles[y,x].GetComponent<Hex>();
+                        int tileLayer = neighborHex.layer;
 
                         // if same layer
                         if(tileLayer == currentLayer)
@@ -316,7 +318,9 @@ public class AspirantMovement : MonoBehaviour
                             {
                                 // add to collection of adjacent tiles
                                 AdjacentTiles.Add(tile);
-                                CheckedTiles[tile] = range;
+
+                                if(!isForPathFinding)
+                                    CheckedTiles[tile] = range;
                             }
 
                             // if it was determined as a tile from a different layer before,
@@ -347,8 +351,13 @@ public class AspirantMovement : MonoBehaviour
 
                             if(isPassingCheckers)
                             {
+                                // if the current and neighbor tiles are forest tiles,
+                                if( phaseHandler.forestMakingFluxes.Contains(currentHex.currentFlux) &&
+                                    phaseHandler.forestMakingFluxes.Contains(neighborHex.currentFlux) )
+                                    AdjacentTiles.Add(tile);
+
                                 // check if it can be traversed given the "movement" left, if yes:
-                                if(Math.Abs(currentLayer-tileLayer) < range)
+                                else if(Math.Abs(currentLayer-tileLayer) < range)
                                 {
                                     // add to collection of tiles on a different layer
                                     DifferentLayerTiles.Add(tile);
@@ -363,8 +372,6 @@ public class AspirantMovement : MonoBehaviour
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
-
-        Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
 
         // if there is more "movement" left
         // or if the current tile is a forest tile,

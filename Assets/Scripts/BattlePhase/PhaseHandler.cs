@@ -96,6 +96,7 @@ public class PhaseHandler : MonoBehaviour
         forestMakingFluxes.Add(FluxNames.Swamp);
         forestMakingFluxes.Add(FluxNames.Regrowth);
         forestMakingFluxes.Add(FluxNames.Reforestation);
+        forestMakingFluxes.Add(FluxNames.MountainSpires);
         forestMakingFluxes.Add(FluxNames.WindsweptWoods);
     }
 }
