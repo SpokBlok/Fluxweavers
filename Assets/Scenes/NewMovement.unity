@@ -374,6 +374,10 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 297920037297589433, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 433077533352644556, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 0
@@ -425,6 +429,10 @@ PrefabInstance:
     - target: {fileID: 1231286997451286794, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1231286997451286794, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1312800760078162929, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -493,6 +501,10 @@ PrefabInstance:
     - target: {fileID: 2648651344548992912, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2648651344548992912, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 2907763768982049669, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
@@ -578,6 +590,10 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4187397290371117209, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 4275772900504761244, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -658,6 +674,10 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5157112033300076458, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5221288133248217876, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
       value: 2.5
@@ -669,6 +689,10 @@ PrefabInstance:
     - target: {fileID: 5379883600889049095, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379883600889049095, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 5921033583982111342, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -766,6 +790,10 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7632695282112936941, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 17
+      objectReference: {fileID: 0}
     - target: {fileID: 7727817294774264220, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 0
@@ -777,6 +805,10 @@ PrefabInstance:
     - target: {fileID: 8019088147962063695, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8019088147962063695, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 8077321993531612477, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
@@ -3352,9 +3384,17 @@ PrefabInstance:
       propertyPath: layer
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5921033583982111342, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6137268053167940411, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: layer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137268053167940411, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6543720576772147077, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y

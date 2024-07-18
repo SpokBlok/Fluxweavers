@@ -34,6 +34,7 @@ public class PhaseHandler : MonoBehaviour
     public ResourceScript rs;
 
     public HashSet<FluxNames> forestMakingFluxes;
+    public HashSet<FluxNames> mountainMakingFluxes;
 
     //This text field is meant only to test the funcitonality of the state machine
     [SerializeField] public TextMeshProUGUI stateText;
@@ -71,6 +72,8 @@ public class PhaseHandler : MonoBehaviour
         rs = GameObject.FindObjectOfType<ResourceScript>();
 
         SetupForestMakingFluxes();
+
+        SetupMountainMakingFluxes();
         
         currentRound = 1;
         rs.roundStart(currentRound);
@@ -98,5 +101,15 @@ public class PhaseHandler : MonoBehaviour
         forestMakingFluxes.Add(FluxNames.Reforestation);
         forestMakingFluxes.Add(FluxNames.MountainSpires);
         forestMakingFluxes.Add(FluxNames.WindsweptWoods);
+    }
+
+    void SetupMountainMakingFluxes()
+    {
+        mountainMakingFluxes = new HashSet<FluxNames>();
+
+        mountainMakingFluxes.Add(FluxNames.Waterfall);
+        mountainMakingFluxes.Add(FluxNames.MountainSpires);
+        mountainMakingFluxes.Add(FluxNames.EarthArise);
+        mountainMakingFluxes.Add(FluxNames.SeismicWave);
     }
 }

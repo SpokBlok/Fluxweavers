@@ -268,8 +268,6 @@ public class AspirantMovement : MonoBehaviour
         };
 
         Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
-        // get current layer of current tile
-        int currentLayer = currentHex.layer;
 
         // main section (getting the adjacent tiles)
         foreach (Vector2Int step in Steps)
@@ -307,10 +305,15 @@ public class AspirantMovement : MonoBehaviour
                     if (isPassingCheckers)
                     {
                         Hex neighborHex = Tiles.Tiles[y,x].GetComponent<Hex>();
-                        int tileLayer = neighborHex.layer;
+
+                        // check if both are in mountain or both are not in mountain
+                        bool isSameLayer = ( phaseHandler.mountainMakingFluxes.Contains(currentHex.currentFlux) &&
+                                            phaseHandler.mountainMakingFluxes.Contains(neighborHex.currentFlux) ) ||
+                                            ( !phaseHandler.mountainMakingFluxes.Contains(currentHex.currentFlux) &&
+                                            !phaseHandler.mountainMakingFluxes.Contains(neighborHex.currentFlux) );
 
                         // if same layer
-                        if(tileLayer == currentLayer)
+                        if(isSameLayer)
                         {
                             bool isNeighborAForest = phaseHandler.forestMakingFluxes.Contains(Tiles.Tiles[y,x].GetComponent<Hex>().currentFlux);
 
@@ -344,7 +347,7 @@ public class AspirantMovement : MonoBehaviour
                                 bool isCheckedAtLowerRange = false;
 
                                 if(isCheckedTile)
-                                    isCheckedAtLowerRange = CheckedTiles[tile] < (range - Math.Abs(currentLayer-tileLayer));
+                                    isCheckedAtLowerRange = CheckedTiles[tile] < (range - 1);
 
                                 isPassingCheckers = !isCheckedTile || isCheckedAtLowerRange;
                             }
@@ -357,11 +360,11 @@ public class AspirantMovement : MonoBehaviour
                                     AdjacentTiles.Add(tile);
 
                                 // check if it can be traversed given the "movement" left, if yes:
-                                else if(Math.Abs(currentLayer-tileLayer) < range)
+                                else if(range > 1)
                                 {
                                     // add to collection of tiles on a different layer
                                     DifferentLayerTiles.Add(tile);
-                                    RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
+                                    RequiredExtraMovement.Add(1);
                                 }
                                 else
                                     UnreachableMountains.Add(tile);
@@ -468,8 +471,7 @@ public class AspirantMovement : MonoBehaviour
                     int priority = ManhattanDistance(swappedCoords, target);
 
                     Hex nextTile = Tiles.Tiles[swappedCoords.y, swappedCoords.x].GetComponent<Hex>();
-                    int layerDifference = (int) Math.Abs(currentTile.layer - nextTile.layer);
-                    priority += layerDifference;
+                    priority += 1;
 
                     priorityNodes[priority] = swappedCoords;
                     nodeHistory[swappedCoords] = currentLocation;
