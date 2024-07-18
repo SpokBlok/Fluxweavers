@@ -66,11 +66,6 @@ public class PlayerObject : MonoBehaviour
     // Phase Handler Script
     public PhaseHandler phaseHandler;
 
-    // Sprites
-    // to see if aspirant is selected or not
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -155,14 +150,12 @@ public class PlayerObject : MonoBehaviour
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else
@@ -243,7 +236,7 @@ public class PlayerObject : MonoBehaviour
         if (isSelected)
         {
             phaseHandler.selectedPlayer = this;
-            GetComponent<SpriteRenderer>().sprite = selected;
+            phaseHandler.playerAspirant.aspirantUI.SetupButtonsAndImages();
         }
 
         else
@@ -251,7 +244,6 @@ public class PlayerObject : MonoBehaviour
             AspirantMovement aspirant = GetComponent<AspirantMovement>();
             
             phaseHandler.selectedPlayer = null;
-            GetComponent<SpriteRenderer>().sprite = normal;
         }
 
         TilesCreationScript Tiles = GetComponent<AspirantMovement>().Tiles;

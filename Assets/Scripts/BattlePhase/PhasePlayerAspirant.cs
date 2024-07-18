@@ -8,10 +8,14 @@ using static UnityEngine.GraphicsBuffer;
 public class PhasePlayerAspirant : PhaseBase
 {
     PhaseBase nextState;
-    private TilesCreationScript tiles; 
+    private TilesCreationScript tiles;
     private HashSet<Vector2Int> availableTiles;
     private Dictionary<Vector2Int, int> CheckedTiles;
-    public String selectedAbility = "none";
+
+    public AspirantInterface aspirantUI;
+
+    public String selectedAbility;
+    private bool isRangeCalculated;
 
     public override void EnterState(PhaseHandler ph)
     {
@@ -29,6 +33,12 @@ public class PhasePlayerAspirant : PhaseBase
             Debug.LogError("TilesCreationScript not found in the scene.");
         }
 
+        aspirantUI = GameObject.Find("AspirantInterface").GetComponent<AspirantInterface>();
+
+        // reset selected ability
+        selectedAbility = "none";
+        isRangeCalculated = false;
+
         // reset each player's hasMoved bool
         foreach (PlayerObject aspirant in ph.players)
         {
@@ -39,7 +49,7 @@ public class PhasePlayerAspirant : PhaseBase
 
     public override void UpdateState(PhaseHandler ph)
     {
-        if (ph.selectedPlayer != null)
+        if (ph.selectedPlayer != null && !isRangeCalculated)
         {
             AspirantMovement aspirantMovement = ph.selectedPlayer.GetComponent<AspirantMovement>();
 
@@ -56,20 +66,13 @@ public class PhasePlayerAspirant : PhaseBase
             if(currentHex.layer == 1) // if aspirant is currently on a mountain
                 additionalRange = 1; // there is an additional 1 range for attacks and moves
 
-            if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
+
+            // ACTION PROPER
+
+            if (selectedAbility.Equals("Traverse"))
             {
-                ph.alliesInRange = new HashSet<Vector2Int>();
-                ph.enemiesInRange = new HashSet<Vector2Int>();
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
-                    tiles.HighlightAdjacentTiles(false);
-
-                if (selectedAbility.Equals("Traverse"))
-                    selectedAbility = "none";
-                else
+                if(!ph.selectedPlayer.hasMoved)
                 {
-                    selectedAbility = "Traverse";
 
                     int x = aspirantMovement.originalXIndex;
                     int y = aspirantMovement.originalYIndex;
@@ -80,31 +83,24 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement, false,
                                                                                         out unreachableMountains);
 
-                    // un-highlight the previous adjacent tiles if there are any
-                    if(tiles.GetAdjacentTilesCount() > 0)
-                        tiles.HighlightAdjacentTiles(false);
-
                     // set the new adjacent tiles and highlight them
                     tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);
                     tiles.HighlightAdjacentTiles(true);
+
+                    isRangeCalculated = true;
                 }
-            }
-            //else if ph.selectedPlayer.actionsUsed.Contains("Traverse") {movement locked! message}
-
-            else if (Input.GetKeyDown(KeyCode.B) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
-            {
-                ph.alliesInRange = new HashSet<Vector2Int>();
-                ph.enemiesInRange = new HashSet<Vector2Int>();
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
-                    tiles.HighlightAdjacentTiles(false);
-
-                if (selectedAbility.Equals("BasicAttack"))
-                    selectedAbility = "none";
                 else
                 {
-                    selectedAbility = "BasicAttack";
+                    aspirantUI.ToggleAbilityButton(false);
+
+                    Debug.Log("Movement is already locked for this turn");
+                }
+            }
+
+            else if (selectedAbility.Equals("BasicAttack"))
+            {
+                if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.basicAttackMana))
+                {
                     HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
 
                     CheckedTiles = new Dictionary<Vector2Int,int>();
@@ -120,23 +116,18 @@ public class PhasePlayerAspirant : PhaseBase
                     tiles.SetAdjacentTiles(availableTiles);
                     tiles.HighlightAdjacentTiles(true);
                 }
-            }
-                
-            else if (Input.GetKeyDown(KeyCode.S) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
-            {
-                ph.alliesInRange = new HashSet<Vector2Int>();
-                ph.enemiesInRange = new HashSet<Vector2Int>();
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
-                    tiles.HighlightAdjacentTiles(false);
-
-                if (selectedAbility.Equals("Skill"))
-                    selectedAbility = "none";
                 else
                 {
-                    selectedAbility = "Skill";
+                    aspirantUI.ToggleAbilityButton(false);
 
+                    Debug.Log("Not enough mana to do basic attack");
+                }
+            }
+                
+            else if (selectedAbility.Equals("Skill"))
+            {
+                if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
+                {
                     CheckedTiles = new Dictionary<Vector2Int,int>();
 
                     int range = (int)ph.selectedPlayer.skillRange;
@@ -169,23 +160,18 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.HighlightAdjacentTiles(true);
                     }
                 }
-            }
-
-            else if (Input.GetKeyDown(KeyCode.U) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
-            {
-                ph.alliesInRange = new HashSet<Vector2Int>();
-                ph.enemiesInRange = new HashSet<Vector2Int>();
-
-                // un-highlight the previous adjacent tiles if there are any
-                if(tiles.GetAdjacentTilesCount() > 0)
-                    tiles.HighlightAdjacentTiles(false);
-
-                if (selectedAbility.Equals("SignatureMove"))
-                    selectedAbility = "none";
                 else
                 {
-                    selectedAbility = "SignatureMove";
+                    aspirantUI.ToggleAbilityButton(false);
 
+                    Debug.Log("Not enough mana to cast skill");
+                }
+            }
+
+            else if (selectedAbility.Equals("SignatureMove"))
+            {
+                if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
+                {
                     CheckedTiles = new Dictionary<Vector2Int,int>();
 
                     int range = (int)ph.selectedPlayer.signatureMoveRange;
@@ -217,6 +203,12 @@ public class PhasePlayerAspirant : PhaseBase
                         tiles.SetAdjacentTiles(availableTiles);
                         tiles.HighlightAdjacentTiles(true);
                     }
+                }
+                else
+                {
+                    aspirantUI.ToggleAbilityButton(false);
+
+                    Debug.Log("Not enough mana to cast signature move");
                 }
             }
         }
@@ -504,5 +496,18 @@ public class PhasePlayerAspirant : PhaseBase
         ph.enemiesInRange = new HashSet<Vector2Int>();
 
         selectedAbility = "none";
+    }
+
+    public void ResetForRangeCalculations(PhaseHandler ph)
+    {
+        // reset allies and enemies in range
+        ph.alliesInRange = new HashSet<Vector2Int>();
+        ph.enemiesInRange = new HashSet<Vector2Int>();
+
+        // un-highlight the previous adjacent tiles if there are any
+        if(tiles.GetAdjacentTilesCount() > 0)
+            tiles.HighlightAdjacentTiles(false);
+
+        isRangeCalculated = false;
     }
 }
