@@ -10,6 +10,7 @@ public class TilesCreationScript : MonoBehaviour
     public GameObject[,] Tiles = new GameObject[rowCount, colCount];
 
     private HashSet<Vector2Int> AdjacentTiles;
+    [SerializeField] private Color highlightColor;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +52,8 @@ public class TilesCreationScript : MonoBehaviour
         }
 
         AdjacentTiles = new HashSet<Vector2Int>();
+
+        highlightColor = Color.yellow;
     }
 
     int AddLeftEdgeTiles(int rowNumber, int offsetX)
@@ -304,7 +307,7 @@ public class TilesCreationScript : MonoBehaviour
             }
             catch(Exception){}    
 
-            Tiles[2, colNumber] = RightEdge.GetChild(11).gameObject;
+            Tiles[2, colNumber+1] = RightEdge.GetChild(11).gameObject;
 
             try
             {
@@ -472,7 +475,7 @@ public class TilesCreationScript : MonoBehaviour
             }
             catch(Exception){}    
 
-            Tiles[8, colNumber] = RightEdge.GetChild(14).gameObject;
+            Tiles[8, colNumber+1] = RightEdge.GetChild(14).gameObject;
 
             try
             {
@@ -535,7 +538,7 @@ public class TilesCreationScript : MonoBehaviour
         Color newColor;
 
         if(isHighlighted)
-            newColor = Color.yellow;
+            newColor = highlightColor;
         else
             newColor = Color.white;
 

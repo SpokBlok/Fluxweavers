@@ -8,15 +8,16 @@ public class PlayerObject : MonoBehaviour
     //Player Stats
     public int level;
     public float armor;
-    public float armorPenetration;
+    public int armorPenetration;
     public float magicResistance;
-    public float magicPenetration;
+    public int magicPenetration;
     public float attackStat;
     public int movement;
     public int control; // All players have control over 2 hexes
 
     public float maxHealth; // Needed for Dedra
     public float health;
+    public int shield;
 
     //Attack Stats
     public float basicAttackDamage;
@@ -32,7 +33,7 @@ public class PlayerObject : MonoBehaviour
     public float signatureMoveRange;
 
     // Checkers
-    public bool hasMoved; // Check if the player has moved in that turn
+    public bool hasMoved; // Check if the player has moved
     public bool isSelected; //Check if the player is selected
     public bool isBasicAttackPhysical = false;
 
@@ -65,6 +66,11 @@ public class PlayerObject : MonoBehaviour
     // Phase Handler Script
     public PhaseHandler phaseHandler;
 
+    // Sprites
+    // to see if aspirant is selected or not
+    [SerializeField] private Sprite normal;
+    [SerializeField] private Sprite selected;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -85,15 +91,34 @@ public class PlayerObject : MonoBehaviour
     {
         if (health <= 0)
         {
+            if (CompareTag("Player"))
+            {
+                phaseHandler.playerPositions.Remove(this);
+                phaseHandler.players.Remove(this);
+            }
+            else if (CompareTag("Enemy"))
+            {
+                phaseHandler.enemyPositions.Remove(this);
+                phaseHandler.enemies.Remove(this);
+            }
+
             Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
             //Death Animation plays
         }
     }
 
     public void IsAttacked(float opponentDamage)
-    {
-        health -= opponentDamage;
-        IsDead();
+    {  
+        if (shield == 1) 
+        {
+            shield = 0;
+        }
+
+        else 
+        {
+            health -= opponentDamage;
+            IsDead();
+        } 
     }
 
     public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -108,6 +133,7 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void skillStatus(HashSet<PlayerObject> targets)
     {
+        
     }
 
     public virtual float signatureMoveAttack(float enemyResistStat)
@@ -117,50 +143,124 @@ public class PlayerObject : MonoBehaviour
 
     public virtual void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
+        
     }
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
-        {
-            // Deselect all other players
-            foreach (PlayerObject player in phaseHandler.players)
+        {   
+            if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if (player != this)
+                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
-                    player.isSelected = false;
+                    phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    MoveCheck(phaseHandler.selectedPlayer);
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                }
+
+                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                {
+                    phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    MoveCheck(phaseHandler.selectedPlayer);
+                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                }
+
+                else
+                {
+                    // Deselect currently selected player if there is any
+                    if(phaseHandler.selectedPlayer != null)
+                    {
+                        if(phaseHandler.selectedPlayer != this)
+                            phaseHandler.selectedPlayer.TogglePlayerSelection();
+                    }
+
+                    phaseHandler.alliesInRange = new HashSet<Vector2Int>();
+                    phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
+
+                    TogglePlayerSelection();
                 }
             }
-
-            phaseHandler.enemiesInRange = new HashSet<Vector2Int>();
-
-            // Select this player
-            isSelected = !isSelected;
-            Debug.Log("Mouse Down on " + gameObject.name + ", isSelected: " + isSelected);
-
-            if (isSelected)
-                phaseHandler.selectedPlayer = this;
-            else
-                phaseHandler.selectedPlayer = null;
+            
         }
 
         else if (this.gameObject.CompareTag("Enemy"))
         {
-            AiMovementLogic enemy = this.gameObject.GetComponent<AiMovementLogic>();
+            AiMovementLogic enemy = this.GetComponent<AiMovementLogic>();
             Vector2Int enemyIndices = new Vector2Int(enemy.GetYIndex(), enemy.GetXIndex());
 
             if (phaseHandler.enemiesInRange.Contains(enemyIndices))
             {
                 phaseHandler.selectedEnemy = this;
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    MoveCheck(phaseHandler.selectedPlayer);
+                }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "BasicAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
+                {
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                    MoveCheck(phaseHandler.selectedPlayer);
+                }
 
-                if (phaseHandler.playerAspirant.selectedAttack == "SignatureMoveAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    MoveCheck(phaseHandler.selectedPlayer);
+                }
+                
+                Debug.Log("Enemy is clicked!");
             }
         }
+    }
+
+    public void MoveCheck(PlayerObject player)
+    {
+        // check if player was flagged to have moved already
+        if (!player.hasMoved)
+        {
+            AspirantMovement aspirant = player.GetComponent<AspirantMovement>();
+
+            // if they are not in the position they are on in the beginning of the round
+            if (aspirant.currentXIndex != aspirant.originalXIndex ||
+                aspirant.currentYIndex != aspirant.originalYIndex)
+            {
+                // we can say that the player has chosen to lock in that move
+                player.hasMoved = true;
+
+                aspirant.originalXIndex = aspirant.currentXIndex;
+                aspirant.originalYIndex = aspirant.currentYIndex;
+            }
+        }
+    }
+
+    public void TogglePlayerSelection()
+    {
+        // Select or Unselect this player
+        isSelected = !isSelected;
+
+        if (isSelected)
+        {
+            phaseHandler.selectedPlayer = this;
+            GetComponent<SpriteRenderer>().sprite = selected;
+        }
+
+        else
+        {
+            AspirantMovement aspirant = GetComponent<AspirantMovement>();
+            
+            phaseHandler.selectedPlayer = null;
+            GetComponent<SpriteRenderer>().sprite = normal;
+        }
+
+        TilesCreationScript Tiles = GetComponent<AspirantMovement>().Tiles;
+        if (Tiles.GetAdjacentTilesCount() > 0)
+        {
+            Tiles.HighlightAdjacentTiles(false);
+            Tiles.SetAdjacentTiles(new HashSet<Vector2Int>());
+        }
+
+        phaseHandler.playerAspirant.selectedAbility = "none";
     }
 }

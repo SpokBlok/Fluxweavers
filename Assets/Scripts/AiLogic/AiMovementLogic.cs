@@ -25,7 +25,6 @@ public class AiMovementLogic : MonoBehaviour
     private Queue<Vector2Int> Path;
     [SerializeField] private float movementSpeed;
 
-// CHANGED
     private PhaseHandler phaseHandler;
 
     [SerializeField] private bool isAvailableHighlighted; // for testing
@@ -50,7 +49,6 @@ public class AiMovementLogic : MonoBehaviour
 
         Path = new Queue<Vector2Int>();
 
-// CHANGED
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
     }
 
@@ -77,7 +75,6 @@ public class AiMovementLogic : MonoBehaviour
             phaseHandler.enemyPositions[gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             enabled = false;
         }
-        
     }
 
     public void Move (Vector2Int target, Vector2Int[] enemyAi) {

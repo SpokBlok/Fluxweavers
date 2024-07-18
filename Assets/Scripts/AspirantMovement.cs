@@ -5,24 +5,19 @@ using System.Linq;
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using FluxNamespace;
 
 public class AspirantMovement : MonoBehaviour
 {
-    // placeholders to see if aspirant is selected or not
-    [SerializeField] private Sprite normal;
-    [SerializeField] private Sprite selected;
-
     private Transform aspirantTransform;
-
-    private bool isSelected;
 
     public TilesCreationScript Tiles;
 
     [SerializeField] public int currentYIndex;
     [SerializeField] public int currentXIndex;
 
-    private int originalYIndex;
-    private int originalXIndex;
+    public int originalYIndex;
+    public int originalXIndex;
 
     private Vector3 offset;
 
@@ -34,14 +29,10 @@ public class AspirantMovement : MonoBehaviour
 
     private PhaseHandler phaseHandler;
 
-    private List<AiMovementLogic> Enemies;
-    private List<Vector2Int> EnemyIndices;
+    private HashSet<FluxNames> ForestMakingFluxes;
 
-    private bool isMovementSkillActivated;
-
-    private Dictionary<PlayerObject, Vector2Int> OtherAspirantIndices;
-
-    private HashSet<Vector2Int> AvailableTiles;
+    public HashSet<Vector2Int> AvailableTiles;
+    public Dictionary<Vector2Int, int> CheckedTiles;
 
     private Vector2Int targetTile;
     private Queue<Vector2Int> Path;
@@ -51,8 +42,6 @@ public class AspirantMovement : MonoBehaviour
     void Start()
     {
         aspirantTransform = GetComponent<Transform>();
-
-        isSelected = false;
 
         originalYIndex = currentYIndex;
         originalXIndex = currentXIndex;
@@ -69,31 +58,10 @@ public class AspirantMovement : MonoBehaviour
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
 
-        // to be updated when we get the AiMovementLogic script ready
-        Enemies = new List<AiMovementLogic>();
-        foreach (GameObject Enemy in GameObject.FindGameObjectsWithTag("Enemy"))
-            Enemies.Add(Enemy.GetComponent<AiMovementLogic>());
+        SetupForestMakingFluxes();
 
-        SetUpEnemyIndices();
-
-        isMovementSkillActivated = false;
-
-        OtherAspirantIndices = new Dictionary<PlayerObject, Vector2Int>();
-        foreach(PlayerObject player in phaseHandler.players)
-        {
-            AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
-            
-            if (aspirant != this)
-            {
-                int y = aspirant.currentYIndex;
-                int x = aspirant.currentXIndex;
-
-                OtherAspirantIndices[player] = new Vector2Int(y,x);
-            }
-        }
-
-        HashSet<Vector2Int> unreachableMountains;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
+        AvailableTiles = new HashSet<Vector2Int>();
+        CheckedTiles = new Dictionary<Vector2Int, int>();
 
         // target is the current tile for now
         targetTile = new Vector2Int(currentYIndex, currentXIndex);
@@ -124,91 +92,42 @@ public class AspirantMovement : MonoBehaviour
                 if (Path.Count == 0)
                 {
                     phaseHandler.playerPositions[aspirant] = new Vector2Int(currentYIndex, currentXIndex);
-
-                    foreach(PlayerObject player in phaseHandler.players)
-                    {
-                        if (player != this.aspirant)
-                        {
-                            AspirantMovement OtherAspirant = player.gameObject.GetComponent<AspirantMovement>();
-                            OtherAspirant.UpdateAspirantIndex(aspirant);
-                        }
-                    }
                 }
             }
         }
 
         else if (Input.GetMouseButtonDown(0) && !aspirant.hasMoved)
         {    
-            if(isMouseOnObject(mouseX, mouseY, this.gameObject))
-            {
-                // Debug.Log("Click was on " + this.gameObject.name);
-                isSelected = !isSelected;
-
-                SpriteRenderer sr = GetComponent<SpriteRenderer>();
-                if(isSelected)
-                {
-                    sr.sprite = selected;
-
-                    if(Tiles.GetAdjacentTilesCount() > 0)
-                        Tiles.HighlightAdjacentTiles(false);
-
-                    Tiles.SetAdjacentTiles(AvailableTiles);
-                }
-                else
-                {
-                    sr.sprite = normal;
-                    isMovementSkillActivated = false;
-                    Tiles.HighlightAdjacentTiles(false);
-                }
-            }
-            else if(isSelected && isMovementSkillActivated)
+            if (aspirant.isSelected && phaseHandler.playerAspirant.selectedAbility.Equals("movement"))
             {
                 targetTile = GetTargetTile(mouseX, mouseY);
                 Path = CreatePathToTarget(targetTile);
-
-                if (Path.Count == 0)
-                {
-                    GetComponent<SpriteRenderer>().sprite = normal;
-                    isSelected = false;
-                    isMovementSkillActivated = false;
-                    Tiles.HighlightAdjacentTiles(false);
-                }
             }
         }
 
         else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
         {
-            if (aspirant.hasMoved)
-                Debug.Log("Make Your Next Move..");
-
-            else
+            if (!aspirant.hasMoved)
             {
                 Debug.Log("Move Locked In!");
 
-                GetComponent<SpriteRenderer>().sprite = normal;
-                isSelected = false;
-                isMovementSkillActivated = false;
+                aspirant.hasMoved = true;
+
+                phaseHandler.playerAspirant.selectedAbility = "none";
                 Tiles.HighlightAdjacentTiles(false);
 
                 originalXIndex = currentXIndex;
                 originalYIndex = currentYIndex;
 
-                AvailableTiles.Clear();
-                HashSet<Vector2Int> unreachableMountains;
-                AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
+                AvailableTiles = new HashSet<Vector2Int>();
             }
 
-            aspirant.hasMoved = !aspirant.hasMoved;
-        }
-
-        else if (Input.GetKeyDown(KeyCode.H) && isSelected)
-        {
-            isMovementSkillActivated = !isMovementSkillActivated;
-
-            if(isMovementSkillActivated)
-                Tiles.HighlightAdjacentTiles(true);
+            // to be removed i think
             else
-                Tiles.HighlightAdjacentTiles(false);
+            {
+                Debug.Log("Make Your Next Move..");
+                aspirant.hasMoved = false;
+            }
         }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
@@ -216,42 +135,14 @@ public class AspirantMovement : MonoBehaviour
         //     CheckHoverOverAllElements(mouseX, mouseY);
     }
 
-    void SetUpEnemyIndices()
+    void SetupForestMakingFluxes()
     {
-        EnemyIndices = new List<Vector2Int>();
+        ForestMakingFluxes = new HashSet<FluxNames>();
 
-        foreach (AiMovementLogic Enemy in Enemies)
-        {
-            int y = Enemy.GetYIndex();
-            int x = Enemy.GetXIndex();
-
-            EnemyIndices.Add(new Vector2Int(y,x));
-        }
-    }
-
-    public void UpdateEnemyIndex(AiMovementLogic Enemy)
-    {
-        int index = Enemies.IndexOf(Enemy);
-
-        // get new enemy position
-        int enemyY = Enemy.GetYIndex();
-        int enemyX = Enemy.GetXIndex();
-
-        // update running list
-        EnemyIndices[index] = new Vector2Int(enemyY,enemyX);
-
-        AvailableTiles.Clear();
-        HashSet<Vector2Int> unreachableMountains;
-        AvailableTiles = GetAdjacentTiles(currentXIndex, currentYIndex, movementStat, out unreachableMountains);
-    }
-
-    public void UpdateAspirantIndex(PlayerObject player)
-    {
-        AspirantMovement aspirant = player.gameObject.GetComponent<AspirantMovement>();
-        int y = aspirant.currentYIndex;
-        int x = aspirant.currentXIndex;
-
-        OtherAspirantIndices[player] = new Vector2Int(y,x);
+        ForestMakingFluxes.Add(FluxNames.Swamp);
+        ForestMakingFluxes.Add(FluxNames.Regrowth);
+        ForestMakingFluxes.Add(FluxNames.Reforestation);
+        ForestMakingFluxes.Add(FluxNames.WindsweptWoods);
     }
 
     bool isMouseOnObject(float mouseX, float mouseY, GameObject obj)
@@ -331,14 +222,12 @@ public class AspirantMovement : MonoBehaviour
                 if (Tiles.Tiles[i,j] == null)
                     continue;
 
-                // ISSUE: since this assumes tile is rectangular but it is hexagonal
                 if(isMouseOnObject(mouseX, mouseY, Tiles.Tiles[i,j]))
                 {
+                    // Debug.Log("Click was on [" + Tiles.Tiles[i,j].transform.parent.name + "] " + Tiles.Tiles[i,j].name);
+
                     if(AvailableTiles.Contains(new Vector2Int(i,j)))
-                    {
-                        // Debug.Log("Click was on " + Tiles[i,j].name);
                         return new Vector2Int(j,i);
-                    }
                     else
                         break;
                 }
@@ -349,13 +238,20 @@ public class AspirantMovement : MonoBehaviour
         return new Vector2Int(currentXIndex, currentYIndex);
     }
 
-    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range,
+    public HashSet<Vector2Int> GetAdjacentTiles(int xIndex, int yIndex, int range, bool isForPathFinding,
                                                 out HashSet<Vector2Int> UnreachableMountains)
     {
         UnreachableMountains = new HashSet<Vector2Int>();
-
         HashSet<Vector2Int> AdjacentTiles = new HashSet<Vector2Int>();
-        AdjacentTiles.Add(new Vector2Int(currentYIndex, currentXIndex));
+
+        Vector2Int currentTileIndices = new Vector2Int(yIndex, xIndex);
+        
+        if (( !phaseHandler.playerPositions.ContainsValue(currentTileIndices) ||
+                currentTileIndices == new Vector2Int(currentYIndex, currentXIndex) ) &&
+             !phaseHandler.enemyPositions.ContainsValue(currentTileIndices))
+        {
+            AdjacentTiles.Add(new Vector2Int(yIndex, xIndex));
+        }
 
         // accounting for tiles that were determined to be in a different layer before
         for(int i = DifferentLayerTiles.Count-1; i > -1; i--)
@@ -366,6 +262,9 @@ public class AspirantMovement : MonoBehaviour
             {
                 Vector2Int tile = DifferentLayerTiles[i];
                 AdjacentTiles.Add(tile);
+
+                if(!isForPathFinding)
+                    CheckedTiles[tile] = range;
 
                 DifferentLayerTiles.RemoveAt(i);
                 RequiredExtraMovement.RemoveAt(i);
@@ -403,64 +302,111 @@ public class AspirantMovement : MonoBehaviour
                 // if it is not occupied by any enemy
                 if (Tiles.Tiles[y,x] != null
                     && !AdjacentTiles.Contains(tile)
-                    && !OtherAspirantIndices.ContainsValue(tile)
-                    && !EnemyIndices.Contains(tile))
+                    && !phaseHandler.enemyPositions.ContainsValue(tile))
                 {
-                    int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
+                    bool isPassingCheckers = !phaseHandler.playerPositions.ContainsValue(tile) ||
+                                              tile == new Vector2Int(currentYIndex, currentXIndex);
 
-                    // if same layer
-                    if(tileLayer == currentLayer)
+                    if(!isForPathFinding)
                     {
-                        // add to collection of adjacent tiles
-                        AdjacentTiles.Add(tile);
+                        bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                        bool isCheckedAtLowerRange = false;
 
-                        // if it was determined as a tile from a different layer before,
-                        if (DifferentLayerTiles.Contains(tile))
-                        {
-                            int i = DifferentLayerTiles.IndexOf(tile);
+                        if(isCheckedTile)
+                            isCheckedAtLowerRange = CheckedTiles[tile] < range;
 
-                            // remove it from that list
-                            DifferentLayerTiles.RemoveAt(i);
-                            RequiredExtraMovement.RemoveAt(i);
-                        }
+                        isPassingCheckers = isPassingCheckers && (!isCheckedTile || isCheckedAtLowerRange);
                     }
 
-                    // else (different layer)
-                    // if it was not yet considered to be a tile on a different layer
-                    else if (!DifferentLayerTiles.Contains(tile))
+                    if (isPassingCheckers)
                     {
-                        // check if it can be traversed given the "movement" left, if yes:
-                        if(Math.Abs(currentLayer-tileLayer) < range)
+                        int tileLayer = Tiles.Tiles[y,x].GetComponent<Hex>().layer;
+
+                        // if same layer
+                        if(tileLayer == currentLayer)
                         {
-                            // add to collection of tiles on a different layer
-                            DifferentLayerTiles.Add(tile);
-                            RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
+                            bool isNeighborAForest = ForestMakingFluxes.Contains(Tiles.Tiles[y,x].GetComponent<Hex>().currentFlux);
+
+                            if (range >= 1 || isNeighborAForest)
+                            {
+                                // add to collection of adjacent tiles
+                                AdjacentTiles.Add(tile);
+                                CheckedTiles[tile] = range;
+                            }
+
+                            // if it was determined as a tile from a different layer before,
+                            if (DifferentLayerTiles.Contains(tile))
+                            {
+                                int i = DifferentLayerTiles.IndexOf(tile);
+
+                                // remove it from that list
+                                DifferentLayerTiles.RemoveAt(i);
+                                RequiredExtraMovement.RemoveAt(i);
+                            }
                         }
-                        else
-                            UnreachableMountains.Add(tile);
+
+                        // else (different layer)
+                        // if it was not yet considered to be a tile on a different layer
+                        else if (!DifferentLayerTiles.Contains(tile))
+                        {
+                            if(!isForPathFinding)
+                            {
+                                bool isCheckedTile = CheckedTiles.ContainsKey(tile);
+                                bool isCheckedAtLowerRange = false;
+
+                                if(isCheckedTile)
+                                    isCheckedAtLowerRange = CheckedTiles[tile] < (range - Math.Abs(currentLayer-tileLayer));
+
+                                isPassingCheckers = !isCheckedTile || isCheckedAtLowerRange;
+                            }
+
+                            if(isPassingCheckers)
+                            {
+                                // check if it can be traversed given the "movement" left, if yes:
+                                if(Math.Abs(currentLayer-tileLayer) < range)
+                                {
+                                    // add to collection of tiles on a different layer
+                                    DifferentLayerTiles.Add(tile);
+                                    RequiredExtraMovement.Add((int) Math.Abs(currentLayer-tileLayer));
+                                }
+                                else
+                                    UnreachableMountains.Add(tile);
+                            }
+                        }
                     }
                 }
             }
             catch(Exception){} // index out of bounds (outside of 2d array)
         }
 
-        range--;
+        Hex currentHex = Tiles.Tiles[yIndex, xIndex].GetComponent<Hex>();
 
-        // if there is more "movement" left,
-        if (range > 0)
+        // if there is more "movement" left
+        // or if the current tile is a forest tile,
+        if (range >= 1 || ForestMakingFluxes.Contains(currentHex.currentFlux))
         {
             HashSet<Vector2Int> NewTiles = new HashSet<Vector2Int>();
 
             // search for the adjacent tiles to the determined adjacent tiles
             foreach (Vector2Int Tile in AdjacentTiles)
             {
-                if(Tile != new Vector2Int(currentYIndex, currentXIndex) ||
-                    Tile != new Vector2Int(yIndex, xIndex))
+                if(Tile != new Vector2Int(yIndex, xIndex))
                 {
-                    HashSet<Vector2Int> NewMountains;
-                    NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range, out NewMountains));
+                    int movementUsed = 1;
 
-                    UnreachableMountains.UnionWith(NewMountains);
+                    Hex neighborHex = Tiles.Tiles[Tile.x, Tile.y].GetComponent<Hex>();
+
+                    if (ForestMakingFluxes.Contains(currentHex.currentFlux) &&
+                        ForestMakingFluxes.Contains(neighborHex.currentFlux))
+                        movementUsed = 0;
+
+                    if (range - movementUsed > 0 || ForestMakingFluxes.Contains(neighborHex.currentFlux))
+                    {
+                        HashSet<Vector2Int> NewMountains;
+                        NewTiles.UnionWith(GetAdjacentTiles(Tile.y, Tile.x, range-movementUsed, false, out NewMountains));
+
+                        UnreachableMountains.UnionWith(NewMountains);
+                    }
                 }
             }
 
@@ -507,7 +453,7 @@ public class AspirantMovement : MonoBehaviour
                 break;
 
             HashSet<Vector2Int> unreachableMountains;
-            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, out unreachableMountains))
+            foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation.x, currentLocation.y, 1, true, out unreachableMountains))
             {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 

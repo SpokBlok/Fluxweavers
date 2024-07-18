@@ -63,6 +63,9 @@ public class FluxInterface : MonoBehaviour
     private List<Elements> currentElements = new List<Elements>();
     public Flux castedFlux;
 
+    // if true, button clicks will work
+    public bool isClickable;
+
     /*  
 
         The Start function does the following:
@@ -71,6 +74,8 @@ public class FluxInterface : MonoBehaviour
         - Makes sure the element list, plcedFlux, and castedFlux is empty at start
     */
     void Start() {
+        isClickable = true;
+        EnvironmentInterface.onToggleUI += ToggleUI; //subscribes to the event when a hex is placed
         fluxes = new List<GameObject>{
             singe, 
             blaze, 
@@ -130,10 +135,13 @@ public class FluxInterface : MonoBehaviour
         castFluxText.text = "";
         ElementsChanged();
     }
+
     void AddElement(Elements element) {
-        if(currentElements.Count < 2){
-            currentElements.Add(element);
-            ElementsChanged();
+        if(isClickable) {
+            if(currentElements.Count < 2){
+                currentElements.Add(element);
+                ElementsChanged();
+            }
         }
     }
 
@@ -164,6 +172,9 @@ public class FluxInterface : MonoBehaviour
         Cast(currentFlux);
     }
 
+    private void ToggleUI(){
+        isClickable = !isClickable;
+    }
     private void GetCombination() {
         switch(currentElements.Count) {
             case 1:
