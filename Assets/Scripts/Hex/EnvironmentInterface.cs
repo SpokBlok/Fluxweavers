@@ -29,6 +29,10 @@ public class EnvironmentInterface : MonoBehaviour
 
     [SerializeField] FluxInterface fi;
 
+    private Animator currentFluxAnimator;
+    private Animator hexAnimator;
+
+
     void Start() {
         tilesLeft = 0;
         currentFlux = null;
@@ -47,6 +51,14 @@ public class EnvironmentInterface : MonoBehaviour
         if(flux.type == Flux.Type.Environment) {
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
             hex.hexSprite.sprite = currentFluxSprite;
+
+            currentFluxAnimator = currentFlux.GetComponent<Animator>();
+            hexAnimator = hex.GetComponent<Animator>();
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+            hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+            hexAnimator.updateMode = currentFluxAnimator.updateMode;
+            hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
             hex.terrainDuration = flux.duration;
             hex.currentFlux = flux.fluxCode;
         } else {
