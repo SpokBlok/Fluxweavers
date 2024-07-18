@@ -96,6 +96,12 @@ public class EnvironmentInterface : MonoBehaviour
     {
         switch (fluxName)
         {
+            case FluxNames.Swamp:
+                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundStart(entity);
+                break;
+            case FluxNames.Waterfall:
+                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundStart(entity);
+                break;
             case FluxNames.WindsweptWoods:
                 fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffectRoundStart(entity);
                 break;
@@ -112,6 +118,12 @@ public class EnvironmentInterface : MonoBehaviour
                 break;
             case FluxNames.Rivershape:
                 fi.rivershape.GetComponent<Rivershape>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.Swamp:
+                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.Waterfall:
+                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundEnd(entity);
                 break;
             case FluxNames.Wildfire:
                 fi.wildfire.GetComponent<Wildfire>().EnvironmentEffectRoundEnd(entity);

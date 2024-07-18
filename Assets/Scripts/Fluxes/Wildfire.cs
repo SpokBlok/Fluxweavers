@@ -26,7 +26,6 @@ public class Wildfire : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
         fluxName = "Wildfire";
@@ -35,7 +34,6 @@ public class Wildfire : Flux
         duration = 2;
         manaCost = 20;
         tileLength = 4;
-        damage = 60;
         effectTiming = EffectTimings.RoundEnd;
         description = $"Spread a forest fire and Scorch {tileLength} adjacent tiles. Lasts {duration} Rounds.";
     }
