@@ -29,12 +29,21 @@ public class ScorchingWinds : Flux
     float damage;
 
     void Awake() {
-        fluxName = "Scorching Winds";
+        fluxName = "ScorchingWinds";
+        fluxCode = FluxNamespace.FluxNames.ScorchingWinds;
         type = Type.Spell;
         duration = 0;
-        manaCost = 10;
-        damage = 10;
+        manaCost = 18;
+        damage = 50;
+        tileLength = 2;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Displace a unit two tiles in any direction and deal {damage} Magic damage to it.";
+    }
+
+    public override void SpellCast(Hex hex)
+    {
+        PlayerObject aspirant = hex.HexOccupant();
+        if (aspirant != null)
+            aspirant.IsAttacked(damage);
     }
 }

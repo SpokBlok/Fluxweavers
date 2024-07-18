@@ -63,8 +63,26 @@ public class EnvironmentInterface : MonoBehaviour
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
                 }
-            } else if (flux.fluxCode == FluxNames.Gust) {
-                foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
+            }
+            else if (flux.fluxCode == FluxNames.ScorchingWinds)
+            {
+                if (GetHexOccupant(hex))
+                {
+                    foreach (Hex adjHex in GetAdjacentHex(hex, 2, true))
+                    {
+                        adjHex.hexSprite.color = Color.yellow;
+                        adjHex.clickToCast = true;
+                    }
+                }
+                else
+                {
+                    tilesLeft = 0;
+                    onToggleUI?.Invoke();
+                    UpdateText();
+                }
+            }
+            else if (flux.fluxCode == FluxNames.Gust) {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 1, true)){
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
                 }
@@ -88,7 +106,8 @@ public class EnvironmentInterface : MonoBehaviour
             hex.currentFlux = currentFlux.fluxCode;
         } 
 
-        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado){
+        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
+        {
             Displace(hex);
         }
         if(currentFlux.fluxCode == FluxNames.Blaze){
@@ -118,12 +137,6 @@ public class EnvironmentInterface : MonoBehaviour
     {
         switch (fluxName)
         {
-            case FluxNames.Swamp:
-                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundStart(entity);
-                break;
-            case FluxNames.Waterfall:
-                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundStart(entity);
-                break;
             case FluxNames.WindsweptWoods:
                 fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffectRoundStart(entity);
                 break;
@@ -236,23 +249,26 @@ public class EnvironmentInterface : MonoBehaviour
     }
 
     public void Displace(Hex hex){
-        Hex origHex = castedHexes[0];
-        
-        try {
+        Hex origHex = castedHexes[0];      
+        try
+        {
             AspirantMovement aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AspirantMovement>();
             aspirant.currentYIndex = aspirant.originalYIndex = hex.x;
             aspirant.currentXIndex = aspirant.originalXIndex = hex.y;
-            aspirant.transform.position = tcs.Tiles[hex.y,hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            aspirant.transform.position = tcs.Tiles[hex.y, hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
             ph.playerPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
 
-        } catch {
+        }
+        catch
+        {
             AiMovementLogic aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AiMovementLogic>();
-            aspirant.currentXIndex  = hex.y;
+            aspirant.currentXIndex = hex.y;
             aspirant.currentYIndex = hex.x;
-            aspirant.transform.position = tcs.Tiles[hex.y,hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            aspirant.transform.position = tcs.Tiles[hex.y, hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
             ph.enemyPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
         }
         castDisplaceThisRound = true;
+
     }   
 }
 
