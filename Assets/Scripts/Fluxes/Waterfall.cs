@@ -40,14 +40,10 @@ public class Waterfall : Flux
             $"Lasts {duration} Rounds.";
     }
 
-    public override void EnvironmentEffectRoundStart(PlayerObject aspirant)
-    {
-        aspirant.phaseHandler.rs.playerManaCount += 8;
-    }
-
     public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
     {
         float healPercent = 0.08f;
         aspirant.AddHealth(aspirant.maxHealth * healPercent);
+        aspirant.phaseHandler.rs.playerManaCount += 8;
     }
 }
