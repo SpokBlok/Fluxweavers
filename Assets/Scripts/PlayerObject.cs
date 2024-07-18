@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerObject : MonoBehaviour
@@ -97,7 +98,7 @@ public class PlayerObject : MonoBehaviour
         {
             if (CompareTag("Player"))
             {
-                this.myAnimator.SetTrigger("DeathAnimation");
+                StartCoroutine(DestroyObject());
                 phaseHandler.playerPositions.Remove(this);
                 phaseHandler.players.Remove(this);
             }
@@ -106,8 +107,6 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.enemyPositions.Remove(this);
                 phaseHandler.enemies.Remove(this);
             }
-
-            StartCoroutine(DestroyObject());
         }
     }
 
@@ -152,6 +151,8 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {
+        IsAttacked(125);
+
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
@@ -288,7 +289,16 @@ public class PlayerObject : MonoBehaviour
 
     public IEnumerator DestroyObject()
     {
-        yield return new WaitForSeconds(2);
+        AnimatorStateInfo stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+
+        this.myAnimator.SetTrigger("DeathAnimation");
+        yield return new WaitForEndOfFrame();
+        while (stateInfo.IsName("DeathAnimation") == false)
+        {
+            yield return null;
+            stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+        }
+        yield return new WaitForSeconds(stateInfo.length);
         Destroy(gameObject);
     }
 }
