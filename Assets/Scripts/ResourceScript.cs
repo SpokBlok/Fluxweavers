@@ -5,8 +5,8 @@ using UnityEngine;
 public class ResourceScript : MonoBehaviour
 {
 
-    int playerManaCount;
-    int enemyManaCount;
+    public int playerManaCount;
+    public int enemyManaCount;
 
     // Start is called before the first frame update
     void Start()

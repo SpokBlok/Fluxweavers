@@ -6,10 +6,7 @@ public class PhaseMatchStart : PhaseBase
 {
     PhaseBase nextState;
     public override void EnterState(PhaseHandler ph) {
-        if(ph.currentRound%2==0) 
-            nextState = ph.playerFlux;
-        else
-            nextState = ph.enemyFlux;
+        nextState = ph.playerFlux;
         
         ph.stateText.text = "Match Start";
     }
