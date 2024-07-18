@@ -10,22 +10,21 @@ public class PhasePlayerFlux : PhaseBase
         
         ph.stateText.text = "Player Flux";
 
-        foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions)
+        List<PlayerObject> playerKeys = new List<PlayerObject>(ph.playerPositions.Keys);
+        List<PlayerObject> enemyKeys = new List<PlayerObject>(ph.enemyPositions.Keys);
+
+        foreach (PlayerObject key in playerKeys)
         {
-            PlayerObject entity = pair.Key;
-            int x = pair.Value.x;
-            int y = pair.Value.y;
-            Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffectRoundStart(entity);
+            Vector2Int index = ph.playerPositions[key];
+            Hex occupiedHex = ph.tcs.Tiles[index.x, index.y].GetComponent<Hex>();
+            occupiedHex.TerrainEffectRoundStart(key);
         }
 
-        foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions)
+        foreach (PlayerObject key in enemyKeys)
         {
-            PlayerObject entity = pair.Key;
-            int x = pair.Value.x;
-            int y = pair.Value.y;
-            Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffectRoundStart(entity);
+            Vector2Int index = ph.enemyPositions[key];
+            Hex occupiedHex = ph.tcs.Tiles[index.x, index.y].GetComponent<Hex>();
+            occupiedHex.TerrainEffectRoundStart(key);
         }
     }
 

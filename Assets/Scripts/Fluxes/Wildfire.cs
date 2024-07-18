@@ -42,7 +42,7 @@ public class Wildfire : Flux
 
     public override void EnvironmentEffect(PlayerObject aspirant)
     {
-        float tiledamage = 60;
-        aspirant.IsAttacked(tiledamage);
+        float tileDamage = 60;
+        aspirant.IsAttacked(tileDamage);
     }
 }
