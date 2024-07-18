@@ -16,7 +16,6 @@ public class EnvironmentInterface : MonoBehaviour
     public static event DisableHexClick onDisableHexClick;
     public static event ToggleUI onToggleUI;
     [SerializeField] PhaseHandler ph;
-    [SerializeField] TextMeshProUGUI currentFluxNameText;
     [SerializeField] TextMeshProUGUI tilesLeftText;
     
     [SerializeField] TilesCreationScript tcs;
@@ -35,7 +34,6 @@ public class EnvironmentInterface : MonoBehaviour
         tilesLeft = 0;
         currentFlux = null;
         castedHexes = new List<Hex>();
-        currentFluxNameText.text = "";
         tilesLeftText.text = "";
         castDisplaceThisRound = false;
     }
@@ -91,6 +89,7 @@ public class EnvironmentInterface : MonoBehaviour
         if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado){
             Displace(hex);
         }
+
         if(currentFlux.fluxCode == FluxNames.Blaze){
             currentFlux.SpellCast(hex);
         }
@@ -184,10 +183,8 @@ public class EnvironmentInterface : MonoBehaviour
     }
     
     private void UpdateText() {
-        currentFluxNameText.text = currentFlux.fluxName;
         tilesLeftText.text = tilesLeft.ToString();
         if(tilesLeft == 0){
-            currentFluxNameText.text = "";
             tilesLeftText.text = "";
         }
     }
