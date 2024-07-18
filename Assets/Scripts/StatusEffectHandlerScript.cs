@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class StatusEffectHandlerScript : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class StatusEffectHandlerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        PhaseRoundEnd.onRoundEnd += roundUpdate;
     }
 
     // Update is called once per frame

@@ -17,24 +17,25 @@ public class PhaseRoundEnd : PhaseBase
         ph.stateText.text = "Round End";
         
         nextState = ph.playerFlux;
-        
+
+        List<PlayerObject> playerKeys = new List<PlayerObject>(ph.playerPositions.Keys);
+        List<PlayerObject> enemyKeys = new List<PlayerObject>(ph.enemyPositions.Keys);
+
+        foreach (PlayerObject key in playerKeys)
+        {
+            Vector2Int index = ph.playerPositions[key];
+            Hex occupiedHex = ph.tcs.Tiles[index.x, index.y].GetComponent<Hex>();
+            occupiedHex.TerrainEffectRoundEnd(key);
+        }
+
+        foreach (PlayerObject key in enemyKeys)
+        {
+            Vector2Int index = ph.enemyPositions[key];
+            Hex occupiedHex = ph.tcs.Tiles[index.x, index.y].GetComponent<Hex>();
+            occupiedHex.TerrainEffectRoundEnd(key);
+        }
+
         onRoundEnd?.Invoke();
-
-        foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
-            PlayerObject entity = pair.Key;
-            int x = pair.Value.x;
-            int y = pair.Value.y;
-            Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffect(entity);
-        }
-
-        foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions){
-            PlayerObject entity = pair.Key;
-            int x = pair.Value.x;
-            int y = pair.Value.y;
-            Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
-            occupiedHex.TerrainEffect(entity);
-        }
 
 
     }

@@ -44,7 +44,7 @@ public class HighTide : Flux
                     );
     }
 
-    public override void EnvironmentEffect(PlayerObject aspirant) {
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant) {
         float healPercent = 0.075f;
         aspirant.AddHealth(aspirant.maxHealth * healPercent);
     }

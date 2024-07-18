@@ -114,14 +114,41 @@ public class EnvironmentInterface : MonoBehaviour
         UpdateText();
     }
 
+    public void TerrainEffectRoundStart(PlayerObject entity, FluxNames fluxName)
+    {
+        switch (fluxName)
+        {
+            case FluxNames.Swamp:
+                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundStart(entity);
+                break;
+            case FluxNames.Waterfall:
+                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundStart(entity);
+                break;
+            case FluxNames.WindsweptWoods:
+                fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffectRoundStart(entity);
+                break;
+            default:
+                break;
+        }
+    }
+
     //self explanatory method for affecting a player on a terrain
-    public void TerrainEffect(PlayerObject entity, FluxNames fluxName) {
+    public void TerrainEffectRoundEnd(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
             case FluxNames.HighTide:
-                fi.highTide.GetComponent<HighTide>().EnvironmentEffect(entity);
+                fi.highTide.GetComponent<HighTide>().EnvironmentEffectRoundEnd(entity);
                 break;
             case FluxNames.Rivershape:
-                fi.rivershape.GetComponent<Rivershape>().EnvironmentEffect(entity);
+                fi.rivershape.GetComponent<Rivershape>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.Swamp:
+                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.Waterfall:
+                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.Wildfire:
+                fi.wildfire.GetComponent<Wildfire>().EnvironmentEffectRoundEnd(entity);
                 break;
             default:
                 break;
