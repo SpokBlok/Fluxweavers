@@ -130,8 +130,17 @@ public class Dedra : PlayerObject
             basicAttackMana = 2; // originally 4
             basicAttackRange = 4; // originally 3
             calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
-            isSignatureMoveActive = false;
-            signatureMoveCounter --;
+            if (enemyCurrentHealth > calculatedBasicAttackDamage)
+            {
+                isSignatureMoveActive = false;
+                signatureMoveCounter --;
+            }
+            else if (enemyCurrentHealth < calculatedBasicAttackDamage)
+            {
+                isSignatureMoveActive = true;
+                signatureMoveCounter = 1;
+            }
+            
         }
     
         resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
