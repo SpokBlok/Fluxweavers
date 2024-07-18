@@ -29,7 +29,7 @@ public class MountainSpires : Flux
     float damage;
 
     void Awake() {
-        fluxName = "MountainSpires";
+        fluxName = "Mountain Spires";
         type = Type.Spell;
         duration = 0;
         manaCost = 10;

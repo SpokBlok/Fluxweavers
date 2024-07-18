@@ -1332,6 +1332,7 @@ MonoBehaviour:
   FluxNames: 0
   castedFlux: {fileID: 0}
   isClickable: 0
+  rs: {fileID: 1753433710}
 --- !u!4 &791523648
 Transform:
   m_ObjectHideFlags: 0
@@ -1850,6 +1851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1874413896}
+  rs: {fileID: 1753433710}
   hpText: {fileID: 1419323610}
   manaText: {fileID: 2075714774}
 --- !u!114 &1275857360

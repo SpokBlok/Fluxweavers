@@ -66,6 +66,7 @@ public class FluxInterface : MonoBehaviour
     // if true, button clicks will work
     public bool isClickable;
 
+    [SerializeField] ResourceScript rs;
     /*  
 
         The Start function does the following:
@@ -113,9 +114,19 @@ public class FluxInterface : MonoBehaviour
 
     public void FluxPlaced(GameObject fluxObject, Hex hex) {
         castedFlux = fluxObject.GetComponent<Flux>();
-        Destroy(fluxObject);
-        Clear();
-        ei.SetFlux(hex, castedFlux);
+        bool castable = true;
+        if(!rs.playerAbilityUseCheck(castedFlux.manaCost))
+            castable = false;
+        if(ei.castDisplaceThisRound)
+            castable = false;
+        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+            castable = false;
+        if(castable) {
+            rs.playerAbilityUseManaUpdate(castedFlux.manaCost);
+            Destroy(fluxObject);
+            Clear();
+            ei.SetFlux(hex, castedFlux);
+        }
     }
 
     public void Cast(FluxNames fluxName){

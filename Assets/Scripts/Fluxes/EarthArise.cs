@@ -26,15 +26,17 @@ public class EarthArise : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
-        fluxName = "EarthArise";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
+        fluxName = "Earth Arise";
+        fluxCode = FluxNamespace.FluxNames.EarthArise;
+        type = Type.Environment;
+        duration = 3;
+        manaCost = 15;
+        tileLength = 3;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Create a Mountain on {tileLength} adjacent tiles. Lasts {duration} Rounds. Mountains are environments that grant extra +2 Control and +1 Range to all skills to units on top of them. Traversing into and out of a Mountain costs 2 Movement.";
     }
+
+    
 }
