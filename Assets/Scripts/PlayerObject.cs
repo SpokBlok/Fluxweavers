@@ -119,7 +119,7 @@ public class PlayerObject : MonoBehaviour
 
         else 
         {
-            //this.myAnimator.SetTrigger("HurtAnimation");
+            this.myAnimator.SetTrigger("HurtAnimation");
             health -= opponentDamage;
             IsDead();
         } 
@@ -151,6 +151,8 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {
+        IsAttacked(1000);
+
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
