@@ -97,6 +97,7 @@ public class PlayerObject : MonoBehaviour
         {
             if (CompareTag("Player"))
             {
+                this.myAnimator.SetTrigger("DeathAnimation");
                 phaseHandler.playerPositions.Remove(this);
                 phaseHandler.players.Remove(this);
             }
@@ -106,8 +107,7 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.enemies.Remove(this);
             }
 
-            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
-            //Death Animation plays
+            StartCoroutine(DestroyObject());
         }
     }
 
@@ -120,6 +120,7 @@ public class PlayerObject : MonoBehaviour
 
         else 
         {
+            this.myAnimator.SetTrigger("HurtAnimation");
             health -= opponentDamage;
             IsDead();
         } 
@@ -283,5 +284,11 @@ public class PlayerObject : MonoBehaviour
     public void DisplaySplashArt()
     {
         StartCoroutine(SplashArtDisplay());
+    }
+
+    public IEnumerator DestroyObject()
+    {
+        yield return new WaitForSeconds(2);
+        Destroy(gameObject);
     }
 }
