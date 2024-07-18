@@ -70,7 +70,10 @@ public class AiHandler : MonoBehaviour
 
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
-        int manaPerRaccon = (int) Mathf.Ceil((float) rs.enemyMana() / aiEntities.Length);
+
+        // POINT FOR UPDATE: Could be better, use a dictionary
+        int manaPerRaccon = (int) Mathf.Ceil((float) rs.enemyMana() / aiEntities.Length); 
+
         float damageDealt = 0;
         Debug.Log(raccoons.Length);
 
@@ -111,9 +114,9 @@ public class AiHandler : MonoBehaviour
                 manaAllocated -= raccoon.basicAttackMana;
             }
         }
-        
     }
 
+    // POINT FOR UPDATE: Add in what happens when aspirantPositions == 0 (i.e when only the nexus is present)
     private PlayerObject GetClosestAspirant(AiMovementLogic enemyPosition, HashSet<PlayerObject> aspirantPositions) {
         int currentMinimum = 10_000; // Some big number
         Vector2Int enemy = new(enemyPosition.GetXIndex(), enemyPosition.GetYIndex());
