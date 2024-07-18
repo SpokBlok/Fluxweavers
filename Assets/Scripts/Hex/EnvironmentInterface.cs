@@ -59,13 +59,17 @@ public class EnvironmentInterface : MonoBehaviour
         if(tilesLeft > 0){
             UpdateText();
             if(flux.fluxCode == FluxNames.Tornado) {
-                foreach(Hex adjHex in GetAdjacentHex(hex, 3)){
+                foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
                 }
-            }
-            else {
-                foreach(Hex adjHex in GetAdjacentHex(hex, 1)){
+            } else if (flux.fluxCode == FluxNames.Gust) {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
+                    adjHex.hexSprite.color = Color.yellow;
+                    adjHex.clickToCast = true;
+                }
+            } else {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
                 }
@@ -87,13 +91,16 @@ public class EnvironmentInterface : MonoBehaviour
         if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado){
             Displace(hex);
         }
+        if(currentFlux.fluxCode == FluxNames.Blaze){
+            currentFlux.SpellCast(hex);
+        }
 
         castedHexes.Add(hex); // so that we cant cast on an already casted tile
         onDisableHexClick?.Invoke(); // sets all hexes to be unclickable (temporarily)
         tilesLeft -= 1;
         if(tilesLeft > 0) {
             //Highlights adjacent hexes
-            foreach(Hex adjHex in GetAdjacentHex(hex, 1)){
+            foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
                 if(!castedHexes.Contains(adjHex)) {
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
@@ -159,32 +166,42 @@ public class EnvironmentInterface : MonoBehaviour
     }
 
     //gets the adjacent hexes
-    private List<Hex> GetAdjacentHex(Hex initialHex, int range) {
+    private List<Hex> GetAdjacentHex(Hex initialHex, int range, bool aspirantCheck) {
         int x = initialHex.x;
         int y = initialHex.y;
         List<Hex> adjacentHexes = new List<Hex>();
         List<Vector2Int> coords = new List<Vector2Int>();
 
+        //magical formula
         for (int q = -range; q <= range; q++)
         {
             for (int r = Mathf.Max(-range, -q - range); r <= Mathf.Min(range, -q + range); r++)
             {
                 if(!(q==0 && r==0))
-                    coords.Add(new Vector2Int(x+q, y+r));
+                    coords.Add(new Vector2Int(y+r, x+q));
+            }
+        }
+
+        if(aspirantCheck) {
+            foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
+                coords.Remove(pair.Value);
+            }
+            foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions){
+                coords.Remove(pair.Value);
             }
         }
 
         foreach(Vector2Int pair in coords){
             try{
-                Hex newHex = tcs.Tiles[pair.y,pair.x].GetComponent<Hex>();
+                Hex newHex = tcs.Tiles[pair.x,pair.y].GetComponent<Hex>();
                 if(newHex != null) {
                     adjacentHexes.Add(newHex);
                 }    
-            } catch {
-
-            }       
+            } catch {}       
         }
         return adjacentHexes;
+
+
     }
 
     private void RoundEnd(){
@@ -200,12 +217,13 @@ public class EnvironmentInterface : MonoBehaviour
             aspirant.currentXIndex = aspirant.originalXIndex = hex.y;
             aspirant.transform.position = tcs.Tiles[hex.y,hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
             ph.playerPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
-            
+
         } catch {
-            // AiMovementLogic aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AiMovementLogic>();
-            // aspirant.currentXIndex  = hex.y;
-            // aspirant.currentYIndex = hex.x;
-            // aspirant.transform.position = tcs.Tiles[hex.y,hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            AiMovementLogic aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AiMovementLogic>();
+            aspirant.currentXIndex  = hex.y;
+            aspirant.currentYIndex = hex.x;
+            aspirant.transform.position = tcs.Tiles[hex.y,hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            ph.enemyPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
         }
         castDisplaceThisRound = true;
     }   
