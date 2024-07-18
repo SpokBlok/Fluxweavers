@@ -11,7 +11,7 @@ public class AiHandler : MonoBehaviour
     private AiMovementLogic[] aiEntities;
     private Vector2Int[] aiComrades;
 
-    [SerializeField] private GameObject[] aspirants;
+    private GameObject[] aspirants;
     [SerializeField] private ResourceScript rs;
 
     public Dictionary<AiMovementLogic, bool> turnCheck;
@@ -70,15 +70,33 @@ public class AiHandler : MonoBehaviour
 
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
-        int manaPerRaccon = rs.enemyMana() / AiWithEnemyInRange.Count;
+        int manaPerRaccon = rs.enemyMana() / aiEntities.Length;
         float damageDealt = 0;
+
+        if (AiWithEnemyInRange.Count == 0) {
+            foreach (Raccoon raccoon in AiWithEnemyInRange) {
+                AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
+                int manaAllocated = manaPerRaccon; // Important
+                
+                // Keep basic attacking as long as mana allotted still allows for it
+                while (manaAllocated > raccoon.skillMana) {
+                    raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+                    manaAllocated -= raccoon.skillMana;
+                }
+            }   
+        }
+        else { // Meaning there's something that can be attacked
+            manaPerRaccon = rs.enemyMana() / AiWithEnemyInRange.Count;
+        }
+
         foreach (Raccoon raccoon in AiWithEnemyInRange) {
             AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
             int manaAllocated = manaPerRaccon; // Important
             target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
             aspirantStats = target.gameObject.GetComponent<PlayerObject>();
+            // Debug.Log(aspirantStats.gameObject.name);
             
-            Debug.Log(manaPerRaccon);
+            // Debug.Log(manaPerRaccon);
             // Better to attack first instead of buff when able to attack
             if (manaAllocated - raccoon.skillMana > raccoon.basicAttackMana) {
                 raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
