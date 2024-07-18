@@ -15,9 +15,14 @@ public class Dedra : PlayerObject
     public bool isSignatureMoveActive; // checks if signature move was activated
     HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
     public float calculatedBasicAttackDamage;
+    GameObject shieldFromCitrine;
+
 
     void Start()
     {
+        //Getting the managers
+        resourceScript = GameObject.FindObjectOfType<ResourceScript>();
+        phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         dedraSelf.Add(this);
 
     //Player Stats
@@ -63,6 +68,17 @@ public class Dedra : PlayerObject
         skillCounter = 3;
         signatureMoveCounter = 1;
         calculatedBasicAttackDamage = 0;
+
+        //ANIMATOR SHIT
+        myAnimator = GetComponent<Animator>();
+        splashArt = GameObject.FindGameObjectWithTag("DedraUltImage");
+        Debug.Log(splashArt);
+
+        splashArt.SetActive(false);
+
+        //Shield from Citrine
+        shieldFromCitrine = this.transform.GetChild(0).gameObject;
+        shieldFromCitrine.SetActive(false);
     }
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
