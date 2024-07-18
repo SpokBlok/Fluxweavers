@@ -40,7 +40,7 @@ public class Wildfire : Flux
         description = $"Spread a forest fire and Scorch {tileLength} adjacent tiles. Lasts {duration} Rounds.";
     }
 
-    public override void EnvironmentEffect(PlayerObject aspirant)
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
     {
         float tileDamage = 60;
         aspirant.IsAttacked(tileDamage);

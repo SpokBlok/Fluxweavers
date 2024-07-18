@@ -71,8 +71,13 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
         Destroy(gameObject);
     }
 
-    public virtual void EnvironmentEffect(PlayerObject aspirant){
+    public virtual void EnvironmentEffectRoundStart(PlayerObject aspirant){
         
+    }
+
+    public virtual void EnvironmentEffectRoundEnd(PlayerObject aspirant)
+    {
+
     }
 
     public virtual void SpellCast(Hex hex) {

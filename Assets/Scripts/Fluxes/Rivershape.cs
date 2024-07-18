@@ -38,7 +38,7 @@ public class Rivershape : Flux
         description = String.Format("Creates a small body of water on two adjacent tiles. Round End: Heal units here for 7.5% of their Max HP. Lasts 5 rounds.");
     }
 
-    public override void EnvironmentEffect(PlayerObject aspirant) {
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant) {
         float healPercent = 0.075f;
         aspirant.AddHealth(aspirant.maxHealth * healPercent);
     }

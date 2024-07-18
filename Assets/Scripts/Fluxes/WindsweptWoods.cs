@@ -41,7 +41,7 @@ public class WindsweptWoods : Flux
             $"Lasts {duration} Rounds.";
     }
 
-    public override void EnvironmentEffect(PlayerObject aspirant)
+    public override void EnvironmentEffectRoundStart(PlayerObject aspirant)
     {
         StatusEffect effect = new StatusEffect();
         HashSet<PlayerObject> targets = new HashSet<PlayerObject>();

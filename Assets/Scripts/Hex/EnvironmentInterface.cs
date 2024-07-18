@@ -97,7 +97,7 @@ public class EnvironmentInterface : MonoBehaviour
         switch (fluxName)
         {
             case FluxNames.WindsweptWoods:
-                fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffect(entity);
+                fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffectRoundStart(entity);
                 break;
             default:
                 break;
@@ -108,13 +108,13 @@ public class EnvironmentInterface : MonoBehaviour
     public void TerrainEffectRoundEnd(PlayerObject entity, FluxNames fluxName) {
         switch(fluxName) {
             case FluxNames.HighTide:
-                fi.highTide.GetComponent<HighTide>().EnvironmentEffect(entity);
+                fi.highTide.GetComponent<HighTide>().EnvironmentEffectRoundEnd(entity);
                 break;
             case FluxNames.Rivershape:
-                fi.rivershape.GetComponent<Rivershape>().EnvironmentEffect(entity);
+                fi.rivershape.GetComponent<Rivershape>().EnvironmentEffectRoundEnd(entity);
                 break;
             case FluxNames.Wildfire:
-                fi.wildfire.GetComponent<Wildfire>().EnvironmentEffect(entity);
+                fi.wildfire.GetComponent<Wildfire>().EnvironmentEffectRoundEnd(entity);
                 break;
             default:
                 break;
