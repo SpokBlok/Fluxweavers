@@ -11,7 +11,7 @@ public class Dedra : PlayerObject
     public int checkerForExit;
     public int skillCounter;
     public int signatureMoveCounter;
-    public bool isSkillStillActive; // checks if skill is still active (should last only 3 turns)
+    public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
     public bool isSignatureMoveActive; // checks if signature move was activated
     HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
     public float calculatedBasicAttackDamage;
@@ -56,7 +56,7 @@ public class Dedra : PlayerObject
         signatureMoveStatusAffectsSingle = true;
 
         // skill and signature move activation checkers
-        isSkillStillActive = false;
+        isSkillActive = false;
         isSignatureMoveActive = false;
 
         // variables specific to dedra
@@ -67,14 +67,8 @@ public class Dedra : PlayerObject
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
     {
-        // if (signatureMoveCounter < 1)
-        // {
-            // control = 2;
-            // basicAttackMana = 4;
-            // basicAttackRange = 3;
-        // }
 
-        if (!isSkillStillActive && !isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
+        if (!isSkillActive && !isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
         {   
             control = 2;
             basicAttackMana = 4;
@@ -86,11 +80,10 @@ public class Dedra : PlayerObject
 
             // reset counters
             skillCounter = 3;
-            signatureMoveCounter = 3;
-            Debug.Log("basic attack activated");
+            signatureMoveCounter = 1;
         }
 
-        else if (isSkillStillActive && skillCounter > 0 && isSignatureMoveActive && signatureMoveCounter > 0)
+        else if (isSkillActive && skillCounter > 0 && isSignatureMoveActive && signatureMoveCounter > 0)
         {
             // instantiate signature move buffs
             control = 3; // originally 2
@@ -108,14 +101,13 @@ public class Dedra : PlayerObject
             {
                 skillDamage = attackStat * 1.65f;
             }
-            Debug.Log("skill and signature activated");
             skillCounter --;
             signatureMoveCounter --;
             isSignatureMoveActive = false;
             calculatedBasicAttackDamage = skillDamage * (100 - enemyArmor + armorPenetration) / 100;
         }
 
-        else if (isSkillStillActive && skillCounter > 0)
+        else if (isSkillActive && skillCounter > 0)
         {
             // if opponents health is <35%, basic attacks deal 200% of the attackStat
             if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
@@ -128,7 +120,6 @@ public class Dedra : PlayerObject
             {
                 skillDamage = attackStat * 1.65f;
             }
-            Debug.Log("skill activated");
             calculatedBasicAttackDamage = skillDamage * (100 - enemyArmor + armorPenetration) / 100;
             skillCounter --;
         }
@@ -138,7 +129,6 @@ public class Dedra : PlayerObject
             control = 3; // originally 2
             basicAttackMana = 2; // originally 4
             basicAttackRange = 4; // originally 3
-            Debug.Log("signature activated");
             calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
             isSignatureMoveActive = false;
             signatureMoveCounter --;
@@ -153,10 +143,11 @@ public class Dedra : PlayerObject
         // logic for the skill
         if (resourceScript.playerAbilityUseCheck(skillMana))
         {
+            skillCounter = 3;
             resourceScript.playerAbilityUseManaUpdate(skillMana);
             if (skillCounter > 0) // the skill lasts 3 turns
             {
-                isSkillStillActive = true;
+                isSkillActive = true;
             }
 
             StatusEffect armorPenetrationEffect = new StatusEffect();
@@ -165,30 +156,19 @@ public class Dedra : PlayerObject
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(armorPenetrationEffect);
         } 
-        
-        else
-        {
-            //Message here not enough mana
-        }
-
     }
 
     public override void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
-        if (!wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true && signatureMoveCounter > 0)
+        if (!wasOnFolia && resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
         {
             control = 3; // originally 2
             basicAttackMana = 2; // originally 4
             basicAttackRange = 4; // originally 3
+            signatureMoveCounter = 1;
             isSignatureMoveActive = true;
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
-            Debug.Log("ur mum");
         } 
-
-        else
-        {
-            Debug.Log("ur trash");
-        }
     }
 
     /*public void OnTriggerEnter(Collider other)
@@ -215,11 +195,16 @@ public class Dedra : PlayerObject
     // Update is called once per frame
     void Update()
     {    
-        if (!isSignatureMoveActive) // if skill and/or ultimate are not active, revert back to base damage (no buffs)
+        if (!isSignatureMoveActive) // if ultimate is not active, revert back (no buffs)
         {   
             control = 2;
             basicAttackMana = 4;
             basicAttackRange = 3;
+        } 
+
+        if (skillCounter < 1) // if skill is not active, revert back (no buffs)
+        {   
+            isSkillActive = false;
         } 
         
     }
