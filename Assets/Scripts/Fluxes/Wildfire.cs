@@ -30,11 +30,19 @@ public class Wildfire : Flux
 
     void Awake() {
         fluxName = "Wildfire";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
-        effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        fluxCode = FluxNamespace.FluxNames.Wildfire;
+        type = Type.Environment;
+        duration = 2;
+        manaCost = 20;
+        tileLength = 4;
+        damage = 60;
+        effectTiming = EffectTimings.RoundEnd;
+        description = $"Spread a forest fire and Scorch {tileLength} adjacent tiles. Lasts {duration} Rounds.";
+    }
+
+    public override void EnvironmentEffect(PlayerObject aspirant)
+    {
+        float tiledamage = 60;
+        aspirant.IsAttacked(tiledamage);
     }
 }

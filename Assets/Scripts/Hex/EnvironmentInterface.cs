@@ -101,6 +101,9 @@ public class EnvironmentInterface : MonoBehaviour
             case FluxNames.Rivershape:
                 fi.rivershape.GetComponent<Rivershape>().EnvironmentEffect(entity);
                 break;
+            case FluxNames.Wildfire:
+                fi.wildfire.GetComponent<Wildfire>().EnvironmentEffect(entity);
+                break;
             default:
                 break;
         }

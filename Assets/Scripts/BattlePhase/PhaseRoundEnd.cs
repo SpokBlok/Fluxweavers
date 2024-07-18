@@ -17,8 +17,6 @@ public class PhaseRoundEnd : PhaseBase
         ph.stateText.text = "Round End";
         
         nextState = ph.playerFlux;
-        
-        onRoundEnd?.Invoke();
 
         foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
             PlayerObject entity = pair.Key;
@@ -35,6 +33,8 @@ public class PhaseRoundEnd : PhaseBase
             Hex occupiedHex = ph.tcs.Tiles[x, y].GetComponent<Hex>();
             occupiedHex.TerrainEffect(entity);
         }
+
+        onRoundEnd?.Invoke();
 
 
     }
