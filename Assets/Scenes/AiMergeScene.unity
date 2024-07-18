@@ -704,6 +704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentFluxNameText: {fileID: 292074714}
   tilesLeftText: {fileID: 1815854496}
+  tcs: {fileID: 0}
   waterSprite: {fileID: 21300000, guid: e474a58f3ad327f40b5534091a3b14a4, type: 3}
   defaultSprite: {fileID: 21300000, guid: 26ce1753723b6c941970baacc09de757, type: 3}
 --- !u!4 &771885189
@@ -849,6 +850,10 @@ PrefabInstance:
       propertyPath: currentYIndex
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 5869133305680455351, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
+      propertyPath: movementSpeed
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -949,6 +954,10 @@ PrefabInstance:
     - target: {fileID: 5869133305680455351, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
       propertyPath: currentYIndex
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5869133305680455351, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
+      propertyPath: movementSpeed
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1073,6 +1082,10 @@ PrefabInstance:
     - target: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8139715476516730277, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1545,6 +1558,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Raccoon
       objectReference: {fileID: 0}
+    - target: {fileID: 4779837527143702993, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5547571251746118368, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
       propertyPath: phaseHandler
       value: 
@@ -1568,6 +1585,10 @@ PrefabInstance:
     - target: {fileID: 5869133305680455351, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
       propertyPath: currentYIndex
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5869133305680455351, guid: d591701ebeca6184fab60bf881cf25c6, type: 3}
+      propertyPath: movementSpeed
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1961,6 +1982,7 @@ MonoBehaviour:
   tornado: {fileID: 2992005526990138681, guid: 98ca02343f8addc4fa595f6f76e6e994, type: 3}
   FluxNames: 0
   castedFlux: {fileID: 0}
+  isClickable: 0
 --- !u!4 &1374788680
 Transform:
   m_ObjectHideFlags: 0
@@ -2062,6 +2084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85fad85fcf2a5d942b3adc88213ba948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  highlightColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &1470607964
 Transform:
   m_ObjectHideFlags: 0

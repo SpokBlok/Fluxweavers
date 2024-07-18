@@ -22,6 +22,7 @@ public class AiHandler : MonoBehaviour
         aiComrades = new Vector2Int[aiEntities.Count()];
         // aspirants = GameObject.FindGameObjectsWithTag("Player");
         // Debug.Log(aspirants.Length);
+        // aiEntities[0].Test();
     }
 
     // Update is called once per frame
@@ -50,7 +51,7 @@ public class AiHandler : MonoBehaviour
         
         foreach (AiMovementLogic ai in aiEntities) {
             target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
-            Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
+            Vector2Int targetPosition = new(target.currentYIndex, target.currentXIndex);
 
             // Move Ai First
             ai.Move(targetPosition, aiComrades);
@@ -125,11 +126,11 @@ public class AiHandler : MonoBehaviour
         foreach(PlayerObject aspirant in aspirantPositions) {
 
             AspirantMovement movementScript = aspirant.GetComponent<AspirantMovement>();
-            Vector2Int aspirantPosition = new(movementScript.currentXIndex, movementScript.currentYIndex);
-            int distance = Math.Abs(aspirantPosition.x - enemy.x) + Math.Abs(aspirantPosition.y - enemy.y);
+            Vector2Int aspirantPosition = new(movementScript.currentYIndex, movementScript.currentXIndex);
+            Vector2Int[] paths = enemyPosition.CreatePathToTarget(aspirantPosition, aiComrades);
 
-            if (distance < currentMinimum) {
-                currentMinimum = distance;
+            if (paths.Length < currentMinimum) {
+                currentMinimum = paths.Length;
                 closestAspirant = aspirant;
             }
         }
@@ -140,7 +141,7 @@ public class AiHandler : MonoBehaviour
 
     private void UpdateObstacles () {
         for (int i = 0; i < aiComrades.Count(); i++) {
-            aiComrades[i] = new Vector2Int(aiEntities[i].GetXIndex(), aiEntities[i].GetYIndex());
+            aiComrades[i] = new Vector2Int(aiEntities[i].GetYIndex(), aiEntities[i].GetXIndex());
         }
     }
 }
