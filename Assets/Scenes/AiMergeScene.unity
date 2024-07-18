@@ -750,7 +750,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a0f4789b8bace48833859fbc8cea1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aspirants: []
   rs: {fileID: 1263719812}
 --- !u!4 &786069759
 Transform:
@@ -996,6 +995,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1470607963}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: currentXIndex
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: currentYIndex
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1102,7 +1109,7 @@ PrefabInstance:
       objectReference: {fileID: 1470607963}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentXIndex
-      value: 7
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentYIndex
@@ -1342,7 +1349,7 @@ PrefabInstance:
       objectReference: {fileID: 1470607963}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentXIndex
-      value: 8
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentYIndex

@@ -70,16 +70,17 @@ public class AiHandler : MonoBehaviour
 
         // Then Attack or cast abilities
         Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
-        int manaPerRaccon = rs.enemyMana() / aiEntities.Length;
+        int manaPerRaccon = (int) Mathf.Ceil((float) rs.enemyMana() / aiEntities.Length);
         float damageDealt = 0;
+        Debug.Log(raccoons.Length);
 
         if (AiWithEnemyInRange.Count == 0) {
-            foreach (Raccoon raccoon in AiWithEnemyInRange) {
+            foreach (Raccoon raccoon in raccoons) {
                 AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
                 int manaAllocated = manaPerRaccon; // Important
                 
                 // Keep basic attacking as long as mana allotted still allows for it
-                while (manaAllocated > raccoon.skillMana) {
+                while (manaAllocated >= raccoon.skillMana) {
                     raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
                     manaAllocated -= raccoon.skillMana;
                 }
@@ -98,13 +99,13 @@ public class AiHandler : MonoBehaviour
             
             // Debug.Log(manaPerRaccon);
             // Better to attack first instead of buff when able to attack
-            if (manaAllocated - raccoon.skillMana > raccoon.basicAttackMana) {
+            if (manaAllocated - raccoon.skillMana >= raccoon.basicAttackMana) {
                 raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
                 manaAllocated -= raccoon.skillMana;
             }
             
             // Keep basic attacking as long as mana allotted still allows for it
-            while (manaAllocated > raccoon.basicAttackMana) {
+            while (manaAllocated >= raccoon.basicAttackMana) {
                 damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
                 aspirantStats.IsAttacked(damageDealt);
                 manaAllocated -= raccoon.basicAttackMana;
