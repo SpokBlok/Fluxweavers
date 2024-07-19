@@ -32,6 +32,8 @@ public class EnvironmentInterface : MonoBehaviour
     private Animator currentFluxAnimator;
     private Animator hexAnimator;
 
+    private RuntimeAnimatorController previousAnimatorController;
+
 
     void Start() {
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes this script to on round end call
@@ -86,6 +88,19 @@ public class EnvironmentInterface : MonoBehaviour
             }
         } else {
             flux.SpellCast(hex);
+
+            currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+            hex.hexSprite.sprite = currentFluxSprite;
+
+            currentFluxAnimator = currentFlux.GetComponent<Animator>();
+            hexAnimator = hex.GetComponent<Animator>();
+
+            previousAnimatorController = hexAnimator.runtimeAnimatorController;
+
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+
+
+            StartCoroutine(RevertAnimatorControllerAfterAnimation(hexAnimator, previousAnimatorController));
         }
         
         if(tilesLeft > 0){
@@ -343,6 +358,18 @@ public class EnvironmentInterface : MonoBehaviour
         }
         castDisplaceThisRound = true;
 
-    }   
+    }
+
+    private IEnumerator RevertAnimatorControllerAfterAnimation(Animator animator, RuntimeAnimatorController previousController)
+    {
+        // Wait for the animation to complete
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+        {
+            yield return null;
+        }
+
+        // Revert the animator controller
+        animator.runtimeAnimatorController = previousController;
+    }
 }
 
