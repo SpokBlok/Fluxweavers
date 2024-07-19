@@ -247,6 +247,10 @@ PrefabInstance:
       propertyPath: Tiles
       value: 
       objectReference: {fileID: 1481221385}
+    - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
+      propertyPath: currentXIndex
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.0310929
@@ -1228,7 +1232,7 @@ PrefabInstance:
       objectReference: {fileID: 1481221385}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentYIndex
-      value: 8
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: Enemies.Array.size
@@ -4104,6 +4108,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1084996543}
+    - target: {fileID: 7198911034156016494, guid: f421f8d6071e7bf49b1daf9b0698a602, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7198911034156016494, guid: f421f8d6071e7bf49b1daf9b0698a602, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8561219178930305553, guid: f421f8d6071e7bf49b1daf9b0698a602, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

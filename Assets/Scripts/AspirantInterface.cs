@@ -10,7 +10,7 @@ public class AspirantInterface : MonoBehaviour
 {
     private GameObject uiObject;
     [SerializeField] public GameObject tooltip;
-    private GameObject aspirantStats;
+    public GameObject aspirantStats;
 
     private PhaseHandler phaseHandler;
 
@@ -22,6 +22,7 @@ public class AspirantInterface : MonoBehaviour
     private List<Button> actionButtons;
 
     private Button traverseButton;
+    private Button signatureMoveButton;
     private Button infoButton;
 
     private List<Sprite> currentButtons; // for current list of button sprites
@@ -63,6 +64,8 @@ public class AspirantInterface : MonoBehaviour
     public Sprite maikoBorder;
     public Sprite dedraBorder;
     public Sprite citrineBorder;
+
+    private Sprite currentActiveBorder;
 
     // ===== end of sprites section =====
 
@@ -127,6 +130,7 @@ public class AspirantInterface : MonoBehaviour
             "\nShield all allies negating the next instance of damage. Increase all allies ATK by 50% for 2 Rounds."
         };
         
+        aspirantStats.SetActive(false);
         tooltip.SetActive(false);
         uiObject.SetActive(false);
     }
@@ -138,11 +142,21 @@ public class AspirantInterface : MonoBehaviour
         {
             uiObject.SetActive(true);
             SetupButtonsAndImages();
+            aspirantStats.SetActive(false);
             tooltip.SetActive(false);
         }
 
         else if (uiObject.activeSelf && phaseHandler.selectedPlayer == null)
             uiObject.SetActive(false);
+
+        // to check flux affinity and update UI accordingly
+        if (phaseHandler.selectedPlayer != null)
+        {
+            if (phaseHandler.selectedPlayer.isMeetingFluxAffinity())
+                SignatureMoveSetActive(true);
+            else
+                SignatureMoveSetActive(false);
+        }
     }
 
     void SetActionButtons()
@@ -158,6 +172,7 @@ public class AspirantInterface : MonoBehaviour
         }
 
         traverseButton = GameObject.Find("Traverse").GetComponent<Button>();
+        signatureMoveButton = GameObject.Find("SignatureMove").GetComponent<Button>();
         infoButton = GameObject.Find("Info").GetComponent<Button>();
     }
 
@@ -176,16 +191,19 @@ public class AspirantInterface : MonoBehaviour
         {
             currentButtons = maikoButtons;
             aspirantImage.sprite = maikoPfp;
+            currentActiveBorder = maikoBorder;
         }
         else if (name.Equals("Dedra"))
         {
             currentButtons = dedraButtons;
             aspirantImage.sprite = dedraPfp;
+            currentActiveBorder = dedraBorder;
         }
         else if (name.Equals("Citrine"))
         {
             currentButtons = citrineButtons;
             aspirantImage.sprite = citrinePfp;
+            currentActiveBorder = citrineBorder;
         }
         
         // get unclicked buttons that contain aspirant's abilities
@@ -201,6 +219,26 @@ public class AspirantInterface : MonoBehaviour
 
         // reset last clicked button to null
         lastClickedAbility = null;
+    }
+
+    void SignatureMoveSetActive(bool isActive)
+    {
+        signatureMoveButton.interactable = isActive;
+
+        Image border = aspirantImage.gameObject.transform.GetChild(0).GetComponent<Image>();
+
+        if (isActive)
+        {
+            signatureMoveButton.GetComponent<Image>().sprite = currentButtons[4];
+
+            border.sprite = currentActiveBorder;
+        }
+        else
+        {
+            signatureMoveButton.GetComponent<Image>().sprite = sigInactive;
+        
+            border.sprite = inactiveBorder;
+        }
     }
 
     public void ButtonClicked(Button button)
@@ -375,6 +413,8 @@ public class AspirantInterface : MonoBehaviour
                 TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
                 textField.text = (Math.Round(stats[i],1)).ToString();
             }
+
+            aspirantStats.SetActive(true);
         }
     }
 

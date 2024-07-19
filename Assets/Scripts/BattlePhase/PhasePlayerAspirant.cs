@@ -96,6 +96,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
@@ -126,6 +127,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
@@ -173,6 +175,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
@@ -220,6 +223,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
