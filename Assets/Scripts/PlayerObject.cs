@@ -151,7 +151,6 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        IsAttacked(125);
 
         if(this.gameObject.CompareTag("Player"))
         {   
