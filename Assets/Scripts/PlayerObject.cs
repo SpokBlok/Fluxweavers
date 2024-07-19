@@ -145,6 +145,12 @@ public class PlayerObject : MonoBehaviour
     {
         
     }
+
+    public virtual bool isMeetingFluxAffinity()
+    {
+        return false;
+    }
+
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
