@@ -143,28 +143,30 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
-        foreach (GameObject fluxObject in fi.fluxes)
-        {
-            Flux flux = fluxObject.GetComponent<Flux>();
-            if (currentFluxName.ToString() == flux.name)
+        if(currentFlux.type == Flux.Type.Environment) {
+            foreach (GameObject fluxObject in fi.fluxes)
             {
-                oldFlux = currentFlux;
-                currentFlux = flux;
-                currentFluxAnimator = currentFlux.GetComponent<Animator>();
-                break;
+                Flux flux = fluxObject.GetComponent<Flux>();
+                if (currentFluxName.ToString() == flux.name)
+                {
+                    oldFlux = currentFlux;
+                    currentFlux = flux;
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    break;
+                }
             }
-        }
-        hexAnimator = hex.GetComponent<Animator>();
-        hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
-        hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
-        hexAnimator.updateMode = currentFluxAnimator.updateMode;
-        hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+            hexAnimator = hex.GetComponent<Animator>();
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+            hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+            hexAnimator.updateMode = currentFluxAnimator.updateMode;
+            hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
 
-        hex.terrainDuration = currentFluxDuration;
-        hex.currentFlux = currentFluxName;
-        currentFlux = oldFlux;
+            hex.terrainDuration = currentFluxDuration;
+            hex.currentFlux = currentFluxName;
+            currentFlux = oldFlux;
+        } 
 
-        if (currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
+        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
         {
             Displace(hex);
         }
