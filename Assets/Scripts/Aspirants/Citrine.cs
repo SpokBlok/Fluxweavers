@@ -15,6 +15,8 @@ public class Citrine : PlayerObject
     // Start is called before the first frame update
     void Start()
     {
+        objectName = "Citrine";
+
         //Getting the managers
         resourceScript = GameObject.FindObjectOfType<ResourceScript>();
         phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
@@ -71,6 +73,7 @@ public class Citrine : PlayerObject
         //Shield from Citrine
         shieldFromCitrine = this.transform.GetChild(0).gameObject;
         shieldFromCitrine.SetActive(false);
+
     }
 
     // Update is called once per frame

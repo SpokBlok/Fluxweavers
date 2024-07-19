@@ -13,6 +13,14 @@ public class PhasePlayerAspirant : PhaseBase
     private Dictionary<Vector2Int, int> CheckedTiles;
     public String selectedAbility = "none";
 
+    public string objectName;
+    // AudioManager audioManager;
+
+    void Start(){
+        //Voicelines
+        // audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     public override void EnterState(PhaseHandler ph)
     {
         nextState = ph.enemyAspirant;
@@ -141,6 +149,8 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
+                        // ph.selectedPlayer.UltActivationSound();
+                        ph.selectedPlayer.DisplaySplashArt();
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
                                     out ph.enemiesInRange, out emptyAllies);
@@ -152,6 +162,8 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsAllies)
                     {
+                        // ph.selectedPlayer.UltActivationSound();
+                        ph.selectedPlayer.DisplaySplashArt();
                         HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange, out emptyEnemies,
                                     out ph.alliesInRange);

@@ -11,9 +11,12 @@ public class MaikoScript : PlayerObject
     HashSet<PlayerObject> maikoSelf = new HashSet<PlayerObject>();
     GameObject shieldFromCitrine;
 
+
     // Start is called before the first frame update
     void Start()
     {
+        objectName = "Maiko";
+
         //Getting the managers
         resourceScript = GameObject.FindObjectOfType<ResourceScript>();
         phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
@@ -80,6 +83,7 @@ public class MaikoScript : PlayerObject
         //Shield from Citrine
         shieldFromCitrine = this.transform.GetChild(0).gameObject;
         shieldFromCitrine.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -110,7 +114,7 @@ public class MaikoScript : PlayerObject
     {
         // Mana Portion
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
-        {
+        {            
             resourceScript.playerAbilityUseManaUpdate(skillMana);
             float outputDamage = skillDamage * ((100 - enemyMagicResistance  + magicPenetration) / 100);
             return outputDamage;

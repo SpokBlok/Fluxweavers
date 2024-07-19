@@ -17,9 +17,10 @@ public class Dedra : PlayerObject
     public float calculatedBasicAttackDamage;
     GameObject shieldFromCitrine;
 
-
     void Start()
     {
+        objectName = "Dedra";
+
         //Getting the managers
         resourceScript = GameObject.FindObjectOfType<ResourceScript>();
         phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
@@ -79,6 +80,7 @@ public class Dedra : PlayerObject
         //Shield from Citrine
         shieldFromCitrine = this.transform.GetChild(0).gameObject;
         shieldFromCitrine.SetActive(false);
+
     }
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
