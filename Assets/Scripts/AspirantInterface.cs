@@ -9,7 +9,7 @@ using TMPro;
 public class AspirantInterface : MonoBehaviour
 {
     private GameObject uiObject;
-    public GameObject tooltip;
+    [SerializeField] public GameObject tooltip;
     private GameObject aspirantStats;
 
     private PhaseHandler phaseHandler;
@@ -58,12 +58,18 @@ public class AspirantInterface : MonoBehaviour
     public Sprite dedraPfp;
     public Sprite citrinePfp;
 
+    // for Image Borders
+    public Sprite inactiveBorder;
+    public Sprite maikoBorder;
+    public Sprite dedraBorder;
+    public Sprite citrineBorder;
+
     // ===== end of sprites section =====
 
     // TEXT COMPONENTS
-    public TextMeshProUGUI headerText;
-    public TextMeshProUGUI bodyText;
-    public TextMeshProUGUI footerText;
+    [SerializeField] public TextMeshProUGUI headerText;
+    [SerializeField] public TextMeshProUGUI bodyText;
+    [SerializeField] public TextMeshProUGUI footerText;
 
     // TEXTS
     // for ability descriptions / definitions
@@ -300,7 +306,12 @@ public class AspirantInterface : MonoBehaviour
     {
         if (!phaseHandler.playerAspirant.selectedAbility.Equals("none"))
         {
-            headerText.text = phaseHandler.playerAspirant.selectedAbility;
+            if (phaseHandler.playerAspirant.selectedAbility.Equals("BasicAttack"))
+                headerText.text = "Basic Attack";
+            else if (phaseHandler.playerAspirant.selectedAbility.Equals("SignatureMove"))
+                headerText.text = "Signature Move";
+            else
+                headerText.text = phaseHandler.playerAspirant.selectedAbility;
 
             int index = actionsInOrder.IndexOf(phaseHandler.playerAspirant.selectedAbility);
             string name = phaseHandler.selectedPlayer.name;
