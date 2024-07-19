@@ -70,8 +70,7 @@ public class PlayerObject : MonoBehaviour
     // Phase Handler Script
     public PhaseHandler phaseHandler;
 
-    // FUCKING DEDRA ANIMATIONS
-    public string objectName;
+    // Dedra Animations
     public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
     public bool isSignatureMoveActive; // checks if signature move was activated
     public int skillCounter;

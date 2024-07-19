@@ -69,7 +69,7 @@ public class Dedra : PlayerObject
         skillCounter = 3;
         signatureMoveCounter = 1;
 
-        //ANIMATOR SHIT
+        //Animator stuff
         myAnimator = GetComponent<Animator>();
         splashArt = GameObject.FindGameObjectWithTag("DedraUltImage");
         Debug.Log(splashArt);
@@ -187,28 +187,20 @@ public class Dedra : PlayerObject
         return false;
     }
 
-    /*public void OnTriggerEnter(Collider other)
+    //for Citrine shield
+    public void makeShieldActive()
     {
-        if (other.gameObject == Dedra)
+        if (shield == 1)
         {
-            isCharacterOnTile = true;
+            shieldFromCitrine.SetActive(true);
+        }
+        else
+        {
+            shieldFromCitrine.SetActive(false);
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject == Dedra && isCharacterOnTile)
-        {
-            isCharacterOnTile = false;
-            signatureMoveActivation = true;
-        }
-    }
-    
-    link for this on chatgpt: https://chatgpt.com/share/ada9a22b-d0c4-42bc-99bf-3036e43ba00a
-    
-    */
-
-    // Update is called once per frame
+    //Signature & skill checks can be made more efficient to just do the checks after each basic attack, instead of with every frame update
     void Update()
     {    
         if (!isSignatureMoveActive) // if ultimate is not active, revert back (no buffs)
@@ -221,12 +213,10 @@ public class Dedra : PlayerObject
         if (skillCounter < 1) // if skill is not active, revert back (no buffs)
         {   
             isSkillActive = false;
-        } 
-        
-    }
+        }
 
-    /* things to do for tomorrow:
-            - subtract damage from enemey's health using basic attack
-            - find way to check if DedraPlayer just left the Folia environment
-            - double check stats, and kit specifics */
+        //for Citrine Shield
+        makeShieldActive();
+
+    }
 }
