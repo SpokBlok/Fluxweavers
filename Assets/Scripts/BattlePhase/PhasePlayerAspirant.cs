@@ -149,7 +149,6 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
-                        // ph.selectedPlayer.UltActivationSound();
                         ph.selectedPlayer.DisplaySplashArt();
                         HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
@@ -162,7 +161,6 @@ public class PhasePlayerAspirant : PhaseBase
 
                     if (ph.selectedPlayer.signatureMoveAffectsAllies)
                     {
-                        // ph.selectedPlayer.UltActivationSound();
                         ph.selectedPlayer.DisplaySplashArt();
                         HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange, out emptyEnemies,

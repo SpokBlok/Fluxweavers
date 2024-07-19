@@ -353,18 +353,20 @@ public class PlayerObject : MonoBehaviour
 
     public void DisplaySplashArt()
     {
-        if(phaseHandler.selectedPlayer.objectName == "Citrine")
+        //Voicelines
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        Debug.Log("AudioManager initialized: " + (audioManager != null));
+        if (phaseHandler.selectedPlayer.objectName == "Maiko")
+        {
+            audioManager.PlaySFX(audioManager.maikoUltActivation);
+        }
+        else if (phaseHandler.selectedPlayer.objectName == "Citrine")
         {
             audioManager.PlaySFX(audioManager.citrineUltActivation);
         }
-        else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+        if (phaseHandler.selectedPlayer.objectName == "Dedra")
         {
             audioManager.PlaySFX(audioManager.dedraUltActivation);
-        }
-        else if(phaseHandler.selectedPlayer.objectName == "Maiko")
-        {
-            Debug.Log("yo smthng wrong");
-            audioManager.PlaySFX(audioManager.maikoUltActivation);
         }
         StartCoroutine(SplashArtDisplay());
     }
@@ -384,20 +386,4 @@ public class PlayerObject : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // public void UltActivationSound()
-    // {
-    //     if(phaseHandler.selectedPlayer.objectName == "Citrine")
-    //     {
-    //         audioManager.PlaySFX(audioManager.citrineUltActivation);
-    //     }
-    //     else if(phaseHandler.selectedPlayer.objectName == "Dedra")
-    //     {
-    //         audioManager.PlaySFX(audioManager.dedraUltActivation);
-    //     }
-    //     else if(phaseHandler.selectedPlayer.objectName == "Maiko")
-    //     {
-    //         Debug.Log("yo smthng wrong");
-    //         audioManager.PlaySFX(audioManager.maikoUltActivation);
-    //     }
-    // }
 }
