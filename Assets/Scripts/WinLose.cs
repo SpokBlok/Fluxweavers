@@ -6,6 +6,6 @@ public class WinLose : MonoBehaviour
 {
     public void BackToMain() 
     {
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene("MainMenu");
     }
 }
