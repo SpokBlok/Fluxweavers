@@ -127,8 +127,17 @@ public class AiHandler : MonoBehaviour
 
         foreach(PlayerObject aspirant in aspirantPositions) {
 
-            AspirantMovement movementScript = aspirant.GetComponent<AspirantMovement>();
-            Vector2Int aspirantPosition = new(movementScript.currentXIndex, movementScript.currentYIndex);
+            Vector2Int aspirantPosition = new(0, 0);
+            if (aspirant.name == "PlayerNexus")
+            {
+                aspirantPosition = new(0, 5);
+            }
+            else
+            {
+                AspirantMovement movementScript = aspirant.GetComponent<AspirantMovement>();
+                aspirantPosition = new(movementScript.currentXIndex, movementScript.currentYIndex);
+            }
+
 
             
             Vector2Int[] paths = enemyPosition.CreatePathToTarget(aspirantPosition, aiComrades);

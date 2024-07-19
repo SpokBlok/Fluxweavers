@@ -102,7 +102,6 @@ public class AiMovementLogic : MonoBehaviour
             }
 
             else if (SandTerrain.Contains(currentTile.currentFlux)) {
-                Debug.Log("ehllo0");
                 GetComponent<Raccoon>().basicAttackRange = 0;
             }
             else {
@@ -124,7 +123,7 @@ public class AiMovementLogic : MonoBehaviour
 
         for (int i = 0; i < temp.Count - 1; i++) {
 
-            if (moveCounter > GetComponent<PlayerObject>().movement) {
+            if (moveCounter >= GetComponent<PlayerObject>().movement) {
                 break;
             }
             int weight = GetEdgeWeight(temp[i], temp[i+1], true);
