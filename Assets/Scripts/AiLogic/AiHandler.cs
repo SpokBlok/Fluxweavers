@@ -72,7 +72,7 @@ public class AiHandler : MonoBehaviour
         }
 
         // Then Attack or cast abilities
-        Raccoon[] raccoons = gameObject.GetComponentsInChildren<Raccoon>();
+        HashSet<PlayerObject> raccoons = new(gameObject.GetComponentsInChildren<Raccoon>());
 
         // POINT FOR UPDATE: Could be better, use a dictionary
         int manaPerRaccon = (int) Mathf.Ceil((float) rs.enemyMana() / aiEntities.Length); 
@@ -87,7 +87,7 @@ public class AiHandler : MonoBehaviour
                 
                 // Keep basic attacking as long as mana allotted still allows for it
                 while (manaAllocated >= raccoon.skillMana) {
-                    raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+                    raccoon.skillStatus(raccoons);
                     manaAllocated -= raccoon.skillMana;
                 }
             }   
@@ -106,7 +106,7 @@ public class AiHandler : MonoBehaviour
             // Debug.Log(manaPerRaccon);
             // Better to attack first instead of buff when able to attack
             if (manaAllocated - raccoon.skillMana >= raccoon.basicAttackMana) {
-                raccoon.skillStatus(new HashSet<PlayerObject>(){raccoon});
+                raccoon.skillStatus(raccoons);
                 manaAllocated -= raccoon.skillMana;
             }
             

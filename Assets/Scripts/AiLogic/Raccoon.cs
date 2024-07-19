@@ -49,7 +49,8 @@ public class Raccoon : PlayerObject
             StatusEffect effect = new();
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
-            effect.instantiateMultiFloatEffect("attackStat", 1.6f, 2, raccoon);
+            
+            effect.instantiateMultiFloatEffect("attackStat", 1.6f, 2, targets);
             Handler.addStatusEffect(effect);
         }
     }
