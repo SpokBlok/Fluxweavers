@@ -168,14 +168,18 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     selectedAbility = "SignatureMoveAttack";
 
-                    CheckedTiles = new Dictionary<Vector2Int, int>();
+                    CheckedTiles = new Dictionary<Vector2Int,int>();
 
+                    int range = (int)ph.selectedPlayer.signatureMoveRange;
+                    if(range > 0)
+                        range += additionalRange;
+                    
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
                         ph.selectedPlayer.DisplaySplashArt();
-                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
-                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
-                                    out ph.enemiesInRange, out emptyAllies);
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>(); 
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
+                                                            out ph.enemiesInRange, out emptyAllies);
 
                         // set the new adjacent tiles and highlight them
                         tiles.SetAdjacentTiles(availableTiles);

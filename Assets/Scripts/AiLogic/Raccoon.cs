@@ -26,6 +26,8 @@ public class Raccoon : PlayerObject
 
         skillMana = 7;
         skillRange = 0;
+
+        myAnimator = GetComponent<Animator>();
     }
 
     public override float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
