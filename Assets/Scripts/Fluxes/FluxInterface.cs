@@ -121,9 +121,9 @@ public class FluxInterface : MonoBehaviour
         bool castable = true;
         if(!rs.playerAbilityUseCheck(castedFlux.manaCost))
             castable = false;
-        if(ei.castDisplaceThisRound)
-            castable = false;
-        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+/*        if(ei.castDisplaceThisRound)
+            castable = false;*/
+        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.ScorchingWinds || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
             castable = false;
         if(castable) {
             rs.playerAbilityUseManaUpdate(castedFlux.manaCost);

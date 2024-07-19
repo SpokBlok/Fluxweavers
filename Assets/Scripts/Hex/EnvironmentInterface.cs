@@ -46,10 +46,25 @@ public class EnvironmentInterface : MonoBehaviour
         castedHexes.Add(hex);
         
         if(flux.type == Flux.Type.Environment) {
+
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
-            hex.hexSprite.sprite = currentFluxSprite;
-            hex.terrainDuration = flux.duration;
-            hex.currentFlux = flux.fluxCode;
+
+            if (flux.fluxCode == FluxNames.Sandstorm)
+            {
+                Debug.Log("hi");
+                foreach (Hex adjHex in GetSandstormHex(hex, true))
+                {
+                    adjHex.hexSprite.sprite = currentFluxSprite;
+                    adjHex.terrainDuration = flux.duration;
+                    adjHex.currentFlux = flux.fluxCode;
+                }
+            }
+            else
+            {
+                hex.hexSprite.sprite = currentFluxSprite;
+                hex.terrainDuration = flux.duration;
+                hex.currentFlux = flux.fluxCode;
+            }
         } else {
             flux.SpellCast(hex);
         }
@@ -218,6 +233,7 @@ public class EnvironmentInterface : MonoBehaviour
                     coords.Add(new Vector2Int(y+r, x+q));
             }
         }
+        
 
         if(aspirantCheck) {
             foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
@@ -235,6 +251,48 @@ public class EnvironmentInterface : MonoBehaviour
                     adjacentHexes.Add(newHex);
                 }    
             } catch {}       
+        }
+        return adjacentHexes;
+
+
+    }
+
+    private List<Hex> GetSandstormHex(Hex initialHex, bool aspirantCheck)
+    {
+        int x = initialHex.x;
+        int y = initialHex.y;
+        List<Hex> adjacentHexes = new List<Hex>();
+        List<Vector2Int> coords = new List<Vector2Int>();
+
+        for(int i = 0; i < 4; i++)
+        {
+            coords.Add(new Vector2Int(y, x + i));
+            coords.Add(new Vector2Int(y - 1, x + 1 + i));
+        }
+
+        if (aspirantCheck)
+        {
+            foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions)
+            {
+                coords.Remove(pair.Value);
+            }
+            foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions)
+            {
+                coords.Remove(pair.Value);
+            }
+        }
+
+        foreach (Vector2Int pair in coords)
+        {
+            try
+            {
+                Hex newHex = tcs.Tiles[pair.x, pair.y].GetComponent<Hex>();
+                if (newHex != null)
+                {
+                    adjacentHexes.Add(newHex);
+                }
+            }
+            catch { }
         }
         return adjacentHexes;
 
