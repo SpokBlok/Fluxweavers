@@ -74,9 +74,43 @@ public class AiMovementLogic : MonoBehaviour
         }
 
         if (Path.Count == 0) {
+            ResolveFluxEffects();
             phaseHandler.enemyPositions[gameObject.GetComponent<PlayerObject>()] = new Vector2Int(currentYIndex, currentXIndex);
             enabled = false;
         }
+    }
+
+    private void ResolveFluxEffects () {
+         FluxNames[] mountainTerrain = new FluxNames[] {
+            FluxNames.EarthArise,
+            FluxNames.SeismicWave,
+            FluxNames.CinderCone,
+            FluxNames.Waterfall,
+            FluxNames.MountainSpires,
+
+        };
+
+        FluxNames[] SandTerrain = new FluxNames[] {
+            FluxNames.Sandstorm,
+        };
+        
+        try {
+            Hex currentTile = Tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
+
+            if (mountainTerrain.Contains(currentTile.currentFlux)) {
+                GetComponent<Raccoon>().basicAttackRange = 2;
+            }
+
+            else if (SandTerrain.Contains(currentTile.currentFlux)) {
+                Debug.Log("ehllo0");
+                GetComponent<Raccoon>().basicAttackRange = 0;
+            }
+            else {
+                GetComponent<Raccoon>().basicAttackRange = 1;
+            }
+
+        }
+        catch (Exception) {}
     }
 
     public void Move (Vector2Int target, Vector2Int[] enemyAi) {
@@ -96,7 +130,7 @@ public class AiMovementLogic : MonoBehaviour
             int weight = GetEdgeWeight(temp[i], temp[i+1], true);
             
             moveCounter += weight;
-            Debug.Log("At " + temp[i] + " and neighbor " + temp[i+1] + ", weight is " + weight);
+            // Debug.Log("At " + temp[i] + " and neighbor " + temp[i+1] + ", weight is " + weight);
             Path.Enqueue(temp[i]);
         }
     }
@@ -221,11 +255,11 @@ public class AiMovementLogic : MonoBehaviour
                 return movement? 2:4;
             }
 
-            if (forestTerrain.Contains(nextTile.currentFlux)) {
+            else if (forestTerrain.Contains(nextTile.currentFlux)) {
                 return 0;
             }
 
-            if (nextTile.currentFlux.Equals(FluxNames.None)) {
+            else if (nextTile.currentFlux.Equals(FluxNames.None)) {
                 return movement? 1:2;
             }
 
@@ -234,7 +268,7 @@ public class AiMovementLogic : MonoBehaviour
         catch (Exception) {}
 
         // Debug.Log("There was an error?");
-        return 0;
+        return movement? 1:2;
     }
 
     private Vector2Int[] BacktrackPath(Dictionary<Vector2Int, Vector2Int> nodeBacktrack, Vector2Int currentLocation) {

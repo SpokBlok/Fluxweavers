@@ -202,6 +202,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1470607964}
     m_Modifications:
+    - target: {fileID: 1231286997451286794, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (4)
@@ -405,6 +409,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1470607964}
     m_Modifications:
+    - target: {fileID: 1231286997451286794, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (3)
@@ -640,9 +648,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1470607964}
     m_Modifications:
+    - target: {fileID: 1231286997451286794, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 2093076500864931648, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_Name
       value: HexTile Grid (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7632695282112936941, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
+      propertyPath: currentFlux
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 8800868780931831242, guid: 13018e16980889f4b9f876128df3ccdb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1138,11 +1154,11 @@ PrefabInstance:
       objectReference: {fileID: 1470607963}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentXIndex
-      value: 16
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 341160263792652899, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: currentYIndex
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3922408251167558897, guid: 2b3f9838fc1b8d94a854346289256474, type: 3}
       propertyPath: m_LocalPosition.x
