@@ -9,12 +9,11 @@ public class Dedra : PlayerObject
 {   // Start is called before the first frame update
     public bool wasOnFolia;
     public int checkerForExit;
-    public int skillCounter;
-    public int signatureMoveCounter;
-    public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
-    public bool isSignatureMoveActive; // checks if signature move was activated
+    // public int skillCounter;
+    // public int signatureMoveCounter;
+    // public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
+    // public bool isSignatureMoveActive; // checks if signature move was activated
     HashSet<PlayerObject> dedraSelf = new HashSet<PlayerObject>();
-    public float calculatedBasicAttackDamage;
     GameObject shieldFromCitrine;
 
 
@@ -24,6 +23,7 @@ public class Dedra : PlayerObject
         resourceScript = GameObject.FindObjectOfType<ResourceScript>();
         phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         dedraSelf.Add(this);
+        objectName = "Dedra";
 
     //Player Stats
         armor = 9;
@@ -67,7 +67,6 @@ public class Dedra : PlayerObject
         // variables specific to dedra
         skillCounter = 3;
         signatureMoveCounter = 1;
-        calculatedBasicAttackDamage = 0;
 
         //ANIMATOR SHIT
         myAnimator = GetComponent<Animator>();
@@ -93,37 +92,9 @@ public class Dedra : PlayerObject
             basicAttackDamage = attackStat;
             calculatedBasicAttackDamage = basicAttackDamage * (100 - enemyArmor + armorPenetration) / 100;
             skillDamage = attackStat * 1.65f;
-
-            // reset counters
-            skillCounter = 3;
-            signatureMoveCounter = 1;
         }
 
-        else if (isSkillActive && skillCounter > 0 && isSignatureMoveActive && signatureMoveCounter > 0)
-        {
-            // instantiate signature move buffs
-            control = 3; // originally 2
-            basicAttackMana = 2; // originally 4
-            basicAttackRange = 4; // originally 3
-
-            // skill buffs
-            if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
-            {
-                skillDamage = attackStat * 2f;
-            }
-
-            // else,  basic attacks deal 165% of the attackStat
-            else if (enemyCurrentHealth > enemyMaximumHealth * 0.35f)
-            {
-                skillDamage = attackStat * 1.65f;
-            }
-            skillCounter --;
-            signatureMoveCounter --;
-            isSignatureMoveActive = false;
-            calculatedBasicAttackDamage = skillDamage * (100 - enemyArmor + armorPenetration) / 100;
-        }
-
-        else if (isSkillActive && skillCounter > 0)
+        if (isSkillActive && skillCounter > 0)
         {
             // if opponents health is <35%, basic attacks deal 200% of the attackStat
             if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
@@ -140,7 +111,7 @@ public class Dedra : PlayerObject
             skillCounter --;
         }
 
-        else if (isSignatureMoveActive && signatureMoveCounter > 0)
+        if (isSignatureMoveActive && signatureMoveCounter > 0)
         {
             control = 3; // originally 2
             basicAttackMana = 2; // originally 4
