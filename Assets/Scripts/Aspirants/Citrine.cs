@@ -57,7 +57,7 @@ public class Citrine : PlayerObject
         skillRange = 3;
 
         signatureMoveMana = 20;
-        signatureMoveRange = 0;
+        signatureMoveRange = -1; // global attack
 
         basicAttackDamage = attackStat * 1.1f;
 

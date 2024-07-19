@@ -4,6 +4,7 @@ using System.Resources;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using FluxNamespace;
 
 public class PhaseHandler : MonoBehaviour
 {
@@ -26,11 +27,14 @@ public class PhaseHandler : MonoBehaviour
 
     public Dictionary<PlayerObject, Vector2Int> enemyPositions;
     public HashSet<PlayerObject> enemies;
+    public AiHandler aiHandler;
 
     public PlayerObject selectedEnemy;
     public HashSet<Vector2Int> enemiesInRange = new HashSet<Vector2Int>();
 
     public ResourceScript rs;
+
+    public HashSet<FluxNames> forestMakingFluxes;
 
     //This text field is meant only to test the funcitonality of the state machine
     [SerializeField] public TextMeshProUGUI stateText;
@@ -66,6 +70,8 @@ public class PhaseHandler : MonoBehaviour
         }
 
         rs = GameObject.FindObjectOfType<ResourceScript>();
+
+        SetupForestMakingFluxes();
         
         currentRound = 1;
         rs.roundStart(currentRound);
@@ -82,5 +88,15 @@ public class PhaseHandler : MonoBehaviour
     public void SwitchState (PhaseBase state) {
         currentState = state;
         state.EnterState(this);
+    }
+
+    void SetupForestMakingFluxes()
+    {
+        forestMakingFluxes = new HashSet<FluxNames>();
+
+        forestMakingFluxes.Add(FluxNames.Swamp);
+        forestMakingFluxes.Add(FluxNames.Regrowth);
+        forestMakingFluxes.Add(FluxNames.Reforestation);
+        forestMakingFluxes.Add(FluxNames.WindsweptWoods);
     }
 }
