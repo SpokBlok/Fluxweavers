@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using FluxNamespace;
+using System;
+using UnityEngine.Device;
 
 public class PhaseHandler : MonoBehaviour
 {
@@ -47,9 +49,20 @@ public class PhaseHandler : MonoBehaviour
         {
             players.Add(aspirant.GetComponent<PlayerObject>());
 
-            AspirantMovement aspirantIndices = aspirant.GetComponent<AspirantMovement>();
-            int y = aspirantIndices.currentYIndex;
-            int x = aspirantIndices.currentXIndex;
+            int x = 0;
+            int y = 0;
+
+            try
+            {
+                AspirantMovement aspirantIndices = aspirant.GetComponent<AspirantMovement>();
+                y = aspirantIndices.currentYIndex;
+                x = aspirantIndices.currentXIndex;
+            }
+                catch (Exception)
+            {
+                y = aspirant.GetComponent<PlayerNexus>().y;
+                x = aspirant.GetComponent<PlayerNexus>().x;
+            }
 
             playerPositions[aspirant.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
         }
@@ -60,10 +73,20 @@ public class PhaseHandler : MonoBehaviour
         foreach(GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
             enemies.Add(enemy.GetComponent<PlayerObject>());
+            int x = 0;
+            int y = 0;
 
-            AiMovementLogic enemyIndices = enemy.GetComponent<AiMovementLogic>();
-            int y = enemyIndices.GetYIndex();
-            int x = enemyIndices.GetXIndex();
+            try
+            {
+                AiMovementLogic enemyIndices = enemy.GetComponent<AiMovementLogic>();
+                y = enemyIndices.GetYIndex();
+                x = enemyIndices.GetXIndex();
+            }
+            catch (Exception)
+            {
+                y = enemy.GetComponent<Nexus>().y;
+                x = enemy.GetComponent<Nexus>().x;
+            }
 
             enemyPositions[enemy.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
         }
