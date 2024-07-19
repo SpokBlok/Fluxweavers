@@ -19,6 +19,14 @@ public class PhasePlayerAspirant : PhaseBase
     public String selectedAbility;
     private bool isRangeCalculated;
 
+    public string objectName;
+    // AudioManager audioManager;
+
+    void Start(){
+        //Voicelines
+        // audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     public override void EnterState(PhaseHandler ph)
     {
         nextState = ph.enemyAspirant;
@@ -57,7 +65,7 @@ public class PhasePlayerAspirant : PhaseBase
 
             if (aspirantMovement == null)
                 Debug.LogError("AspirantMovement script not found on PlayerObject.");
-            
+
             // Get current position indices from AspirantMovement script
             int currentXIndex = aspirantMovement.currentXIndex;
             int currentYIndex = aspirantMovement.currentYIndex;
@@ -75,8 +83,137 @@ public class PhasePlayerAspirant : PhaseBase
 
             if (selectedAbility.Equals("Traverse"))
             {
-                if(!ph.selectedPlayer.hasMoved)
+                ph.alliesInRange = new HashSet<Vector2Int>();
+                ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                // un-highlight the previous adjacent tiles if there are any
+                if (tiles.GetAdjacentTilesCount() > 0)
+                    tiles.HighlightAdjacentTiles(false);
+
+                if (selectedAbility.Equals("BasicAttack"))
+                    selectedAbility = "none";
+                else
                 {
+                    selectedAbility = "BasicAttack";
+                    HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
+
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
+
+                    availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.basicAttackRange,
+                                                        out ph.enemiesInRange, out emptyAllies);
+
+                    // set the new adjacent tiles and highlight them
+                    tiles.SetAdjacentTiles(availableTiles);
+                    tiles.HighlightAdjacentTiles(true);
+                }
+            }
+
+            else if (Input.GetKeyDown(KeyCode.S) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
+            {
+                ph.alliesInRange = new HashSet<Vector2Int>();
+                ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                // un-highlight the previous adjacent tiles if there are any
+                if (tiles.GetAdjacentTilesCount() > 0)
+                    tiles.HighlightAdjacentTiles(false);
+
+                if (selectedAbility.Equals("SkillAttack"))
+                    selectedAbility = "none";
+                else
+                {
+                    selectedAbility = "SkillAttack";
+
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
+
+                    if (ph.selectedPlayer.skillStatusAffectsEnemies)
+                    {
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange,
+                                    out ph.enemiesInRange, out emptyAllies);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+
+                    if (ph.selectedPlayer.skillStatusAffectsAllies)
+                    {
+                        HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.skillRange, out emptyEnemies,
+                                    out ph.alliesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+                }
+            }
+
+            else if (Input.GetKeyDown(KeyCode.U) && ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
+            {
+                ph.alliesInRange = new HashSet<Vector2Int>();
+                ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                // un-highlight the previous adjacent tiles if there are any
+                if (tiles.GetAdjacentTilesCount() > 0)
+                    tiles.HighlightAdjacentTiles(false);
+
+                if (selectedAbility.Equals("SignatureMoveAttack"))
+                    selectedAbility = "none";
+                else
+                {
+                    selectedAbility = "SignatureMoveAttack";
+
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
+
+                    if (ph.selectedPlayer.signatureMoveAffectsEnemies)
+                    {
+                        ph.selectedPlayer.DisplaySplashArt();
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange,
+                                    out ph.enemiesInRange, out emptyAllies);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+
+                    if (ph.selectedPlayer.signatureMoveAffectsAllies)
+                    {
+                        ph.selectedPlayer.DisplaySplashArt();
+                        HashSet<Vector2Int> emptyEnemies = new HashSet<Vector2Int>();
+                        availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, (int)ph.selectedPlayer.signatureMoveRange, out emptyEnemies,
+                                    out ph.alliesInRange);
+
+                        // un-highlight the previous adjacent tiles if there are any
+                        if (tiles.GetAdjacentTilesCount() > 0)
+                            tiles.HighlightAdjacentTiles(false);
+
+                        // set the new adjacent tiles and highlight them
+                        tiles.SetAdjacentTiles(availableTiles);
+                        tiles.HighlightAdjacentTiles(true);
+                    }
+                }
+            }
+
+            else if (Input.GetKeyDown(KeyCode.M) && !ph.selectedPlayer.hasMoved)
+            {
+                ph.alliesInRange = new HashSet<Vector2Int>();
+                ph.enemiesInRange = new HashSet<Vector2Int>();
+
+                // un-highlight the previous adjacent tiles if there are any
+                if (tiles.GetAdjacentTilesCount() > 0)
+                    tiles.HighlightAdjacentTiles(false);
+
+                if (selectedAbility.Equals("movement"))
+                    selectedAbility = "none";
+                else
+                {
+                    selectedAbility = "movement";
 
                     int x = aspirantMovement.originalXIndex;
                     int y = aspirantMovement.originalYIndex;
@@ -86,6 +223,10 @@ public class PhasePlayerAspirant : PhaseBase
                     HashSet<Vector2Int> unreachableMountains;
                     aspirantMovement.AvailableTiles = aspirantMovement.GetAdjacentTiles(x, y, ph.selectedPlayer.movement, false,
                                                                                         out unreachableMountains);
+
+                    // un-highlight the previous adjacent tiles if there are any
+                    if (tiles.GetAdjacentTilesCount() > 0)
+                        tiles.HighlightAdjacentTiles(false);
 
                     // set the new adjacent tiles and highlight them
                     tiles.SetAdjacentTiles(aspirantMovement.AvailableTiles);

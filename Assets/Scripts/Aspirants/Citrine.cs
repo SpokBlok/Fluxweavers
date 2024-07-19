@@ -10,14 +10,18 @@ public class Citrine : PlayerObject
     public bool inTerraHex; // For Citrine Passive and Ultimate Check
      
     HashSet<PlayerObject> citrineSelf = new  HashSet<PlayerObject>();
-
+    GameObject shieldFromCitrine;
 
     // Start is called before the first frame update
     void Start()
     {
+        objectName = "Citrine";
+
+        //Getting the managers
         resourceScript = GameObject.FindObjectOfType<ResourceScript>();
         phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         citrineSelf.Add(this);
+
         //Player Stats
         level = 1;
         armor = 8;
@@ -58,12 +62,25 @@ public class Citrine : PlayerObject
         signatureMoveRange = -1; // global attack
 
         basicAttackDamage = attackStat * 1.1f;
+
+        //Animation Stuff
+        myAnimator = GetComponent<Animator>();
+        splashArt = GameObject.FindGameObjectWithTag("CitrineUltImage");
+        Debug.Log(splashArt);
+
+        splashArt.SetActive(false);
+
+        //Shield from Citrine
+        shieldFromCitrine = this.transform.GetChild(0).gameObject;
+        shieldFromCitrine.SetActive(false);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        //for Citrine Shield
+        makeShieldActive();
     }
 
     public override float basicAttack(float mr, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -147,5 +164,17 @@ public class Citrine : PlayerObject
             return true;
 
         return false;
+
+    //for Citrine shield
+    public void makeShieldActive()
+    {
+        if (shield == 1)
+        {
+            shieldFromCitrine.SetActive(true);
+        }
+        else
+        {
+            shieldFromCitrine.SetActive(false);
+        }
     }
 }

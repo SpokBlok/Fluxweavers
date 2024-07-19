@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Enemy
   - StatusEffectHandler
+  - MaikoUltImage
+  - CitrineUltImage
+  - DedraUltImage
+  - Audio
   layers:
   - Default
   - TransparentFX
