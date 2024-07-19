@@ -9,10 +9,14 @@ public class MaikoScript : PlayerObject
     // Checkers for Maiko
     public bool inAquaHex; // For Maiko Passive and signatureMove Check
     HashSet<PlayerObject> maikoSelf = new HashSet<PlayerObject>();
+    GameObject shieldFromCitrine;
 
     // Start is called before the first frame update
     void Start()
     {
+        //Getting the managers
+        resourceScript = GameObject.FindObjectOfType<ResourceScript>();
+        phaseHandler = GameObject.FindObjectOfType<PhaseHandler>();
         maikoSelf.Add(this);
 
         //Player Stats
@@ -66,11 +70,23 @@ public class MaikoScript : PlayerObject
 
         signatureMoveStatusAffectsSingle = false;
         signatureMoveStatusAffectsAOE = true;
-}
+
+        myAnimator = GetComponent<Animator>();
+        splashArt = GameObject.FindGameObjectWithTag("MaikoUltImage");
+        Debug.Log(splashArt);
+
+        splashArt.SetActive(false);
+
+        //Shield from Citrine
+        shieldFromCitrine = this.transform.GetChild(0).gameObject;
+        shieldFromCitrine.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
     {
+        //for Citrine Shield
+        makeShieldActive();
     }
 
     public override float basicAttack(float enemyArmor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -79,7 +95,7 @@ public class MaikoScript : PlayerObject
         if (resourceScript.playerAbilityUseCheck(basicAttackMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(basicAttackMana);
-            float outputDamage = basicAttackDamage * ((100 - enemyArmor) / 100);
+            float outputDamage = basicAttackDamage * ((100 - enemyArmor + armorPenetration) / 100);
             return outputDamage;
             //range code here when implemented
         }
@@ -96,7 +112,7 @@ public class MaikoScript : PlayerObject
         if (resourceScript.playerAbilityUseCheck(skillMana) == true)
         {
             resourceScript.playerAbilityUseManaUpdate(skillMana);
-            float outputDamage = skillDamage * ((100 - enemyMagicResistance) / 100);
+            float outputDamage = skillDamage * ((100 - enemyMagicResistance  + magicPenetration) / 100);
             return outputDamage;
             //SkillStatus effect here when done
             //Range code here when implemented
@@ -110,15 +126,12 @@ public class MaikoScript : PlayerObject
 
     public override void skillStatus(HashSet<PlayerObject> targets)
     {
-        // Mana Portion
-        if (resourceScript.playerAbilityUseCheck(skillMana) == true)
-        {
-            StatusEffect effect = new StatusEffect();
-            //Target Calculation Goes Here
-            effect.instantiateAddIntEffect("movement", -1, 1, targets);
-            StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
-            Handler.addStatusEffect(effect);
-        }
+        //No need to check mana since mana is already checked in skillAttack
+        StatusEffect effect = new StatusEffect();
+        //Target Calculation Goes Here
+        effect.instantiateAddIntEffect("movement", -1, 1, targets);
+        StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+        Handler.addStatusEffect(effect);
 
     }
 
@@ -132,7 +145,7 @@ public class MaikoScript : PlayerObject
 
             //Buff Maiko Movement
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("movement", 1, 2, maikoSelf);
+            effect.instantiateAddIntEffect("movement", 1, 1, maikoSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(effect);
 
@@ -157,5 +170,18 @@ public class MaikoScript : PlayerObject
             //Message here not enough mana
         }
         //range code here when implemented
+    }
+
+    //for Citrine shield
+    public void makeShieldActive()
+    {
+        if (shield == 1)
+        {
+            shieldFromCitrine.SetActive(true);
+        }
+        else
+        {
+            shieldFromCitrine.SetActive(false);
+        }
     }
 }

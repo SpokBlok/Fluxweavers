@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerObject : MonoBehaviour
 {
-    public string objectName;
     //Player Stats
     public int level;
     public float armor;
@@ -68,17 +68,55 @@ public class PlayerObject : MonoBehaviour
     // Phase Handler Script
     public PhaseHandler phaseHandler;
 
+    // FUCKING DEDRA ANIMATIONS
+    public string objectName;
+    public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
+    public bool isSignatureMoveActive; // checks if signature move was activated
+    public int skillCounter;
+    public int signatureMoveCounter;
+    public float calculatedBasicAttackDamage;
+    public float preCalculatedBasicAttackDamage;
+
+    // to see if aspirant is selected or not
+    [SerializeField] private Sprite normal;
+    [SerializeField] private Sprite selected;
+
+    //Animation related things
+    public Animator myAnimator;
+    public GameObject splashArt;
+
     // Start is called before the first frame update
     void Start()
     {
         level = 1;
         maxHealth = health;
         attackStat = 20;
+        calculatedBasicAttackDamage = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (phaseHandler.selectedPlayer != null)
+        {
+            if (phaseHandler.selectedPlayer.objectName == "Dedra")
+                {
+                    if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
+                    {
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("Idle_Combo");
+                    }
+
+                    else if (phaseHandler.selectedPlayer.isSkillActive)
+                    {
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("Idle_Skill");
+                    }
+
+                    else if (phaseHandler.selectedPlayer.isSignatureMoveActive)
+                    {
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("Idle_Ultimate");
+                    }
+                }
+        }
     }
     public void manaRoundStart(int newMana)
     {
@@ -90,6 +128,7 @@ public class PlayerObject : MonoBehaviour
         {
             if (CompareTag("Player"))
             {
+                StartCoroutine(DestroyObject());
                 phaseHandler.playerPositions.Remove(this);
                 phaseHandler.players.Remove(this);
             }
@@ -98,9 +137,6 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.enemyPositions.Remove(this);
                 phaseHandler.enemies.Remove(this);
             }
-
-            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
-            //Death Animation plays
         }
     }
 
@@ -113,8 +149,47 @@ public class PlayerObject : MonoBehaviour
 
         else 
         {
-            health -= opponentDamage;
-            IsDead();
+            try
+            {
+                if (phaseHandler.selectedPlayer != null)
+                {
+                    if (phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
+                        {
+                            this.myAnimator.SetTrigger("SkillHurt");
+                        }
+
+                        else if (phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
+                        {
+                            this.myAnimator.SetTrigger("SkillHurt");
+                        }
+
+                        else if (phaseHandler.selectedPlayer.isSignatureMoveActive && !phaseHandler.selectedPlayer.isSkillActive)
+                        {
+                            this.myAnimator.SetTrigger("HurtAnimation");
+                        }
+
+                        else if (!phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
+                        {
+                            this.myAnimator.SetTrigger("HurtAnimation");
+                        }
+                    }
+                    else
+                    {
+                        this.myAnimator.SetTrigger("HurtAnimation");
+                    }
+
+                    health -= opponentDamage;
+                    IsDead();
+                }
+            }
+            
+            catch
+            {
+                health -= opponentDamage;
+                IsDead();
+            }
         } 
     }
 
@@ -143,31 +218,55 @@ public class PlayerObject : MonoBehaviour
         
     }
     public void OnMouseDown()
-    {
+    {    
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
-                    phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
-                    MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                    if (phaseHandler.selectedPlayer.isSignatureMoveActive)
+                    {
+                        phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("Combo_UltimateThenSkill");
+                        MoveCheck(phaseHandler.selectedPlayer);
+                        phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                    }
+
+                    else
+                    {
+                        phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
+                        MoveCheck(phaseHandler.selectedPlayer);
+                        phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                    }
                 }
 
-                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                else if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
+                    if (phaseHandler.selectedPlayer.isSkillActive)
+                    {
+                        phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("Combo_SkillThenUltimate");
+                        MoveCheck(phaseHandler.selectedPlayer);
+                        phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                    }
+
+                    else
+                    {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                     phaseHandler.playerAspirant.selectedAbility = "Nothing";
+                    }
                 }
 
                 else
                 {
                     // Deselect currently selected player if there is any
-                    if(phaseHandler.selectedPlayer != null)
+                    if (phaseHandler.selectedPlayer != null)
                     {
-                        if(phaseHandler.selectedPlayer != this)
+                        if (phaseHandler.selectedPlayer != this)
                             phaseHandler.selectedPlayer.TogglePlayerSelection();
                     }
 
@@ -202,18 +301,115 @@ public class PlayerObject : MonoBehaviour
                 if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
                 {
-                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
-                    MoveCheck(phaseHandler.selectedPlayer);
+                    if(phaseHandler.selectedPlayer != null)
+                    {
+                        if (phaseHandler.selectedPlayer.objectName == "Dedra")
+                        {
+                            // basic attack if both skill and signature move are active
+                            if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
+                            { 
+                                preCalculatedBasicAttackDamage = phaseHandler.selectedPlayer.basicAttack(phaseHandler.selectedEnemy.armor, phaseHandler.selectedEnemy.health,phaseHandler.selectedEnemy.maxHealth);
+                                if (preCalculatedBasicAttackDamage >= phaseHandler.selectedEnemy.health)
+                                {
+                                    if (phaseHandler.selectedPlayer.skillCounter <= 1)
+                                    {
+                                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("ComboLastShotForSkill");
+                                        phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                        MoveCheck(phaseHandler.selectedPlayer);
+                                    }
+
+                                    else
+                                    {
+                                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("ComboBasicAttack");
+                                        phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                        MoveCheck(phaseHandler.selectedPlayer);
+                                    }
+                                }
+                                
+                                else
+                                {
+                                    if (phaseHandler.selectedPlayer.skillCounter <= 1)
+                                    {
+                                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("ComboLastShotForBoth");
+                                        phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                        MoveCheck(phaseHandler.selectedPlayer);
+                                    }
+
+                                    else
+                                    {
+                                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("ComboLastShotForUltimate");
+                                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                    MoveCheck(phaseHandler.selectedPlayer);
+                                    }
+                                }
+                            }
+                            
+                            // basic attack if skill is active
+                            else if (phaseHandler.selectedPlayer.isSkillActive)
+                            {
+                                if (phaseHandler.selectedPlayer.skillCounter == 1)
+                                {
+                                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("Skill_LastShot");
+                                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                    MoveCheck(phaseHandler.selectedPlayer);
+                                }
+
+                                else 
+                                {
+                                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillBasicAttack");
+                                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                    MoveCheck(phaseHandler.selectedPlayer);
+                                }
+                            }
+
+                            // basic attack if signature move is active
+                            else if (phaseHandler.selectedPlayer.isSignatureMoveActive)
+                            {
+                                preCalculatedBasicAttackDamage = phaseHandler.selectedPlayer.basicAttack(phaseHandler.selectedEnemy.armor, phaseHandler.selectedEnemy.health,phaseHandler.selectedEnemy.maxHealth);
+
+                                if (preCalculatedBasicAttackDamage >= phaseHandler.selectedEnemy.health)
+                                {
+                                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("Ultimate_BasicAttack");
+                                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                    MoveCheck(phaseHandler.selectedPlayer);
+                                }
+
+                                else
+                                {
+                                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("Ultimate_LastShot");
+                                    phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                    MoveCheck(phaseHandler.selectedPlayer);
+                                }
+                            }
+                            
+                            // basic attack if neither skill nor signature move are active
+                            else if (!phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
+                            { 
+                                phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");
+                                phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                                MoveCheck(phaseHandler.selectedPlayer);
+                            }
+                        }
+
+                        else
+                        { 
+                        phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");
+                        phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
+                        MoveCheck(phaseHandler.selectedPlayer);
+                        }
+                    }
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
                 
@@ -268,4 +464,108 @@ public class PlayerObject : MonoBehaviour
 
         phaseHandler.playerAspirant.selectedAbility = "none";
     }
+
+    public IEnumerator SplashArtDisplay()
+    {
+        phaseHandler.selectedPlayer.splashArt.SetActive(true);
+        yield return new WaitForSeconds(1);
+        phaseHandler.selectedPlayer.splashArt.SetActive(false);
+    }
+
+    public void DisplaySplashArt()
+    {
+        StartCoroutine(SplashArtDisplay());
+    }
+
+    public IEnumerator DestroyObject()
+    {
+        AnimatorStateInfo stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (phaseHandler.selectedPlayer != null)
+        {
+            if (phaseHandler.selectedPlayer.objectName == "Dedra")
+            {
+                if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
+                {
+                    this.myAnimator.SetTrigger("Skill_Death");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("Skill_Death") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+                    
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
+                }
+
+                else if (phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
+                {
+                    this.myAnimator.SetTrigger("Skill_Death");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("Skill_Death") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+                    
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
+                }
+
+                else if (phaseHandler.selectedPlayer.isSignatureMoveActive && !phaseHandler.selectedPlayer.isSkillActive)
+                {
+                    this.myAnimator.SetTrigger("DeathAnimation");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("DeathAnimation") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
+                }
+
+                else if (!phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
+                {
+                    this.myAnimator.SetTrigger("DeathAnimation");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("DeathAnimation") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
+                }
+            }
+
+            else
+            {
+            this.myAnimator.SetTrigger("DeathAnimation");
+            yield return new WaitForEndOfFrame();
+
+            while (stateInfo.IsName("DeathAnimation") == false)
+            {
+                yield return null;
+                stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+            }
+
+            yield return new WaitForSeconds(stateInfo.length);
+            Destroy(gameObject);
+            }
+        }
+    }
 }
+
+/* SHIT TO DO TOMORROW:
+- death for diff activations
+- last shot animations 
+- animator shit on unity 
+- test hurt animations*/
