@@ -22,7 +22,8 @@ public class EnvironmentInterface : MonoBehaviour
     [SerializeField] Sprite waterSprite;
     [SerializeField] Sprite defaultSprite;
     private int tilesLeft;
-    private Flux currentFlux;
+    public Flux oldFlux;
+    public Flux currentFlux;
     private Sprite currentFluxSprite;
     private List<Hex> castedHexes;
 
@@ -54,7 +55,6 @@ public class EnvironmentInterface : MonoBehaviour
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
             if (flux.fluxCode == FluxNames.Sandstorm)
             {
-                Debug.Log("hi");
                 foreach (Hex adjHex in GetSandstormHex(hex, true))
                 {
                     adjHex.hexSprite.sprite = currentFluxSprite;
@@ -87,8 +87,7 @@ public class EnvironmentInterface : MonoBehaviour
         } else {
             flux.SpellCast(hex);
         }
-        
-        if(tilesLeft > 0){
+        if (tilesLeft > 0){
             UpdateText();
             if(flux.fluxCode == FluxNames.Tornado) {
                 foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
@@ -132,10 +131,31 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
-        if(currentFlux.type == Flux.Type.Environment) {
+        Debug.Log("Wtf1");
+        if (currentFlux.type == Flux.Type.Environment) {
             hex.hexSprite.sprite = currentFluxSprite;
+
+            foreach (GameObject fluxObject in fi.fluxes)
+            {
+                Flux flux = fluxObject.GetComponent<Flux>();
+                Debug.Log(flux.name); 
+                if (currentFlux.fluxCode.ToString() == flux.name)
+                {
+                    oldFlux = currentFlux;
+                    currentFlux = flux;
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    break;
+                }
+            }
+            hexAnimator = hex.GetComponent<Animator>();
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+            hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+            hexAnimator.updateMode = currentFluxAnimator.updateMode;
+            hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
             hex.terrainDuration = currentFlux.duration;
             hex.currentFlux = currentFlux.fluxCode;
+            currentFlux = oldFlux;
         } 
 
         if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
@@ -151,8 +171,9 @@ public class EnvironmentInterface : MonoBehaviour
         onDisableHexClick?.Invoke(); // sets all hexes to be unclickable (temporarily)
         tilesLeft -= 1;
         if(tilesLeft > 0) {
+            Debug.Log("Wtf2");
             //Highlights adjacent hexes
-            foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
+            foreach (Hex adjHex in GetAdjacentHex(hex, 1, false)){
                 if(!castedHexes.Contains(adjHex)) {
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
