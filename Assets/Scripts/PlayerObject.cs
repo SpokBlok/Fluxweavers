@@ -104,7 +104,7 @@ public class PlayerObject : MonoBehaviour
         }
     }
 
-    public void IsAttacked(float opponentDamage)
+    public virtual void IsAttacked(float opponentDamage)
     {  
         if (shield == 1) 
         {

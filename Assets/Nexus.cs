@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Nexus : PlayerObject
 {
@@ -27,6 +28,25 @@ public class Nexus : PlayerObject
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+    public void MainMenu() 
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public override void IsAttacked(float opponentDamage) 
+    {
+        if (shield == 1) 
+        {
+            shield = 0;
+        }
+
+        else 
+        {
+            health -= opponentDamage;
+            SceneManager.LoadScene("WinScreen");
+        } 
+    }
+
 }
