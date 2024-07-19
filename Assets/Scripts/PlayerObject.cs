@@ -74,8 +74,6 @@ public class PlayerObject : MonoBehaviour
     public Animator myAnimator;
     public GameObject splashArt;
 
-    public string objectName;
-
     public AudioManager audioManager;
 
     // Start is called before the first frame update
