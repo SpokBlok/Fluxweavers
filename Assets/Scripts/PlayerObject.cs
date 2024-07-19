@@ -159,12 +159,12 @@ public class PlayerObject : MonoBehaviour
                             this.myAnimator.SetTrigger("SkillHurt");
                         }
 
-                        else if (phaseHandler.selectedPlayer.isSkillActive)
+                        else if (phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
                         {
                             this.myAnimator.SetTrigger("SkillHurt");
                         }
 
-                        else if (phaseHandler.selectedPlayer.isSignatureMoveActive)
+                        else if (phaseHandler.selectedPlayer.isSignatureMoveActive && !phaseHandler.selectedPlayer.isSkillActive)
                         {
                             this.myAnimator.SetTrigger("HurtAnimation");
                         }
@@ -177,9 +177,10 @@ public class PlayerObject : MonoBehaviour
                     else
                     {
                         this.myAnimator.SetTrigger("HurtAnimation");
-                        health -= opponentDamage;
-                        IsDead();
                     }
+
+                    health -= opponentDamage;
+                    IsDead();
                 }
             }
             
@@ -217,6 +218,9 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {    
+
+        IsAttacked(30);
+
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
@@ -477,22 +481,62 @@ public class PlayerObject : MonoBehaviour
             {
                 if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
                 {
-                    this.myAnimator.SetTrigger("DeathAnimation");
+                    this.myAnimator.SetTrigger("Skill_Death");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("Skill_Death") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+                    
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
                 }
 
-                else if (phaseHandler.selectedPlayer.isSkillActive)
+                else if (phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
                 {
                     this.myAnimator.SetTrigger("Skill_Death");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("Skill_Death") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+                    
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
                 }
 
-                else if (phaseHandler.selectedPlayer.isSignatureMoveActive)
+                else if (phaseHandler.selectedPlayer.isSignatureMoveActive && !phaseHandler.selectedPlayer.isSkillActive)
                 {
                     this.myAnimator.SetTrigger("DeathAnimation");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("DeathAnimation") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
                 }
 
-                else if (phaseHandler.selectedPlayer.isSkillActive && phaseHandler.selectedPlayer.isSignatureMoveActive)
+                else if (!phaseHandler.selectedPlayer.isSkillActive && !phaseHandler.selectedPlayer.isSignatureMoveActive)
                 {
                     this.myAnimator.SetTrigger("DeathAnimation");
+                    yield return new WaitForEndOfFrame();
+
+                    while (stateInfo.IsName("DeathAnimation") == false)
+                    {
+                        yield return null;
+                        stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+                    }
+
+                    yield return new WaitForSeconds(stateInfo.length);
+                    Destroy(gameObject);
                 }
             }
 
@@ -500,18 +544,17 @@ public class PlayerObject : MonoBehaviour
             {
             this.myAnimator.SetTrigger("DeathAnimation");
             yield return new WaitForEndOfFrame();
+
+            while (stateInfo.IsName("DeathAnimation") == false)
+            {
+                yield return null;
+                stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+            }
+
+            yield return new WaitForSeconds(stateInfo.length);
+            Destroy(gameObject);
             }
         }
-        
-
-        while (stateInfo.IsName("DeathAnimation") == false)
-        {
-            yield return null;
-            stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
-        }
-
-        yield return new WaitForSeconds(stateInfo.length);
-        Destroy(gameObject);
     }
 }
 
