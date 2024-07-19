@@ -197,11 +197,20 @@ public class AiMovementLogic : MonoBehaviour
     private int GetEdgeWeight (Vector2Int currentNode, Vector2Int nextNode, bool movement) {
 
         FluxNames[] mountainTerrain = new FluxNames[] {
+            FluxNames.EarthArise,
+            FluxNames.SeismicWave,
+            FluxNames.CinderCone,
+            FluxNames.Waterfall,
             FluxNames.MountainSpires,
+
         };
 
         FluxNames[] forestTerrain = new FluxNames[] {
+            FluxNames.Regrowth,
             FluxNames.Reforestation,
+            FluxNames.Swamp,
+            FluxNames.MountainSpires,
+            FluxNames.WindsweptWoods,
         };
         
         try {
