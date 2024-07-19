@@ -22,7 +22,7 @@ public class AiHandler : MonoBehaviour
         aiComrades = new Vector2Int[aiEntities.Count()];
         // aspirants = GameObject.FindGameObjectsWithTag("Player");
         // Debug.Log(aspirants.Length);
-        // aiEntities[0].Test();
+        aiEntities[0].Test();
     }
 
     // Update is called once per frame
@@ -51,7 +51,7 @@ public class AiHandler : MonoBehaviour
         
         foreach (AiMovementLogic ai in aiEntities) {
             target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
-            Vector2Int targetPosition = new(target.currentYIndex, target.currentXIndex);
+            Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
 
             // Move Ai First
             ai.Move(targetPosition, aiComrades);
