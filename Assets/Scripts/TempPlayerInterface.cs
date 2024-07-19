@@ -6,6 +6,7 @@ using UnityEngine;
 public class TempPlayerInterface : MonoBehaviour
 {
     [SerializeField] PlayerObject player;
+    [SerializeField] ResourceScript rs;
     [SerializeField] TextMeshProUGUI hpText;
     [SerializeField] TextMeshProUGUI manaText;
     private float health;
@@ -13,14 +14,14 @@ public class TempPlayerInterface : MonoBehaviour
     void Start()
     {
         health = player.health;
-        mana = player.mana;
+        mana = rs.playerManaCount;
     }
 
     // Update is called once per frame
     void Update()
     {
         health = player.health;
-        mana = player.mana;
+        mana = rs.playerManaCount;
         hpText.text = $"Player HP: {health}";
         manaText.text = $"Player mana: {mana}";
     }

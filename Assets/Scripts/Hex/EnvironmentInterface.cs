@@ -16,7 +16,6 @@ public class EnvironmentInterface : MonoBehaviour
     public static event DisableHexClick onDisableHexClick;
     public static event ToggleUI onToggleUI;
     [SerializeField] PhaseHandler ph;
-    [SerializeField] TextMeshProUGUI currentFluxNameText;
     [SerializeField] TextMeshProUGUI tilesLeftText;
     
     [SerializeField] TilesCreationScript tcs;
@@ -28,17 +27,19 @@ public class EnvironmentInterface : MonoBehaviour
     private List<Hex> castedHexes;
 
     [SerializeField] FluxInterface fi;
+    public bool castDisplaceThisRound; //If gust/tornado has been used
 
     private Animator currentFluxAnimator;
     private Animator hexAnimator;
 
 
     void Start() {
+        PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes this script to on round end call
         tilesLeft = 0;
         currentFlux = null;
         castedHexes = new List<Hex>();
-        currentFluxNameText.text = "";
         tilesLeftText.text = "";
+        castDisplaceThisRound = false;
     }
 
     //Initial hex drop
@@ -67,9 +68,39 @@ public class EnvironmentInterface : MonoBehaviour
         
         if(tilesLeft > 0){
             UpdateText();
-            foreach(Hex adjHex in GetAdjacentHex(hex)){
-                adjHex.hexSprite.color = Color.yellow;
-                adjHex.clickToCast = true;
+            if(flux.fluxCode == FluxNames.Tornado) {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
+                    adjHex.hexSprite.color = Color.yellow;
+                    adjHex.clickToCast = true;
+                }
+            }
+            else if (flux.fluxCode == FluxNames.ScorchingWinds)
+            {
+                if (GetHexOccupant(hex))
+                {
+                    foreach (Hex adjHex in GetAdjacentHex(hex, 2, true))
+                    {
+                        adjHex.hexSprite.color = Color.yellow;
+                        adjHex.clickToCast = true;
+                    }
+                }
+                else
+                {
+                    tilesLeft = 0;
+                    onToggleUI?.Invoke();
+                    UpdateText();
+                }
+            }
+            else if (flux.fluxCode == FluxNames.Gust) {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 1, true)){
+                    adjHex.hexSprite.color = Color.yellow;
+                    adjHex.clickToCast = true;
+                }
+            } else {
+                foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
+                    adjHex.hexSprite.color = Color.yellow;
+                    adjHex.clickToCast = true;
+                }
             }
             onToggleUI?.Invoke();
         } else {
@@ -83,21 +114,30 @@ public class EnvironmentInterface : MonoBehaviour
             hex.hexSprite.sprite = currentFluxSprite;
             hex.terrainDuration = currentFlux.duration;
             hex.currentFlux = currentFlux.fluxCode;
-        } else {
+        } 
+
+        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
+        {
+            Displace(hex);
+        }
+
+        if(currentFlux.fluxCode == FluxNames.Blaze){
             currentFlux.SpellCast(hex);
         }
 
-        castedHexes.Add(hex);
-        onDisableHexClick?.Invoke();
+        castedHexes.Add(hex); // so that we cant cast on an already casted tile
+        onDisableHexClick?.Invoke(); // sets all hexes to be unclickable (temporarily)
         tilesLeft -= 1;
         if(tilesLeft > 0) {
-            foreach(Hex adjHex in GetAdjacentHex(hex)){
+            //Highlights adjacent hexes
+            foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
                 if(!castedHexes.Contains(adjHex)) {
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
                 }
             }
         } else {
+            //if there are no tiles left, enables the ui
             onToggleUI?.Invoke();
             castedHexes.Clear();
         }
@@ -108,12 +148,6 @@ public class EnvironmentInterface : MonoBehaviour
     {
         switch (fluxName)
         {
-            case FluxNames.Swamp:
-                fi.swamp.GetComponent<Swamp>().EnvironmentEffectRoundStart(entity);
-                break;
-            case FluxNames.Waterfall:
-                fi.waterfall.GetComponent<Waterfall>().EnvironmentEffectRoundStart(entity);
-                break;
             case FluxNames.WindsweptWoods:
                 fi.windsweptWoods.GetComponent<WindsweptWoods>().EnvironmentEffectRoundStart(entity);
                 break;
@@ -174,37 +208,76 @@ public class EnvironmentInterface : MonoBehaviour
     }
     
     private void UpdateText() {
-        currentFluxNameText.text = currentFlux.fluxName;
         tilesLeftText.text = tilesLeft.ToString();
         if(tilesLeft == 0){
-            currentFluxNameText.text = "";
             tilesLeftText.text = "";
         }
     }
 
     //gets the adjacent hexes
-    private List<Hex> GetAdjacentHex(Hex initialHex) {
+    private List<Hex> GetAdjacentHex(Hex initialHex, int range, bool aspirantCheck) {
         int x = initialHex.x;
         int y = initialHex.y;
         List<Hex> adjacentHexes = new List<Hex>();
-        List<(int, int)> coords = new List<(int, int)>{
-            (x-1, y+1),
-            (x  , y+1),
-            (x-1, y  ),
-            (x+1, y  ),
-            (x  , y-1),
-            (x+1, y-1),
-        };
+        List<Vector2Int> coords = new List<Vector2Int>();
 
-        foreach((int,int) pair in coords){
+        //magical formula
+        for (int q = -range; q <= range; q++)
+        {
+            for (int r = Mathf.Max(-range, -q - range); r <= Mathf.Min(range, -q + range); r++)
+            {
+                if(!(q==0 && r==0))
+                    coords.Add(new Vector2Int(y+r, x+q));
+            }
+        }
+
+        if(aspirantCheck) {
+            foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
+                coords.Remove(pair.Value);
+            }
+            foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions){
+                coords.Remove(pair.Value);
+            }
+        }
+
+        foreach(Vector2Int pair in coords){
             try{
-                Hex newHex = tcs.Tiles[pair.Item2,pair.Item1].GetComponent<Hex>();
+                Hex newHex = tcs.Tiles[pair.x,pair.y].GetComponent<Hex>();
                 if(newHex != null) {
                     adjacentHexes.Add(newHex);
                 }    
             } catch {}       
         }
         return adjacentHexes;
+
+
     }
+
+    private void RoundEnd(){
+        castDisplaceThisRound = false;
+    }
+
+    public void Displace(Hex hex){
+        Hex origHex = castedHexes[0];      
+        try
+        {
+            AspirantMovement aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AspirantMovement>();
+            aspirant.currentYIndex = aspirant.originalYIndex = hex.x;
+            aspirant.currentXIndex = aspirant.originalXIndex = hex.y;
+            aspirant.transform.position = tcs.Tiles[hex.y, hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            ph.playerPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
+
+        }
+        catch
+        {
+            AiMovementLogic aspirant = GetHexOccupant(origHex).gameObject.GetComponent<AiMovementLogic>();
+            aspirant.currentXIndex = hex.y;
+            aspirant.currentYIndex = hex.x;
+            aspirant.transform.position = tcs.Tiles[hex.y, hex.x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
+            ph.enemyPositions[GetHexOccupant(origHex)] = new Vector2Int(hex.y, hex.x);
+        }
+        castDisplaceThisRound = true;
+
+    }   
 }
 

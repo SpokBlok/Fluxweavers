@@ -42,14 +42,10 @@ public class Swamp : Flux
             $"Lasts {duration} Rounds.";
     }
 
-    public override void EnvironmentEffectRoundStart(PlayerObject aspirant)
-    {
-        aspirant.phaseHandler.rs.playerManaCount += 5;
-    }
-
     public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
     {
         float healPercent = 0.05f;
         aspirant.AddHealth(aspirant.maxHealth * healPercent);
+        aspirant.phaseHandler.rs.playerManaCount += 5;
     }
 }
