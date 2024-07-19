@@ -42,8 +42,9 @@ public class AiHandler : MonoBehaviour
     }
 
     public IEnumerator MoveAi (HashSet<PlayerObject> aspirants) {
+        aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
+        aiComrades = new Vector2Int[aiEntities.Count()];
         // AspirantMovement aspirant = aspirants[0].GetComponent<AspirantMovement>();
-        
         AspirantMovement target = null;
         PlayerObject aspirantStats;
         HashSet<Raccoon> AiWithEnemyInRange = new();
