@@ -28,8 +28,13 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     private Color currentColor;
     PolygonCollider2D polygonCollider2D;
     Vector2[] polygonPoints;
+
+    private Animator defaultAnimator;
+    private RuntimeAnimatorController previousAnimatorController;
     void Start()
     {
+        defaultAnimator = GetComponent<Animator>();
+        previousAnimatorController = defaultAnimator.runtimeAnimatorController;
         polygonCollider2D = GetComponent<PolygonCollider2D>();
         polygonPoints = polygonCollider2D.points;
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes each hex to the onRoundEnd event seen in PhaseRoundEnd.cs
@@ -73,7 +78,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
         if (terrainDuration > 0) {
             terrainDuration += length;
             if(terrainDuration <= 0){
-                hexSprite.sprite = defaultSprite;
+                defaultAnimator.runtimeAnimatorController = previousAnimatorController;
                 if(currentFlux == FluxNames.CinderCone) {
                     ei.VolcanoRemnant(this);
                 }

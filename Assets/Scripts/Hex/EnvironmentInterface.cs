@@ -22,8 +22,10 @@ public class EnvironmentInterface : MonoBehaviour
     [SerializeField] Sprite defaultSprite;
     private int tilesLeft;
     public Flux oldFlux;
+
     public Flux currentFlux;
-    private Sprite currentFluxSprite;
+    public FluxNames currentFluxName;
+    public int currentFluxDuration;
     private List<Hex> castedHexes;
 
     [SerializeField] FluxInterface fi;
@@ -53,13 +55,10 @@ public class EnvironmentInterface : MonoBehaviour
         
         if(flux.type == Flux.Type.Environment) {
 
-            currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
             if (flux.fluxCode == FluxNames.Sandstorm)
             {
                 foreach (Hex adjHex in GetSandstormHex(hex, true))
                 {
-                    adjHex.hexSprite.sprite = currentFluxSprite;
-
                     currentFluxAnimator = currentFlux.GetComponent<Animator>();
                     hexAnimator = adjHex.GetComponent<Animator>();
                     hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
@@ -73,8 +72,6 @@ public class EnvironmentInterface : MonoBehaviour
             }
             else
             {
-                hex.hexSprite.sprite = currentFluxSprite;
-
                 currentFluxAnimator = currentFlux.GetComponent<Animator>();
                 hexAnimator = hex.GetComponent<Animator>();
                 hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
@@ -82,13 +79,9 @@ public class EnvironmentInterface : MonoBehaviour
                 hexAnimator.updateMode = currentFluxAnimator.updateMode;
                 hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
 
-                hex.terrainDuration = flux.duration;
-                hex.currentFlux = flux.fluxCode;
+                hex.terrainDuration = currentFluxDuration = flux.duration;
+                hex.currentFlux = currentFluxName = flux.fluxCode;
             }
-
-            hex.hexSprite.sprite = currentFluxSprite;
-            hex.terrainDuration = flux.duration;
-            hex.currentFlux = flux.fluxCode;
 
             if(flux.fluxCode == FluxNames.CinderCone) {
                 MakeVolcano(hex);
@@ -96,10 +89,6 @@ public class EnvironmentInterface : MonoBehaviour
 
         } else {
             flux.SpellCast(hex);
-
-            currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
-            hex.hexSprite.sprite = currentFluxSprite;
-
             currentFluxAnimator = currentFlux.GetComponent<Animator>();
             hexAnimator = hex.GetComponent<Animator>();
 
@@ -154,34 +143,28 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
-        Debug.Log(currentFlux.fluxCode);
-        if(currentFlux.type == Flux.Type.Environment) {
-            hex.hexSprite.sprite = currentFluxSprite;
-
-            foreach (GameObject fluxObject in fi.fluxes)
+        foreach (GameObject fluxObject in fi.fluxes)
+        {
+            Flux flux = fluxObject.GetComponent<Flux>();
+            if (currentFluxName.ToString() == flux.name)
             {
-                Flux flux = fluxObject.GetComponent<Flux>();
-                Debug.Log(flux.name); 
-                if (currentFlux.fluxCode.ToString() == flux.name)
-                {
-                    oldFlux = currentFlux;
-                    currentFlux = flux;
-                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
-                    break;
-                }
+                oldFlux = currentFlux;
+                currentFlux = flux;
+                currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                break;
             }
-            hexAnimator = hex.GetComponent<Animator>();
-            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
-            hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
-            hexAnimator.updateMode = currentFluxAnimator.updateMode;
-            hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+        }
+        hexAnimator = hex.GetComponent<Animator>();
+        hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+        hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+        hexAnimator.updateMode = currentFluxAnimator.updateMode;
+        hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
 
-            hex.terrainDuration = currentFlux.duration;
-            hex.currentFlux = currentFlux.fluxCode;
-            currentFlux = oldFlux;
-        } 
+        hex.terrainDuration = currentFluxDuration;
+        hex.currentFlux = currentFluxName;
+        currentFlux = oldFlux;
 
-        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
+        if (currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
         {
             Displace(hex);
         }
@@ -194,7 +177,6 @@ public class EnvironmentInterface : MonoBehaviour
         onDisableHexClick?.Invoke(); // sets all hexes to be unclickable (temporarily)
         tilesLeft -= 1;
         if(tilesLeft > 0) {
-            Debug.Log("Wtf2");
             //Highlights adjacent hexes
             foreach (Hex adjHex in GetAdjacentHex(hex, 1, false)){
                 if(!castedHexes.Contains(adjHex)) {
