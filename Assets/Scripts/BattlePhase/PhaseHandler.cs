@@ -49,9 +49,20 @@ public class PhaseHandler : MonoBehaviour
         {
             players.Add(aspirant.GetComponent<PlayerObject>());
 
-            AspirantMovement aspirantIndices = aspirant.GetComponent<AspirantMovement>();
-            int y = aspirantIndices.currentYIndex;
-            int x = aspirantIndices.currentXIndex;
+            int x = 0;
+            int y = 0;
+
+            try
+            {
+                AspirantMovement aspirantIndices = aspirant.GetComponent<AspirantMovement>();
+                y = aspirantIndices.currentYIndex;
+                x = aspirantIndices.currentXIndex;
+            }
+                catch (Exception)
+            {
+                y = aspirant.GetComponent<PlayerNexus>().y;
+                x = aspirant.GetComponent<PlayerNexus>().x;
+            }
 
             playerPositions[aspirant.GetComponent<PlayerObject>()] = new Vector2Int(y, x);
         }

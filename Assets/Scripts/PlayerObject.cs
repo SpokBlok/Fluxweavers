@@ -6,6 +6,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerObject : MonoBehaviour
 {
+    public string objectName;
     //Player Stats
     public int level;
     public float armor;
@@ -224,7 +225,7 @@ public class PlayerObject : MonoBehaviour
     public void MoveCheck(PlayerObject player)
     {
         // check if player was flagged to have moved already
-        if (!player.hasMoved)
+        if (!player.hasMoved && !player.objectName.Equals("Nexus"))
         {
             AspirantMovement aspirant = player.GetComponent<AspirantMovement>();
 
