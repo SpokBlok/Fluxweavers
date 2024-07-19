@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6907109434058060624}
   - component: {fileID: 214922820529873827}
   - component: {fileID: 7131260252735796885}
+  - component: {fileID: 3776795245832318938}
   m_Layer: 5
   m_Name: Regrowth
   m_TagString: Untagged
@@ -68,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae94e7cac63306c4ca5dcd1a3d69198f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 61f6b6d0f4c368b4f8a94168bb235fe4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -160,3 +161,24 @@ MonoBehaviour:
   duration: 0
   tileLength: 0
   manaCost: 0
+--- !u!95 &3776795245832318938
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992005526990138681}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 43bbe49db6d1d1047b85e856c1df522a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

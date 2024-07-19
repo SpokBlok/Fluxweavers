@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6907109434058060624}
   - component: {fileID: 214922820529873827}
   - component: {fileID: 2346445952515729950}
+  - component: {fileID: 297595476514315640}
   m_Layer: 5
   m_Name: WindsweptWoods
   m_TagString: Untagged
@@ -160,3 +161,24 @@ MonoBehaviour:
   duration: 0
   tileLength: 0
   manaCost: 0
+--- !u!95 &297595476514315640
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992005526990138681}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 80cf277992f78ac49a0a97b1b3b1c4a3, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

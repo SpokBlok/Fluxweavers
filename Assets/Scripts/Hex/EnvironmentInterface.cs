@@ -29,6 +29,10 @@ public class EnvironmentInterface : MonoBehaviour
     [SerializeField] FluxInterface fi;
     public bool castDisplaceThisRound; //If gust/tornado has been used
 
+    private Animator currentFluxAnimator;
+    private Animator hexAnimator;
+
+
     void Start() {
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes this script to on round end call
         tilesLeft = 0;
@@ -48,13 +52,20 @@ public class EnvironmentInterface : MonoBehaviour
         if(flux.type == Flux.Type.Environment) {
 
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
-
             if (flux.fluxCode == FluxNames.Sandstorm)
             {
                 Debug.Log("hi");
                 foreach (Hex adjHex in GetSandstormHex(hex, true))
                 {
                     adjHex.hexSprite.sprite = currentFluxSprite;
+
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    hexAnimator = adjHex.GetComponent<Animator>();
+                    hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+                    hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+                    hexAnimator.updateMode = currentFluxAnimator.updateMode;
+                    hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
                     adjHex.terrainDuration = flux.duration;
                     adjHex.currentFlux = flux.fluxCode;
                 }
@@ -62,6 +73,14 @@ public class EnvironmentInterface : MonoBehaviour
             else
             {
                 hex.hexSprite.sprite = currentFluxSprite;
+
+                currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                hexAnimator = hex.GetComponent<Animator>();
+                hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+                hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+                hexAnimator.updateMode = currentFluxAnimator.updateMode;
+                hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
                 hex.terrainDuration = flux.duration;
                 hex.currentFlux = flux.fluxCode;
             }
