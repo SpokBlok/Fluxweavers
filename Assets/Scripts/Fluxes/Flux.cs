@@ -81,5 +81,6 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     }
 
     public virtual void SpellCast(Hex hex) {
+        
     }
 }

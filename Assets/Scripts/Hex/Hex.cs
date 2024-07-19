@@ -26,9 +26,12 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     public int y;         // y-index in 2d array
     public int x;         // x-index in 2d array
     private Color currentColor;
-
+    PolygonCollider2D polygonCollider2D;
+    Vector2[] polygonPoints;
     void Start()
     {
+        polygonCollider2D = GetComponent<PolygonCollider2D>();
+        polygonPoints = polygonCollider2D.points;
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes each hex to the onRoundEnd event seen in PhaseRoundEnd.cs
         ei = GameObject.Find("EnvironmentInterface").GetComponent<EnvironmentInterface>();
         fi = GameObject.Find("FluxInterface").GetComponent<FluxInterface>();  
@@ -62,6 +65,8 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     //subtracts duration by 1 on round end
     private void RoundEnd() {
         AugmentDuration(-1);
+        if(currentFlux == FluxNames.CinderCone)
+            ei.BurnSurroundingTiles(this);
     }
 
     public void AugmentDuration(int length){
@@ -69,7 +74,16 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
             terrainDuration += length;
             if(terrainDuration <= 0){
                 hexSprite.sprite = defaultSprite;
-                currentFlux = FluxNames.None;
+                if(currentFlux == FluxNames.CinderCone) {
+                    ei.VolcanoRemnant(this);
+                }
+                else {
+                    currentFlux = FluxNames.None;
+                }
+                polygonCollider2D.points = polygonPoints;
+                transform.localScale = new Vector3(1,1,1);
+
+
             }
         }
     }
