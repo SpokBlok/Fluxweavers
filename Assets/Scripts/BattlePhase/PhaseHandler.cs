@@ -29,6 +29,7 @@ public class PhaseHandler : MonoBehaviour
 
     public Dictionary<PlayerObject, Vector2Int> enemyPositions;
     public HashSet<PlayerObject> enemies;
+    public AiHandler aiHandler;
 
     public PlayerObject selectedEnemy;
     public HashSet<Vector2Int> enemiesInRange = new HashSet<Vector2Int>();

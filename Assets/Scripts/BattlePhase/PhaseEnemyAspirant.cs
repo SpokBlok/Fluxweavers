@@ -9,6 +9,7 @@ public class PhaseEnemyAspirant : PhaseBase
         nextState = ph.roundEnd;
         
         ph.stateText.text = "Enemy Aspirant";
+        ph.aiHandler.StartCoroutine(ph.aiHandler.MoveAi(ph.players));
     }
 
     public override void UpdateState(PhaseHandler ph) {
