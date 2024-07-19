@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MountainAnimation
+  m_Name: RiverAnimation
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,13 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: f0c251d65c9de704dae57077f57298e5, type: 3}
+      value: {fileID: 21300000, guid: 215a0279768c7b0459e917e214e11f79, type: 3}
     - time: 0.25
-      value: {fileID: 21300000, guid: 86e28ed9fddf37b4f9001c6733def1a9, type: 3}
+      value: {fileID: 21300000, guid: 17715ad6228cf4940ae055e311313082, type: 3}
     - time: 0.5
-      value: {fileID: 21300000, guid: f41dc2ff620384e4386eccc62d2d5f63, type: 3}
+      value: {fileID: 21300000, guid: 090a64c5b09e6124ab367c4be016aac8, type: 3}
     - time: 0.75
-      value: {fileID: 21300000, guid: 5068099fd22e7fd45bce063a5b092708, type: 3}
+      value: {fileID: 21300000, guid: 1e0f74e2f7ec3b445946785bca64134a, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,10 +50,10 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: f0c251d65c9de704dae57077f57298e5, type: 3}
-    - {fileID: 21300000, guid: 86e28ed9fddf37b4f9001c6733def1a9, type: 3}
-    - {fileID: 21300000, guid: f41dc2ff620384e4386eccc62d2d5f63, type: 3}
-    - {fileID: 21300000, guid: 5068099fd22e7fd45bce063a5b092708, type: 3}
+    - {fileID: 21300000, guid: 215a0279768c7b0459e917e214e11f79, type: 3}
+    - {fileID: 21300000, guid: 17715ad6228cf4940ae055e311313082, type: 3}
+    - {fileID: 21300000, guid: 090a64c5b09e6124ab367c4be016aac8, type: 3}
+    - {fileID: 21300000, guid: 1e0f74e2f7ec3b445946785bca64134a, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
