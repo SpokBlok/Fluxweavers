@@ -92,8 +92,9 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
             }
         }
     }
-    private void ClickToCastDisable() {
+    public void ClickToCastDisable() {
         clickToCast = false;
+        Debug.Log(hexSprite);
         hexSprite.color = Color.white;
     }
 

@@ -8,6 +8,8 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using Unity.Collections;
 using System.Linq.Expressions;
+using UnityEngine.EventSystems;
+
 public class EnvironmentInterface : MonoBehaviour
 {
     public delegate void DisableHexClick();
@@ -91,13 +93,19 @@ public class EnvironmentInterface : MonoBehaviour
             flux.SpellCast(hex);
             currentFluxAnimator = currentFlux.GetComponent<Animator>();
             hexAnimator = hex.GetComponent<Animator>();
+            
+            GameObject clone = Instantiate(hex.gameObject);
+            clone.transform.position = hex.gameObject.transform.position;
+            clone.transform.rotation = hex.gameObject.transform.rotation;
+            clone.transform.localScale = hex.gameObject.transform.localScale;
+            clone.GetComponent<SpriteRenderer>().sortingOrder -= 1;
 
             previousAnimatorController = hexAnimator.runtimeAnimatorController;
 
             hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
 
+            StartCoroutine(RevertAnimatorControllerAfterAnimation(hexAnimator, previousAnimatorController, clone));
 
-            StartCoroutine(RevertAnimatorControllerAfterAnimation(hexAnimator, previousAnimatorController));
         }
         if (tilesLeft > 0){
             UpdateText();
@@ -433,14 +441,15 @@ public class EnvironmentInterface : MonoBehaviour
 
     }
 
-    private IEnumerator RevertAnimatorControllerAfterAnimation(Animator animator, RuntimeAnimatorController previousController)
+    private IEnumerator RevertAnimatorControllerAfterAnimation(Animator animator, RuntimeAnimatorController previousController, GameObject clone)
     {
         // Wait for the animation to complete
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
         {
             yield return null;
         }
-
+        EnvironmentInterface.onDisableHexClick -= clone.GetComponent<Hex>().ClickToCastDisable;
+        Destroy(clone);
         // Revert the animator controller
         animator.runtimeAnimatorController = previousController;
     }
