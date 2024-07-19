@@ -33,15 +33,14 @@ public class Blaze : Flux
         fluxCode = FluxNamespace.FluxNames.Blaze;
         type = Type.Spell;
         duration = 0;
-        manaCost = 24;
-        damage = 80;
+        manaCost = 22;
+        damage = 70;
         tileLength = 3;
         effectTiming = EffectTimings.OnCast;
         description = $"Rains a volley of fireballs at three adjacent tiles, dealing {damage} Magic DMG to units and reduces the duration of environments by 1 Round.";
     }
 
     public override void SpellCast(Hex hex) {
-        hex.AugmentDuration(-1);
         PlayerObject aspirant = hex.HexOccupant();
         if(aspirant != null)
             aspirant.IsAttacked(damage);

@@ -106,6 +106,7 @@ public class EnvironmentInterface : MonoBehaviour
 
             StartCoroutine(RevertAnimatorControllerAfterAnimation(hexAnimator, previousAnimatorController, clone));
 
+            currentFluxName = flux.fluxCode;
         }
         if (tilesLeft > 0){
             UpdateText();
@@ -172,6 +173,35 @@ public class EnvironmentInterface : MonoBehaviour
 
             hex.terrainDuration = currentFluxDuration;
             hex.currentFlux = currentFluxName;
+            currentFlux = oldFlux;
+        }
+        else
+        {
+            foreach(GameObject fluxObject in fi.fluxes)
+            {
+                Flux flux = fluxObject.GetComponent<Flux>();
+                if (currentFluxName.ToString() == flux.name)
+                {
+                    oldFlux = currentFlux;
+                    currentFlux = flux;
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    break;
+                }
+            }
+            hexAnimator = hex.GetComponent<Animator>();
+
+            GameObject clone = Instantiate(hex.gameObject);
+            clone.transform.position = hex.gameObject.transform.position;
+            clone.transform.rotation = hex.gameObject.transform.rotation;
+            clone.transform.localScale = hex.gameObject.transform.localScale;
+            clone.GetComponent<SpriteRenderer>().sortingOrder -= 1;
+
+            previousAnimatorController = hexAnimator.runtimeAnimatorController;
+
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+
+            StartCoroutine(RevertAnimatorControllerAfterAnimation(hexAnimator, previousAnimatorController, clone));
+
             currentFlux = oldFlux;
         }
 
@@ -449,6 +479,7 @@ public class EnvironmentInterface : MonoBehaviour
         {
             yield return null;
         }
+        PhaseRoundEnd.onRoundEnd -= clone.GetComponent<Hex>().RoundEnd;
         EnvironmentInterface.onDisableHexClick -= clone.GetComponent<Hex>().ClickToCastDisable;
         Destroy(clone);
         // Revert the animator controller

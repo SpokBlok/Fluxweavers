@@ -68,7 +68,7 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     }
 
     //subtracts duration by 1 on round end
-    private void RoundEnd() {
+    public void RoundEnd() {
         AugmentDuration(-1);
         if(currentFlux == FluxNames.CinderCone)
             ei.BurnSurroundingTiles(this);
@@ -94,7 +94,6 @@ public class Hex : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDr
     }
     public void ClickToCastDisable() {
         clickToCast = false;
-        Debug.Log(hexSprite);
         hexSprite.color = Color.white;
     }
 
