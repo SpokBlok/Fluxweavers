@@ -163,6 +163,7 @@ public class EnvironmentInterface : MonoBehaviour
                     break;
                 }
             }
+            
             hexAnimator = hex.GetComponent<Animator>();
             hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
             hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
@@ -172,9 +173,9 @@ public class EnvironmentInterface : MonoBehaviour
             hex.terrainDuration = currentFluxDuration;
             hex.currentFlux = currentFluxName;
             currentFlux = oldFlux;
-        } 
+        }
 
-        if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
+        if (currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
         {
             Displace(hex);
         }
