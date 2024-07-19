@@ -39,6 +39,11 @@ public class PhaseHandler : MonoBehaviour
     
 
     public HashSet<FluxNames> forestMakingFluxes;
+    public HashSet<FluxNames> mountainMakingFluxes;
+
+    public HashSet<FluxNames> aquaFluxes;
+    public HashSet<FluxNames> foliaFluxes;
+    public HashSet<FluxNames> terraFluxes;
 
     // This is for position detection. REMEMBER ITS (PlayerObject, Y, X)
     public List<(PlayerObject, int,int)> entityPositions;
@@ -100,7 +105,14 @@ public class PhaseHandler : MonoBehaviour
 
         rs = GameObject.FindObjectOfType<ResourceScript>();
 
+        // fluxes with special effects on movement / range
         SetupForestMakingFluxes();
+        SetupMountainMakingFluxes();
+
+        // fluxes with affinity to aspirants (for their signature moves)
+        SetupAquaFluxes();
+        SetupFoliaFluxes();
+        SetupTerraFluxes();
         
         currentRound = 1;
         rs.roundStart(currentRound);
@@ -126,6 +138,52 @@ public class PhaseHandler : MonoBehaviour
         forestMakingFluxes.Add(FluxNames.Swamp);
         forestMakingFluxes.Add(FluxNames.Regrowth);
         forestMakingFluxes.Add(FluxNames.Reforestation);
+        forestMakingFluxes.Add(FluxNames.MountainSpires);
         forestMakingFluxes.Add(FluxNames.WindsweptWoods);
+    }
+
+    void SetupMountainMakingFluxes()
+    {
+        mountainMakingFluxes = new HashSet<FluxNames>();
+
+        mountainMakingFluxes.Add(FluxNames.Waterfall);
+        mountainMakingFluxes.Add(FluxNames.MountainSpires);
+        mountainMakingFluxes.Add(FluxNames.EarthArise);
+        mountainMakingFluxes.Add(FluxNames.SeismicWave);
+    }
+
+    void SetupAquaFluxes()
+    {
+        aquaFluxes = new HashSet<FluxNames>();
+
+        aquaFluxes.Add(FluxNames.HighTide);
+        aquaFluxes.Add(FluxNames.Rivershape);
+        aquaFluxes.Add(FluxNames.Scald);
+        aquaFluxes.Add(FluxNames.Swamp);
+        aquaFluxes.Add(FluxNames.Waterfall);
+        aquaFluxes.Add(FluxNames.Rain);
+    }
+
+    void SetupFoliaFluxes()
+    {
+        foliaFluxes = new HashSet<FluxNames>();
+
+        // get the forest making fluxes (all are folia)
+        foreach(FluxNames flux in forestMakingFluxes)
+            foliaFluxes.Add(flux);
+
+        foliaFluxes.Add(FluxNames.Wildfire);
+    }
+
+    void SetupTerraFluxes()
+    {
+        terraFluxes = new HashSet<FluxNames>();
+
+        // get the mountain making fluxes (all are terra)
+        foreach(FluxNames flux in mountainMakingFluxes)
+            terraFluxes.Add(flux);
+
+        terraFluxes.Add(FluxNames.CinderCone);
+        terraFluxes.Add(FluxNames.Sandstorm);
     }
 }

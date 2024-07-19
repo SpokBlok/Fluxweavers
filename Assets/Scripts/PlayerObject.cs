@@ -151,33 +151,43 @@ public class PlayerObject : MonoBehaviour
     {
         
     }
+
+    public virtual bool isMeetingFluxAffinity()
+    {
+        return false;
+    }
+
     public void OnMouseDown()
     {
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
-                if(phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                if(phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
-                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
-                    phaseHandler.playerAspirant.selectedAbility = "Nothing";
                 }
 
                 else
                 {
                     // Deselect currently selected player if there is any
-                    if(phaseHandler.selectedPlayer != null)
+                    if(phaseHandler.selectedPlayer != null && phaseHandler.selectedPlayer != this)
                     {
-                        if(phaseHandler.selectedPlayer != this)
-                            phaseHandler.selectedPlayer.TogglePlayerSelection();
+                        phaseHandler.selectedPlayer.TogglePlayerSelection();
+
+                        AspirantInterface aspirantUI = phaseHandler.playerAspirant.aspirantUI;
+                        aspirantUI.tooltip.SetActive(false);
+                            
+
+                        if (phaseHandler.playerAspirant.selectedAbility != "none")
+                            aspirantUI.ToggleAbilityButton(false);
                     }
 
                     phaseHandler.alliesInRange = new HashSet<Vector2Int>();
@@ -208,7 +218,7 @@ public class PlayerObject : MonoBehaviour
             {
                 phaseHandler.selectedEnemy = this;
 
-                if (phaseHandler.playerAspirant.selectedAbility == "SkillAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
@@ -220,7 +230,7 @@ public class PlayerObject : MonoBehaviour
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
-                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMoveAttack")
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
@@ -259,6 +269,7 @@ public class PlayerObject : MonoBehaviour
         if (isSelected)
         {
             phaseHandler.selectedPlayer = this;
+            phaseHandler.playerAspirant.aspirantUI.SetupButtonsAndImages();
         }
 
         else

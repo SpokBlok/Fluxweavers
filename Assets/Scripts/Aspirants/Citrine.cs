@@ -113,7 +113,7 @@ public class Citrine : PlayerObject
     public override void signatureMoveStatus(HashSet<PlayerObject> targets)
     {
         // Mana Portion
-        if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true)
+        if (resourceScript.playerAbilityUseCheck(signatureMoveMana) == true && isMeetingFluxAffinity())
         {
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
 
@@ -134,5 +134,18 @@ public class Citrine : PlayerObject
             //Message here not enough mana
         }
         //range code here when implemented
+    }
+
+    public override bool isMeetingFluxAffinity()
+    {
+        TilesCreationScript tiles = GameObject.Find("Hextile Map").GetComponent<TilesCreationScript>();
+        AspirantMovement aspirantIndices = GetComponent<AspirantMovement>();
+
+        Hex currentHex = tiles.Tiles[aspirantIndices.currentYIndex, aspirantIndices.currentXIndex].GetComponent<Hex>();
+
+        if (phaseHandler.terraFluxes.Contains(currentHex.currentFlux))
+            return true;
+
+        return false;
     }
 }
