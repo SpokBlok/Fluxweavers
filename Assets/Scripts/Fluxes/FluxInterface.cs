@@ -41,7 +41,7 @@ public class FluxInterface : MonoBehaviour
     [SerializeField] public GameObject gust;
     [SerializeField] public GameObject tornado;
     private Color color1, color2;
-    private List<GameObject> fluxes;
+    public List<GameObject> fluxes;
     public enum Elements {
         Ignis,
         Aqua,
@@ -121,13 +121,17 @@ public class FluxInterface : MonoBehaviour
         bool castable = true;
         if(!rs.playerAbilityUseCheck(castedFlux.manaCost))
             castable = false;
+/*        if(ei.castDisplaceThisRound)
+            castable = false;*/
+        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.ScorchingWinds || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+            castable = false;
         if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
             castable = false;
         if(hex.currentFlux == FluxNames.CinderCone)
             castable = false;
         if(castable) {
             rs.playerAbilityUseManaUpdate(castedFlux.manaCost);
-            Destroy(fluxObject);
+
             Clear();
             ei.SetFlux(hex, castedFlux);
         }

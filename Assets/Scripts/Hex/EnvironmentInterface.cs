@@ -21,12 +21,17 @@ public class EnvironmentInterface : MonoBehaviour
     [SerializeField] Sprite waterSprite;
     [SerializeField] Sprite defaultSprite;
     private int tilesLeft;
-    private Flux currentFlux;
+    public Flux oldFlux;
+    public Flux currentFlux;
     private Sprite currentFluxSprite;
     private List<Hex> castedHexes;
 
     [SerializeField] FluxInterface fi;
     public bool castDisplaceThisRound; //If gust/tornado has been used
+
+    private Animator currentFluxAnimator;
+    private Animator hexAnimator;
+
 
     void Start() {
         PhaseRoundEnd.onRoundEnd += RoundEnd; //Subscribes this script to on round end call
@@ -45,7 +50,39 @@ public class EnvironmentInterface : MonoBehaviour
         castedHexes.Add(hex);
         
         if(flux.type == Flux.Type.Environment) {
+
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+            if (flux.fluxCode == FluxNames.Sandstorm)
+            {
+                foreach (Hex adjHex in GetSandstormHex(hex, true))
+                {
+                    adjHex.hexSprite.sprite = currentFluxSprite;
+
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    hexAnimator = adjHex.GetComponent<Animator>();
+                    hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+                    hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+                    hexAnimator.updateMode = currentFluxAnimator.updateMode;
+                    hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
+                    adjHex.terrainDuration = flux.duration;
+                    adjHex.currentFlux = flux.fluxCode;
+                }
+            }
+            else
+            {
+                hex.hexSprite.sprite = currentFluxSprite;
+
+                currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                hexAnimator = hex.GetComponent<Animator>();
+                hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+                hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+                hexAnimator.updateMode = currentFluxAnimator.updateMode;
+                hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
+                hex.terrainDuration = flux.duration;
+                hex.currentFlux = flux.fluxCode;
+            }
 
             hex.hexSprite.sprite = currentFluxSprite;
             hex.terrainDuration = flux.duration;
@@ -58,8 +95,7 @@ public class EnvironmentInterface : MonoBehaviour
         } else {
             flux.SpellCast(hex);
         }
-        
-        if(tilesLeft > 0){
+        if (tilesLeft > 0){
             UpdateText();
             if(flux.fluxCode == FluxNames.Tornado) {
                 foreach(Hex adjHex in GetAdjacentHex(hex, 3, true)){
@@ -106,8 +142,28 @@ public class EnvironmentInterface : MonoBehaviour
         Debug.Log(currentFlux.fluxCode);
         if(currentFlux.type == Flux.Type.Environment) {
             hex.hexSprite.sprite = currentFluxSprite;
+
+            foreach (GameObject fluxObject in fi.fluxes)
+            {
+                Flux flux = fluxObject.GetComponent<Flux>();
+                Debug.Log(flux.name); 
+                if (currentFlux.fluxCode.ToString() == flux.name)
+                {
+                    oldFlux = currentFlux;
+                    currentFlux = flux;
+                    currentFluxAnimator = currentFlux.GetComponent<Animator>();
+                    break;
+                }
+            }
+            hexAnimator = hex.GetComponent<Animator>();
+            hexAnimator.runtimeAnimatorController = currentFluxAnimator.runtimeAnimatorController;
+            hexAnimator.applyRootMotion = currentFluxAnimator.applyRootMotion;
+            hexAnimator.updateMode = currentFluxAnimator.updateMode;
+            hexAnimator.cullingMode = currentFluxAnimator.cullingMode;
+
             hex.terrainDuration = currentFlux.duration;
             hex.currentFlux = currentFlux.fluxCode;
+            currentFlux = oldFlux;
         } 
 
         if(currentFlux.fluxCode == FluxNames.Gust || currentFlux.fluxCode == FluxNames.Tornado || currentFlux.fluxCode == FluxNames.ScorchingWinds)
@@ -123,8 +179,9 @@ public class EnvironmentInterface : MonoBehaviour
         onDisableHexClick?.Invoke(); // sets all hexes to be unclickable (temporarily)
         tilesLeft -= 1;
         if(tilesLeft > 0) {
+            Debug.Log("Wtf2");
             //Highlights adjacent hexes
-            foreach(Hex adjHex in GetAdjacentHex(hex, 1, false)){
+            foreach (Hex adjHex in GetAdjacentHex(hex, 1, false)){
                 if(!castedHexes.Contains(adjHex)) {
                     adjHex.hexSprite.color = Color.yellow;
                     adjHex.clickToCast = true;
@@ -227,6 +284,7 @@ public class EnvironmentInterface : MonoBehaviour
                     coords.Add(new Vector2Int(y+r, x+q));
             }
         }
+        
 
         if(aspirantCheck) {
             foreach(KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions){
@@ -244,6 +302,48 @@ public class EnvironmentInterface : MonoBehaviour
                     adjacentHexes.Add(newHex);
                 }    
             } catch {}       
+        }
+        return adjacentHexes;
+
+
+    }
+
+    private List<Hex> GetSandstormHex(Hex initialHex, bool aspirantCheck)
+    {
+        int x = initialHex.x;
+        int y = initialHex.y;
+        List<Hex> adjacentHexes = new List<Hex>();
+        List<Vector2Int> coords = new List<Vector2Int>();
+
+        for(int i = 0; i < 4; i++)
+        {
+            coords.Add(new Vector2Int(y, x + i));
+            coords.Add(new Vector2Int(y - 1, x + 1 + i));
+        }
+
+        if (aspirantCheck)
+        {
+            foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.playerPositions)
+            {
+                coords.Remove(pair.Value);
+            }
+            foreach (KeyValuePair<PlayerObject, Vector2Int> pair in ph.enemyPositions)
+            {
+                coords.Remove(pair.Value);
+            }
+        }
+
+        foreach (Vector2Int pair in coords)
+        {
+            try
+            {
+                Hex newHex = tcs.Tiles[pair.x, pair.y].GetComponent<Hex>();
+                if (newHex != null)
+                {
+                    adjacentHexes.Add(newHex);
+                }
+            }
+            catch { }
         }
         return adjacentHexes;
 
