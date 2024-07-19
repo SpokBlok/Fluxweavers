@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Sandstorm : Flux
 {
@@ -36,5 +37,11 @@ public class Sandstorm : Flux
         effectTiming = EffectTimings.OnCast;
         description = $"Send forward a Sandstorm, spanning two rows wide and traverses four tiles forward.\r\r\n " +
             $"Units caught in the Sandstorm have their Control and Range stat of skills reduced by 1 for {duration} Round.";
+    }
+
+    public override void OnBeginDrag(PointerEventData eventData)
+    {
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.alpha = 0.75f;
     }
 }

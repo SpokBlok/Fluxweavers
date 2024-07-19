@@ -31,8 +31,8 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     protected EffectTimings effectTiming;
     protected String description;
     private Vector3 initialPosition;
-    private CanvasGroup canvasGroup;
-    private RectTransform rectTransform;
+    public CanvasGroup canvasGroup;
+    public RectTransform rectTransform;
 
     /*
         The code does the following:
@@ -52,7 +52,7 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
         initialPosition = transform.position;
     }
 
-    public void OnBeginDrag(PointerEventData eventData){
+    public virtual void OnBeginDrag(PointerEventData eventData){
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.75f;
     }
