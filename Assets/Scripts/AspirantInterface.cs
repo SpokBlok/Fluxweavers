@@ -9,6 +9,8 @@ public class AspirantInterface : MonoBehaviour
 {
     private GameObject uiObject;
     public GameObject tooltip;
+    private GameObject aspirantStats;
+
     private PhaseHandler phaseHandler;
 
     // SERIALIZED IS JUST FOR CHECKING
@@ -60,6 +62,7 @@ public class AspirantInterface : MonoBehaviour
     // TEXT COMPONENTS
     public TextMeshProUGUI headerText;
     public TextMeshProUGUI bodyText;
+    public TextMeshProUGUI footerText;
 
     // TEXTS
     // for ability descriptions / definitions
@@ -83,6 +86,8 @@ public class AspirantInterface : MonoBehaviour
     {
         uiObject = GameObject.Find("AspirantPhaseUI");
         tooltip = GameObject.Find("TooltipContainer");
+        aspirantStats = GameObject.Find("AspirantStats");
+
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
@@ -98,7 +103,7 @@ public class AspirantInterface : MonoBehaviour
         {
             "\nDeal Physical DMG equal to 5% of Maiko's Max HP + 60% of Maiko's Combined Armor and Magic Res to a target enemy.",
             "\nDeal Magic DMG equal to 10% of Maiko's Max HP + 100% of his ATK and Slow the target for 1 Round.",
-            "Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP at Round End.\n\nMaiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a\n2 tile radius. Lasts 3 Rounds."
+            "Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP\nat Round End.\nMaiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a 2 tile radius. Lasts 3 Rounds."
         };
 
         dedraAbilityDefs = new List<string>
@@ -153,6 +158,7 @@ public class AspirantInterface : MonoBehaviour
     {
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
+        footerText = GameObject.Find("FooterText").GetComponent<TextMeshProUGUI>();
     }
 
     public void SetupButtonsAndImages()
@@ -303,26 +309,60 @@ public class AspirantInterface : MonoBehaviour
                 bodyText.text = traverseAbilityDef;
 
                 // show movement stat of selected player
-                bodyText.text += "\n*" + name + "'s Movement stat is " + phaseHandler.selectedPlayer.movement + "!";
+                footerText.text = "Movement stat: " + phaseHandler.selectedPlayer.movement;
             }
 
-            else if (name.Equals("Maiko"))
+            else
             {
-                if (index == 2)
-                    bodyText.fontSize = 16; // sig text too long, so made font size smaller
+                int range = 0;
 
-                bodyText.text = maikoAbilityDefs[index];
+                if (name.Equals("Maiko"))
+                {
+                    if (index == 2)
+                        bodyText.fontSize = 14; // sig text too long, so made font size smaller
+
+                    bodyText.text = maikoAbilityDefs[index];
+                }
+
+                else if (name.Equals("Dedra"))
+                    bodyText.text = dedraAbilityDefs[index];
+                
+                else if (name.Equals("Citrine"))
+                    bodyText.text = citrineAbilityDefs[index];
+
+                if (index == 0)
+                    range = (int) phaseHandler.selectedPlayer.basicAttackRange;
+                else if (index == 1)
+                    range = (int) phaseHandler.selectedPlayer.skillRange;
+                else if (index == 2)
+                    range = (int) phaseHandler.selectedPlayer.signatureMoveRange;
+
+                if (range > 0)
+                {
+                    range += phaseHandler.playerAspirant.additionalRange;
+
+                    footerText.text = "Ability range: " + range;
+                }
+                else if (range == 0)
+                    footerText.text = "Ability range: Self (0)";
+                else
+                    footerText.text = "Ability range: Global";
             }
-            else if (name.Equals("Dedra"))
-                bodyText.text = dedraAbilityDefs[index];
-            else if (name.Equals("Citrine"))
-                bodyText.text = citrineAbilityDefs[index];
         }
 
         else
         {
             headerText.text = phaseHandler.selectedPlayer.name;
             bodyText.text = "";
+            footerText.text = "";
+
+            List<int> stats = GetAspirantStats();
+
+            for (int i = 0; i < stats.Count; i++)
+            {
+                TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
+                textField.text = stats[i].ToString();
+            }
         }
     }
 
@@ -335,5 +375,21 @@ public class AspirantInterface : MonoBehaviour
         tooltip.SetActive(true);
 
         bodyText.fontSize = 18;
+    }
+
+    List<int> GetAspirantStats()
+    {
+        List<int> stats = new List<int>();
+
+        stats.Add((int) phaseHandler.selectedPlayer.health);            // 0
+        stats.Add((int) phaseHandler.selectedPlayer.attackStat);        // 1
+        stats.Add((int) phaseHandler.selectedPlayer.control);           // 2
+        stats.Add((int) phaseHandler.selectedPlayer.armor);             // 3
+        stats.Add((int) phaseHandler.selectedPlayer.magicResistance);   // 4
+        stats.Add((int) phaseHandler.selectedPlayer.movement);          // 5
+        stats.Add((int) phaseHandler.selectedPlayer.armorPenetration);  // 6
+        stats.Add((int) phaseHandler.selectedPlayer.magicPenetration);  // 7
+
+        return stats;
     }
 }

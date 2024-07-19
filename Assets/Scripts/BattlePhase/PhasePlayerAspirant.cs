@@ -14,6 +14,7 @@ public class PhasePlayerAspirant : PhaseBase
 
     public AspirantInterface aspirantUI;
 
+    public int additionalRange;
     public String selectedAbility;
     private bool isRangeCalculated;
 
@@ -60,7 +61,7 @@ public class PhasePlayerAspirant : PhaseBase
             int currentXIndex = aspirantMovement.currentXIndex;
             int currentYIndex = aspirantMovement.currentYIndex;
 
-            int additionalRange = 0;
+            additionalRange = 0;
             Hex currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
             
             if(currentHex.layer == 1) // if aspirant is currently on a mountain
@@ -96,6 +97,7 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nMovement is already locked for this turn";
+                    aspirantUI.footerText.text = "";
                 }
             }
 
@@ -125,6 +127,7 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to do basic attack";
+                    aspirantUI.footerText.text = "";
                 }
             }
                 
@@ -171,6 +174,7 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to cast skill";
+                    aspirantUI.footerText.text = "";
                 }
             }
 
@@ -217,6 +221,7 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to cast signature move";
+                    aspirantUI.footerText.text = "";
                 }
             }
         }
