@@ -72,7 +72,7 @@ public class PhasePlayerAspirant : PhaseBase
 
             additionalRange = 0;
             Hex currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
-            
+
             if (ph.mountainMakingFluxes.Contains(currentHex.currentFlux)) // if aspirant is currently on a mountain
                 additionalRange = 1; // there is an additional 1 range for abilities
             else if (currentHex.currentFlux == FluxNames.Sandstorm) // if aspirant is currently in a sandstorm
@@ -233,9 +233,7 @@ public class PhasePlayerAspirant : PhaseBase
                     tiles.HighlightAdjacentTiles(true);
 
                     isRangeCalculated = true;
-                }
-                else
-                {
+
                     aspirantUI.ToggleAbilityButton(false);
                     aspirantUI.aspirantStats.SetActive(false);
 
@@ -252,10 +250,10 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
 
-                    CheckedTiles = new Dictionary<Vector2Int,int>();
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
 
                     int range = (int)ph.selectedPlayer.basicAttackRange;
-                    if(range > 0)
+                    if (range > 0)
                         range += additionalRange;
 
                     availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
@@ -276,15 +274,15 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.footerText.text = "";
                 }
             }
-                
+
             else if (selectedAbility.Equals("Skill"))
             {
                 if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.skillMana))
                 {
-                    CheckedTiles = new Dictionary<Vector2Int,int>();
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
 
                     int range = (int)ph.selectedPlayer.skillRange;
-                    if(range > 0)
+                    if (range > 0)
                         range += additionalRange;
 
                     if (ph.selectedPlayer.skillStatusAffectsEnemies)
@@ -329,15 +327,15 @@ public class PhasePlayerAspirant : PhaseBase
             {
                 if (ph.rs.playerAbilityUseCheck(ph.selectedPlayer.signatureMoveMana))
                 {
-                    CheckedTiles = new Dictionary<Vector2Int,int>();
+                    CheckedTiles = new Dictionary<Vector2Int, int>();
 
                     int range = (int)ph.selectedPlayer.signatureMoveRange;
-                    if(range > 0)
+                    if (range > 0)
                         range += additionalRange;
-                    
+
                     if (ph.selectedPlayer.signatureMoveAffectsEnemies)
                     {
-                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>(); 
+                        HashSet<Vector2Int> emptyAllies = new HashSet<Vector2Int>();
                         availableTiles = GetAdjacentTiles(ph, currentXIndex, currentYIndex, range,
                                                             out ph.enemiesInRange, out emptyAllies);
 

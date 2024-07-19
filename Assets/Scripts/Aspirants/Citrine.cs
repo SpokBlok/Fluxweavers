@@ -164,7 +164,7 @@ public class Citrine : PlayerObject
             return true;
 
         return false;
-
+    }
     //for Citrine shield
     public void makeShieldActive()
     {

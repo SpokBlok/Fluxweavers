@@ -187,6 +187,7 @@ public class MaikoScript : PlayerObject
             return true;
 
         return false;
+    }
     //for Citrine shield
     public void makeShieldActive()
     {
