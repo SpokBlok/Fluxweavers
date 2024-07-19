@@ -22,7 +22,7 @@ public class AiHandler : MonoBehaviour
         aiComrades = new Vector2Int[aiEntities.Count()];
         // aspirants = GameObject.FindGameObjectsWithTag("Player");
         // Debug.Log(aspirants.Length);
-        aiEntities[0].Test();
+        
     }
 
     // Update is called once per frame
@@ -35,7 +35,8 @@ public class AiHandler : MonoBehaviour
         //     //     UpdateObstacles();
         //     // }
 
-        //     StartCoroutine(nameof(MoveAi));
+        //     //StartCoroutine(nameof(MoveAi)); 
+        //     aiEntities[2].Move(new(16,4), new Vector2Int[]{new(4,13), new(5,13)});
         // }
             
     }
@@ -50,6 +51,8 @@ public class AiHandler : MonoBehaviour
 
         
         foreach (AiMovementLogic ai in aiEntities) {
+            
+            UpdateObstacles();
             target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
             Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
 
@@ -57,7 +60,6 @@ public class AiHandler : MonoBehaviour
             ai.Move(targetPosition, aiComrades);
             yield return new WaitUntil(() => ai.enabled == false);
             // yield return StartCoroutine(ai.Move(obstacles));
-            UpdateObstacles();
 
             // 
 
@@ -76,7 +78,7 @@ public class AiHandler : MonoBehaviour
         int manaPerRaccon = (int) Mathf.Ceil((float) rs.enemyMana() / aiEntities.Length); 
 
         float damageDealt = 0;
-        Debug.Log(raccoons.Length);
+        // Debug.Log(raccoons.Length);
 
         if (AiWithEnemyInRange.Count == 0) {
             foreach (Raccoon raccoon in raccoons) {
@@ -126,7 +128,9 @@ public class AiHandler : MonoBehaviour
         foreach(PlayerObject aspirant in aspirantPositions) {
 
             AspirantMovement movementScript = aspirant.GetComponent<AspirantMovement>();
-            Vector2Int aspirantPosition = new(movementScript.currentYIndex, movementScript.currentXIndex);
+            Vector2Int aspirantPosition = new(movementScript.currentXIndex, movementScript.currentYIndex);
+
+            
             Vector2Int[] paths = enemyPosition.CreatePathToTarget(aspirantPosition, aiComrades);
 
             if (paths.Length < currentMinimum) {
@@ -140,8 +144,10 @@ public class AiHandler : MonoBehaviour
     }
 
     private void UpdateObstacles () {
+        // Debug.Log(aiComrades.Count());
         for (int i = 0; i < aiComrades.Count(); i++) {
             aiComrades[i] = new Vector2Int(aiEntities[i].GetYIndex(), aiEntities[i].GetXIndex());
+            // Debug.Log("Updating: " + aiEntities[i].GetYIndex() + " " + aiEntities[i].GetXIndex());
         }
     }
 }

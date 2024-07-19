@@ -82,25 +82,23 @@ public class AiMovementLogic : MonoBehaviour
     public void Move (Vector2Int target, Vector2Int[] enemyAi) {
         enabled = true;
         List<Vector2Int> temp = new(CreatePathToTarget(target, enemyAi).Reverse());
-        Debug.Log(target + " " + temp.Count);
-        Path = new Queue<Vector2Int>(temp);
-        // int moveCounter = 0; // GetComponent<PlayerObject>().movement
+        // Debug.Log(target + " " + temp.Count);
+        // Path = new Queue<Vector2Int>(temp);
+        int moveCounter = 0; // GetComponent<PlayerObject>().movement
 
         // Path = new Queue<Vector2Int>(temp.Take(GetComponent<PlayerObject>().movement));
 
-        // for (int i = 0; i < temp.Count - 1; i++) {
+        for (int i = 0; i < temp.Count - 1; i++) {
 
-        //     int weight = GetEdgeWeight(new(currentYIndex, currentXIndex), temp[i]);
+            if (moveCounter > GetComponent<PlayerObject>().movement) {
+                break;
+            }
+            int weight = GetEdgeWeight(temp[i], temp[i+1], true);
             
-        //     moveCounter += weight;
-        //     Debug.Log(moveCounter);
-
-        //     if (moveCounter > GetComponent<PlayerObject>().movement) {
-        //         break;
-        //     }
-
-        //     Path.Enqueue(temp[i]);
-        // }
+            moveCounter += weight;
+            Debug.Log("At " + temp[i] + " and neighbor " + temp[i+1] + ", weight is " + weight);
+            Path.Enqueue(temp[i]);
+        }
     }
 
     public HashSet<Vector2Int> GetAdjacentTiles(int range) {
@@ -149,11 +147,20 @@ public class AiMovementLogic : MonoBehaviour
         
         // Math.Abs(destinationtTile.layer - sourceTile.layer)) / 2;
 
-        return (
-            Math.Abs(destination.x - source.x) + 
-            Math.Abs(destination.y - source.y) // + 
-            // Math.Abs(destination.y + destination.x - source.y - source.x)
-            ); // 2;
+        int dx = destination.x - source.x;
+        int dy = destination.y - source.y;
+        
+        if (Math.Sign(dx) == Math.Sign(dy)) {
+            return Math.Abs(dx + dy);
+        }
+
+        return Math.Max(Math.Abs(dx), Math.Abs(dy));
+
+        // return (
+        //      + 
+        //     Math.Abs() // + 
+        //     // Math.Abs(destination.y + destination.x - source.y - source.x)
+        //     ); // 2;
     }
 
     private List<Tuple<int, Vector2Int>> Sort(List<Tuple<int, Vector2Int>> array) {
@@ -187,7 +194,7 @@ public class AiMovementLogic : MonoBehaviour
         }
     }
 
-    private int GetEdgeWeight (Vector2Int currentNode, Vector2Int nextNode) {
+    private int GetEdgeWeight (Vector2Int currentNode, Vector2Int nextNode, bool movement) {
 
         FluxNames[] mountainTerrain = new FluxNames[] {
             FluxNames.MountainSpires,
@@ -201,16 +208,16 @@ public class AiMovementLogic : MonoBehaviour
             Hex currentTile = Tiles.Tiles[currentNode.x, currentNode.y].GetComponent<Hex>();
             Hex nextTile = Tiles.Tiles[nextNode.y, nextNode.x].GetComponent<Hex>();
 
-            // if (mountainTerrain.Contains(nextTile.currentFlux) ^ mountainTerrain.Contains(currentTile.currentFlux)) {
-            //     return 2;
-            // }
+            if (mountainTerrain.Contains(nextTile.currentFlux) ^ mountainTerrain.Contains(currentTile.currentFlux)) {
+                return movement? 2:4;
+            }
 
-            if (forestTerrain.Contains(nextTile.currentFlux)) {
+            else if (forestTerrain.Contains(nextTile.currentFlux)) {
                 return 0;
             }
 
-            else {
-                return 1;
+            else if (nextTile.currentFlux.Equals(FluxNames.None)) {
+                return movement? 1:2;
             }
 
            // return 1;
@@ -218,11 +225,11 @@ public class AiMovementLogic : MonoBehaviour
         catch (Exception) {}
 
         // Debug.Log("There was an error?");
-        return 1;
+        return 0;
     }
 
     private Vector2Int[] BacktrackPath(Dictionary<Vector2Int, Vector2Int> nodeBacktrack, Vector2Int currentLocation) {
-        Vector2Int[] path = new Vector2Int[]{};
+        Vector2Int[] path = new Vector2Int[]{currentLocation};
         // Debug.Log("currentLocation: " + currentLocation);
         // foreach (Vector2Int n in nodeBacktrack.Keys) {
         //     Debug.Log(n + " " + nodeBacktrack[n]);
@@ -231,7 +238,7 @@ public class AiMovementLogic : MonoBehaviour
         // Debug.Log(currentLocation + " " + nodeBacktrack[currentLocation]);
 
         while (nodeBacktrack.Keys.Contains(currentLocation)) {
-            Debug.Log("Are you backtraccking?");
+            // Debug.Log("Are you backtraccking?");
             path = path.Append(currentLocation).ToArray(); // WTF???
             currentLocation = nodeBacktrack[currentLocation];
         }
@@ -248,7 +255,7 @@ public class AiMovementLogic : MonoBehaviour
 
         HashSet<Vector2Int> currentNeighbors = GetAdjacentTiles(startLocation, attackRange);
         if (currentNeighbors.Contains(target)) {
-            Debug.Log("Hi?");
+            // Debug.Log("Hi?");
             return new Vector2Int[]{};
         }
 
@@ -256,21 +263,21 @@ public class AiMovementLogic : MonoBehaviour
         nodeCost[startLocation] = 0;
 
         while (frontier.Count > 0) {
-            Debug.Log(frontier.Count);
+            // Debug.Log(frontier.Count);
             frontier = Sort(frontier);
             Vector2Int currentLocation = frontier[0].Item2;
             frontier.RemoveAt(0);
 
             currentNeighbors = GetAdjacentTiles(currentLocation, attackRange);
             if (currentNeighbors.Contains(new Vector2Int(target.y, target.x))) {
-                Debug.Log("Target near");
+                // Debug.Log("Target near");
                 return BacktrackPath(nodeBacktrack, currentLocation); // new(currentLocation.y, currentLocation.x)
             }
 
             foreach (Vector2Int neighbor in GetAdjacentTiles(currentLocation, 1)) {
                 Vector2Int swappedCoords = new(neighbor.y, neighbor.x);
                 // 1 should be changed to currentLocation->swappedCoords edge weight
-                int currentCost = nodeCost[currentLocation] + GetEdgeWeight(currentLocation, swappedCoords);
+                int currentCost = nodeCost[currentLocation] + GetEdgeWeight(currentLocation, swappedCoords, false);
 
                 if ((!nodeCost.Keys.Contains(swappedCoords) || currentCost < nodeCost[swappedCoords]) && !enemyAi.Contains(neighbor)) {
                     nodeBacktrack[swappedCoords] = currentLocation;
