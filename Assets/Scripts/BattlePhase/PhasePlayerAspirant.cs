@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using FluxNamespace;
 
 public class PhasePlayerAspirant : PhaseBase
 {
@@ -64,8 +65,10 @@ public class PhasePlayerAspirant : PhaseBase
             additionalRange = 0;
             Hex currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
             
-            if(currentHex.layer == 1) // if aspirant is currently on a mountain
-                additionalRange = 1; // there is an additional 1 range for attacks and moves
+            if (ph.mountainMakingFluxes.Contains(currentHex.currentFlux)) // if aspirant is currently on a mountain
+                additionalRange = 1; // there is an additional 1 range for abilities
+            else if (currentHex.currentFlux == FluxNames.Sandstorm) // if aspirant is currently in a sandstorm
+                additionalRange = -1; // there is an additonal -1 range for abilties
 
 
             // ACTION PROPER
