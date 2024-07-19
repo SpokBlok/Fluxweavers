@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Resources;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using FluxNamespace;
@@ -35,9 +36,14 @@ public class PhaseHandler : MonoBehaviour
     public HashSet<Vector2Int> enemiesInRange = new HashSet<Vector2Int>();
 
     public ResourceScript rs;
+    
 
     public HashSet<FluxNames> forestMakingFluxes;
 
+    // This is for position detection. REMEMBER ITS (PlayerObject, Y, X)
+    public List<(PlayerObject, int,int)> entityPositions;
+    [SerializeField] public TilesCreationScript tcs;
+    
     //This text field is meant only to test the funcitonality of the state machine
     [SerializeField] public TextMeshProUGUI stateText;
     

@@ -26,15 +26,24 @@ public class Waterfall : Flux
     public String description;
 
     */
-    float damage;
-
     void Awake() {
         fluxName = "Waterfall";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
-        effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        fluxCode = FluxNamespace.FluxNames.Waterfall;
+        type = Type.Environment;
+        duration = 2;
+        manaCost = 22;
+        tileLength = 2;
+        effectTiming = EffectTimings.RoundEnd;
+        description = $"Create a mountain with special properties on two adjacent tiles.\r\n" +
+            $"Round End: Heal units here for 8% of their Max HP.\r\n" +
+            $"Round Start: If a unit is here, gain 8 extra Mana this Round.\r\n\r\n" +
+            $"Lasts {duration} Rounds.";
+    }
+
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
+    {
+        float healPercent = 0.08f;
+        aspirant.AddHealth(aspirant.maxHealth * healPercent);
+        aspirant.phaseHandler.rs.playerManaCount += 8;
     }
 }

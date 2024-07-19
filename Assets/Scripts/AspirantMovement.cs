@@ -32,7 +32,7 @@ public class AspirantMovement : MonoBehaviour
     public Dictionary<Vector2Int, int> CheckedTiles;
 
     private Vector2Int targetTile;
-    private Queue<Vector2Int> Path;
+    public Queue<Vector2Int> Path;
 
     [SerializeField] private float movementSpeed;
 

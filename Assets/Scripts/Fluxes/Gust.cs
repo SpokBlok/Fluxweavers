@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Gust : Flux
 {
@@ -26,15 +27,19 @@ public class Gust : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
         fluxName = "Gust";
+        fluxCode = FluxNamespace.FluxNames.Gust;
         type = Type.Spell;
         duration = 0;
-        manaCost = 10;
-        damage = 10;
+        manaCost = 12;
+        tileLength = 2;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = "Displace a unit one tile towards any direction. This Flux can only be used once per unit per Phase.";
+    }
+
+    public override void SpellCast(Hex hex){
+        
     }
 }

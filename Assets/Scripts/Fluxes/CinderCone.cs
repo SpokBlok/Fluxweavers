@@ -26,15 +26,20 @@ public class CinderCone : Flux
     public String description;
 
     */
-    float damage;
 
     void Awake() {
         fluxName = "Cinder Cone";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
+        fluxCode = FluxNamespace.FluxNames.CinderCone;
+        type = Type.Environment;
+        duration = 3;
+        manaCost = 40;
+        tileLength = 1;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = "Create a volcano that takes up three adjacent tiles. At the start of every Round, the Volcano erupts and Scorches 2 random tiles within its control radius for that round. When a volcano expires, it Desecrates the tiles it was placed on for 2 Rounds. Tiles that Volcanoes are placed on are considered to be Scorched.";
     }
-}
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
+    {
+        float tileDamage = 90;
+        aspirant.IsAttacked(tileDamage);
+    }
+}   

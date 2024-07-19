@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -80,10 +81,18 @@ public class PlayerObject : MonoBehaviour
     void Update()
     {
     }
+
+    //Adds healths
+    public void AddHealth(float healing){
+        health += healing;
+        if(health > maxHealth)
+            health = maxHealth;
+    }
     public void manaRoundStart(int newMana)
     {
         mana = newMana;
     }
+
     public void IsDead()
     {
         if (health <= 0)

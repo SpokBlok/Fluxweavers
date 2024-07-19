@@ -26,15 +26,14 @@ public class Scald : Flux
     public String description;
 
     */
-    float damage;
-
     void Awake() {
         fluxName = "Scald";
-        type = Type.Spell;
-        duration = 0;
+        fluxCode = FluxNamespace.FluxNames.Scald;
+        type = Type.Environment;
+        duration = 3;
         manaCost = 10;
-        damage = 10;
+        tileLength = 4;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
-    }
+        description = "Create a steamfield on four adacent tiles. Units here have their healing effects reduced by 65% and are Silenced. Lasts 3 Rounds.";
+    }   
 }

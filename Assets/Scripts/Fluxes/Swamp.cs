@@ -30,11 +30,22 @@ public class Swamp : Flux
 
     void Awake() {
         fluxName = "Swamp";
-        type = Type.Spell;
-        duration = 0;
-        manaCost = 10;
-        damage = 10;
-        effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        fluxCode = FluxNamespace.FluxNames.Swamp;
+        type = Type.Environment;
+        duration = 3;
+        manaCost = 18;
+        tileLength = 4;
+        effectTiming = EffectTimings.RoundEnd;
+        description = $"Create a forest with special properties on four adjacent tiles.\r\n" +
+            $"Round End: Heal units here for 5% of their Max HP.\r\n" +
+            $"Round Start: If a unit is here, gain 5 extra Mana this Round.\r\n\r\n" +
+            $"Lasts {duration} Rounds.";
+    }
+
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant)
+    {
+        float healPercent = 0.05f;
+        aspirant.AddHealth(aspirant.maxHealth * healPercent);
+        aspirant.phaseHandler.rs.playerManaCount += 5;
     }
 }

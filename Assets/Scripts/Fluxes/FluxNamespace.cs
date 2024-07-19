@@ -28,7 +28,8 @@ namespace FluxNamespace {
         Steamfield,
         Scorch,
         Volcano,
-        Water,
+        HighTide,
+        Rivershape,
         Forest,
         Mountain,
         Rain

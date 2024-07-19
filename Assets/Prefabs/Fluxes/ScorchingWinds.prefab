@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6907109434058060624}
   - component: {fileID: 214922820529873827}
   - component: {fileID: -1122817383647963855}
+  - component: {fileID: 4268041437905193223}
   m_Layer: 5
   m_Name: ScorchingWinds
   m_TagString: Untagged
@@ -38,7 +39,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 100, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4473688075256717316
 CanvasRenderer:
@@ -61,14 +62,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.4034071, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 26ce1753723b6c941970baacc09de757, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b3cc839ac5825a241bd6e8040c979287, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -153,3 +154,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b197c10e11ba2a469990ee9a3a992c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FluxNames: 0
+  fluxName: 
+  fluxCode: 0
+  type: 0
+  duration: 0
+  tileLength: 0
+  manaCost: 0
+  canvasGroup: {fileID: 0}
+  rectTransform: {fileID: 0}
+--- !u!95 &4268041437905193223
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992005526990138681}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 109969ec9f45cfe46a8f7939e3c58fcb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using FluxNamespace;
@@ -17,33 +16,32 @@ public class FluxInterface : MonoBehaviour
     [SerializeField] Button ventusButton;
     [SerializeField] Button castButton;
     [SerializeField] Button clearButton;
-    [SerializeField] TextMeshProUGUI currentElement1Text;
-    [SerializeField] TextMeshProUGUI currentElement2Text;
-    [SerializeField] TextMeshProUGUI castFluxText;
+    [SerializeField] Image highlight1;
+    [SerializeField] Image highlight2;
 
     //Flux prefabs
-    [SerializeField] GameObject singe;
-    [SerializeField] GameObject blaze;
-    [SerializeField] GameObject scald;
-    [SerializeField] GameObject wildfire;
-    [SerializeField] GameObject cinderCone;
-    [SerializeField] GameObject scorchingWinds;
-    [SerializeField] GameObject highTide;
-    [SerializeField] GameObject rivershape;
-    [SerializeField] GameObject swamp;
-    [SerializeField] GameObject waterfall;
-    [SerializeField] GameObject rain;
-    [SerializeField] GameObject regrowth;
-    [SerializeField] GameObject reforestation;
-    [SerializeField] GameObject mountainSpires;
-    [SerializeField] GameObject windsweptWoods;
-    [SerializeField] GameObject earthArise;
-    [SerializeField] GameObject seismicWave;
-    [SerializeField] GameObject sandstorm;
-    [SerializeField] GameObject gust;
-    [SerializeField] GameObject tornado;
-
-    private List<GameObject> fluxes;
+    [SerializeField] public GameObject singe;
+    [SerializeField] public GameObject blaze;
+    [SerializeField] public GameObject scald;
+    [SerializeField] public GameObject wildfire;
+    [SerializeField] public GameObject cinderCone;
+    [SerializeField] public GameObject scorchingWinds;
+    [SerializeField] public GameObject highTide;
+    [SerializeField] public GameObject rivershape;
+    [SerializeField] public GameObject swamp;
+    [SerializeField] public GameObject waterfall;
+    [SerializeField] public GameObject rain;
+    [SerializeField] public GameObject regrowth;
+    [SerializeField] public GameObject reforestation;
+    [SerializeField] public GameObject mountainSpires;
+    [SerializeField] public GameObject windsweptWoods;
+    [SerializeField] public GameObject earthArise;
+    [SerializeField] public GameObject seismicWave;
+    [SerializeField] public GameObject sandstorm;
+    [SerializeField] public GameObject gust;
+    [SerializeField] public GameObject tornado;
+    private Color color1, color2;
+    public List<GameObject> fluxes;
     public enum Elements {
         Ignis,
         Aqua,
@@ -62,10 +60,12 @@ public class FluxInterface : MonoBehaviour
     private FluxNames currentFlux;
     private List<Elements> currentElements = new List<Elements>();
     public Flux castedFlux;
+    [SerializeField] Image led;
 
     // if true, button clicks will work
     public bool isClickable;
 
+    [SerializeField] ResourceScript rs;
     /*  
 
         The Start function does the following:
@@ -101,8 +101,13 @@ public class FluxInterface : MonoBehaviour
         Clear();
         castedFlux = null;
         currentFlux = FluxNames.None;
+        color1 = highlight1.color;
+        color2 = highlight2.color;
     }
 
+    void Update() {
+        led.color = Color.Lerp(color1, color2, Mathf.Sin(Time.time)/2.0f+0.5f);
+    }
     /*
         THE GENERAL FLOW:
         - Add<Element>, ElementsChanged and clear function updates and generates the current flux and the instantiated prefab
@@ -113,10 +118,22 @@ public class FluxInterface : MonoBehaviour
 
     public void FluxPlaced(GameObject fluxObject, Hex hex) {
         castedFlux = fluxObject.GetComponent<Flux>();
-        Destroy(fluxObject);
-        Clear();
-        if(castedFlux.type == Flux.Type.Environment) {
-            ei.SetEnvironment(hex, castedFlux);
+        bool castable = true;
+        if(!rs.playerAbilityUseCheck(castedFlux.manaCost))
+            castable = false;
+/*        if(ei.castDisplaceThisRound)
+            castable = false;*/
+        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.ScorchingWinds || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+            castable = false;
+        if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+            castable = false;
+        if(hex.currentFlux == FluxNames.CinderCone)
+            castable = false;
+        if(castable) {
+            rs.playerAbilityUseManaUpdate(castedFlux.manaCost);
+
+            Clear();
+            ei.SetFlux(hex, castedFlux);
         }
     }
 
@@ -130,9 +147,11 @@ public class FluxInterface : MonoBehaviour
         }
     }
     
+
+
+
     public void Clear(){
         currentElements.Clear();
-        castFluxText.text = "";
         ElementsChanged();
     }
 
@@ -170,6 +189,58 @@ public class FluxInterface : MonoBehaviour
         if(GameObject.Find("FluxHolder").transform.childCount > 0)
             Destroy(GameObject.Find("FluxHolder").transform.GetChild(transform.childCount).gameObject);
         Cast(currentFlux);
+    }
+
+    void UpdateUI(){
+        // castFluxText.text = currentFlux == FluxNames.None ? "" : currentFlux.ToString() ?? "" ;
+        // currentElement1Text .text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
+        // currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
+        
+
+        if(currentElements.Count >= 0) {
+            color1 = color2 = Color.white;
+        }
+        if(currentElements.Count >= 1) {
+            switch(currentElements[0]){
+                case Elements.Ignis:
+                    ColorUtility.TryParseHtmlString("#CB342A", out color1);
+                    break;
+                case Elements.Aqua:
+                    ColorUtility.TryParseHtmlString("#2697FE", out color1);
+                    break;
+                case Elements.Folia:
+                    ColorUtility.TryParseHtmlString("#3FB470", out color1);
+                    break;
+                case Elements.Terra:
+                    ColorUtility.TryParseHtmlString("#B4703C", out color1);
+                    break;
+                case Elements.Ventus:
+                    ColorUtility.TryParseHtmlString("#C6ECE4", out color1);
+                    break;
+            }
+        }
+        if(currentElements.Count >= 2) {
+            switch(currentElements[1]){
+                case Elements.Ignis:
+                    ColorUtility.TryParseHtmlString("#CB342A", out color2);
+                    break;
+                case Elements.Aqua:
+                    ColorUtility.TryParseHtmlString("#2697FE", out color2);
+                    break;
+                case Elements.Folia:
+                    ColorUtility.TryParseHtmlString("#3FB470", out color2);
+                    break;
+                case Elements.Terra:
+                    ColorUtility.TryParseHtmlString("#B4703C", out color2);
+                    break;
+                case Elements.Ventus:
+                    ColorUtility.TryParseHtmlString("#C6ECE4", out color2);
+                    break;
+            }
+        }
+
+        highlight1.color = color1;
+        highlight2.color = color2;
     }
 
     private void ToggleUI(){
@@ -308,9 +379,7 @@ public class FluxInterface : MonoBehaviour
                 break;
         }
         
-        castFluxText.text = currentFlux == FluxNames.None ? "" : currentFlux.ToString() ?? "" ;
-        currentElement1Text .text = currentElements.Count >= 1 ? currentElements[0].ToString() : "";
-        currentElement2Text.text = currentElements.Count >= 2 ? currentElements[1].ToString() : "";
+        UpdateUI();
     }
 }
 

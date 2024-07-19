@@ -18,10 +18,12 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     public enum EffectTimings {
         OnCast,
         AspirantPhase,
+        RoundStart,
         RoundEnd
     };
 
     public String fluxName;
+    public FluxNames fluxCode;
     public Type type;
     public int duration;
     public int tileLength;
@@ -29,8 +31,8 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     protected EffectTimings effectTiming;
     protected String description;
     private Vector3 initialPosition;
-    private CanvasGroup canvasGroup;
-    private RectTransform rectTransform;
+    public CanvasGroup canvasGroup;
+    public RectTransform rectTransform;
 
     /*
         The code does the following:
@@ -43,15 +45,14 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
     */
     
     private void Start() {
-        tileLength = 4; //TEMPORARY(?) TILE LENGTH
+        //fluxCode = FluxNames.None; //TEMPORARY flux code
+        //tileLength = 4; //TEMPORARY(?) TILE LENGTH
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
         initialPosition = transform.position;
     }
 
-    public void OnBeginDrag(PointerEventData eventData){
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
+    public virtual void OnBeginDrag(PointerEventData eventData){
         canvasGroup.blocksRaycasts = false;
         canvasGroup.alpha = 0.75f;
     }
@@ -68,5 +69,18 @@ public class Flux : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHand
 
     public void Destroy() {
         Destroy(gameObject);
+    }
+
+    public virtual void EnvironmentEffectRoundStart(PlayerObject aspirant){
+        
+    }
+
+    public virtual void EnvironmentEffectRoundEnd(PlayerObject aspirant)
+    {
+
+    }
+
+    public virtual void SpellCast(Hex hex) {
+        
     }
 }

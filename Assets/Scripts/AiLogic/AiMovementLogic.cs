@@ -16,8 +16,9 @@ public class AiMovementLogic : MonoBehaviour
 
     public TilesCreationScript Tiles;
 
-    [SerializeField] private int currentXIndex;
-    [SerializeField] private int currentYIndex;
+    
+    [SerializeField] public int currentXIndex;
+    [SerializeField] public int currentYIndex;
     private Vector3 offset;
 
     private int movementStat;

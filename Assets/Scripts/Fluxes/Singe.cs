@@ -29,12 +29,19 @@ public class Singe : Flux
     float damage;
 
     void Awake() {
-        fluxName = "Ignis";
+        fluxName = "Singe";
+        fluxCode = FluxNamespace.FluxNames.Singe;
         type = Type.Spell;
         duration = 0;
         manaCost = 10;
-        damage = 10;
+        damage = 35;
+        tileLength = 1;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = $"Casts a fireball at a target tile, dealing {damage} Magic DMG to units in it.";
+    }
+    public override void SpellCast(Hex hex) {
+        PlayerObject aspirant = hex.HexOccupant();
+        if(aspirant != null)
+            aspirant.IsAttacked(damage);
     }
 }

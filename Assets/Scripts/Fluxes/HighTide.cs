@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
-
+using FluxNamespace;
 public class HighTide : Flux
 {
     /* 
@@ -24,17 +24,28 @@ public class HighTide : Flux
     public int manaCost;
     public EffectTimings effectTiming;
     public String description;
-
+    public int tileLength;
     */
-    float damage;
+    
 
     void Awake() {
-        fluxName = "HighTide";
+        fluxName = "High Tide";
+        fluxCode = FluxNames.HighTide;
         type = Type.Environment;
-        duration = 2;
-        manaCost = 10;
-        damage = 10;
+        
+        duration = 3;
+        manaCost = 4;
+        tileLength = 2;
         effectTiming = EffectTimings.OnCast;
-        description = String.Format("Deals %2.0d damage to an opponent on the tile cast.", damage);
+        description = String.Join(
+                        "Creates a small body of water on two adjacent tiles.",
+                        " Round End: Heal units here for 7.5% of their Max HP.",
+                        " Lasts 3 rounds."
+                    );
+    }
+
+    public override void EnvironmentEffectRoundEnd(PlayerObject aspirant) {
+        float healPercent = 0.075f;
+        aspirant.AddHealth(aspirant.maxHealth * healPercent);
     }
 }
