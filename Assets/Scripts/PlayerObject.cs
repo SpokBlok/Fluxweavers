@@ -8,7 +8,6 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class PlayerObject : MonoBehaviour
 {
-    public string objectName;
     //Player Stats
     public int level;
     public float armor;
@@ -71,6 +70,7 @@ public class PlayerObject : MonoBehaviour
     public PhaseHandler phaseHandler;
 
     // Dedra Animations
+    public string objectName;
     public bool isSkillActive; // checks if skill is still active (should last only 3 turns)
     public bool isSignatureMoveActive; // checks if signature move was activated
     public int skillCounter;
