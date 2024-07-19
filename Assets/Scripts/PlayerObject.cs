@@ -218,9 +218,6 @@ public class PlayerObject : MonoBehaviour
     }
     public void OnMouseDown()
     {    
-
-        IsAttacked(30);
-
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
