@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -356,12 +357,12 @@ public class AspirantInterface : MonoBehaviour
             bodyText.text = "";
             footerText.text = "";
 
-            List<int> stats = GetAspirantStats();
+            List<float> stats = GetAspirantStats();
 
             for (int i = 0; i < stats.Count; i++)
             {
                 TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
-                textField.text = stats[i].ToString();
+                textField.text = (Math.Round(stats[i],1)).ToString();
             }
         }
     }
@@ -377,18 +378,18 @@ public class AspirantInterface : MonoBehaviour
         bodyText.fontSize = 18;
     }
 
-    List<int> GetAspirantStats()
+    List<float> GetAspirantStats()
     {
-        List<int> stats = new List<int>();
+        List<float> stats = new List<float>();
 
-        stats.Add((int) phaseHandler.selectedPlayer.health);            // 0
-        stats.Add((int) phaseHandler.selectedPlayer.attackStat);        // 1
-        stats.Add((int) phaseHandler.selectedPlayer.control);           // 2
-        stats.Add((int) phaseHandler.selectedPlayer.armor);             // 3
-        stats.Add((int) phaseHandler.selectedPlayer.magicResistance);   // 4
-        stats.Add((int) phaseHandler.selectedPlayer.movement);          // 5
-        stats.Add((int) phaseHandler.selectedPlayer.armorPenetration);  // 6
-        stats.Add((int) phaseHandler.selectedPlayer.magicPenetration);  // 7
+        stats.Add(phaseHandler.selectedPlayer.health);            // 0
+        stats.Add(phaseHandler.selectedPlayer.attackStat);        // 1
+        stats.Add(phaseHandler.selectedPlayer.control);           // 2
+        stats.Add(phaseHandler.selectedPlayer.armor);             // 3
+        stats.Add(phaseHandler.selectedPlayer.magicResistance);   // 4
+        stats.Add(phaseHandler.selectedPlayer.movement);          // 5
+        stats.Add(phaseHandler.selectedPlayer.armorPenetration);  // 6
+        stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 7
 
         return stats;
     }
