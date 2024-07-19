@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3484fd2b2ad5e8f43ae1769fa677cbaf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 34697b972804b47489c960a3460df840, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -161,6 +161,8 @@ MonoBehaviour:
   duration: 0
   tileLength: 0
   manaCost: 0
+  canvasGroup: {fileID: 0}
+  rectTransform: {fileID: 0}
 --- !u!95 &6460845711337269534
 Animator:
   serializedVersion: 5
@@ -171,7 +173,7 @@ Animator:
   m_GameObject: {fileID: 2992005526990138681}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 34ca9e401cefdd34b98cb9e6d4158e23, type: 2}
+  m_Controller: {fileID: 9100000, guid: cc394f95416087a49af403c9f218a2a5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
