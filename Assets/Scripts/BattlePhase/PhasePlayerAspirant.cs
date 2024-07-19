@@ -8,7 +8,7 @@ using static UnityEngine.GraphicsBuffer;
 public class PhasePlayerAspirant : PhaseBase
 {
     PhaseBase nextState;
-    private TilesCreationScript tiles;
+    public TilesCreationScript tiles;
     private HashSet<Vector2Int> availableTiles;
     private Dictionary<Vector2Int, int> CheckedTiles;
 
@@ -93,7 +93,9 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     aspirantUI.ToggleAbilityButton(false);
 
-                    Debug.Log("Movement is already locked for this turn");
+                    aspirantUI.OpenTooltip();
+                    aspirantUI.headerText.text = "NOTICE";
+                    aspirantUI.bodyText.text = "\nMovement is already locked for this turn";
                 }
             }
 
@@ -120,7 +122,9 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     aspirantUI.ToggleAbilityButton(false);
 
-                    Debug.Log("Not enough mana to do basic attack");
+                    aspirantUI.OpenTooltip();
+                    aspirantUI.headerText.text = "NOTICE";
+                    aspirantUI.bodyText.text = "\nNot enough mana to do basic attack";
                 }
             }
                 
@@ -164,7 +168,9 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     aspirantUI.ToggleAbilityButton(false);
 
-                    Debug.Log("Not enough mana to cast skill");
+                    aspirantUI.OpenTooltip();
+                    aspirantUI.headerText.text = "NOTICE";
+                    aspirantUI.bodyText.text = "\nNot enough mana to cast skill";
                 }
             }
 
@@ -208,7 +214,9 @@ public class PhasePlayerAspirant : PhaseBase
                 {
                     aspirantUI.ToggleAbilityButton(false);
 
-                    Debug.Log("Not enough mana to cast signature move");
+                    aspirantUI.OpenTooltip();
+                    aspirantUI.headerText.text = "NOTICE";
+                    aspirantUI.bodyText.text = "\nNot enough mana to cast signature move";
                 }
             }
         }
@@ -362,7 +370,7 @@ public class PhasePlayerAspirant : PhaseBase
         tiles.HighlightAdjacentTiles(false);
         ph.enemiesInRange = new HashSet<Vector2Int>();
 
-        selectedAbility = "none";
+        aspirantUI.ToggleAbilityButton(false);
     }
 
     public void SkillAttackDamage(PhaseHandler ph)
@@ -428,7 +436,7 @@ public class PhasePlayerAspirant : PhaseBase
         tiles.HighlightAdjacentTiles(false);
         ph.enemiesInRange = new HashSet<Vector2Int>();
 
-        selectedAbility = "none";
+        aspirantUI.ToggleAbilityButton(false);
     }
 
     public void SignatureMoveAttackDamage(PhaseHandler ph)
@@ -495,7 +503,7 @@ public class PhasePlayerAspirant : PhaseBase
         tiles.HighlightAdjacentTiles(false);
         ph.enemiesInRange = new HashSet<Vector2Int>();
 
-        selectedAbility = "none";
+        aspirantUI.ToggleAbilityButton(false);
     }
 
     public void ResetForRangeCalculations(PhaseHandler ph)

@@ -100,30 +100,30 @@ public class AspirantMovement : MonoBehaviour
             }
         }
 
-        else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
-        {
-            if (!aspirant.hasMoved)
-            {
-                Debug.Log("Move Locked In!");
+        // else if (Input.GetMouseButtonDown(1)) // right click to end turn (control just for testing)
+        // {
+        //     if (!aspirant.hasMoved)
+        //     {
+        //         Debug.Log("Move Locked In!");
 
-                aspirant.hasMoved = true;
+        //         aspirant.hasMoved = true;
 
-                phaseHandler.playerAspirant.selectedAbility = "none";
-                Tiles.HighlightAdjacentTiles(false);
+        //         phaseHandler.playerAspirant.aspirantUI.ToggleAbilityButton(false);
+        //         Tiles.HighlightAdjacentTiles(false);
 
-                originalXIndex = currentXIndex;
-                originalYIndex = currentYIndex;
+        //         originalXIndex = currentXIndex;
+        //         originalYIndex = currentYIndex;
 
-                AvailableTiles = new HashSet<Vector2Int>();
-            }
+        //         AvailableTiles = new HashSet<Vector2Int>();
+        //     }
 
-            // to be removed i think
-            else
-            {
-                Debug.Log("Make Your Next Move..");
-                aspirant.hasMoved = false;
-            }
-        }
+        //     // to be removed i think
+        //     else
+        //     {
+        //         Debug.Log("Make Your Next Move..");
+        //         aspirant.hasMoved = false;
+        //     }
+        // }
 
         // might want some UI stuff to happen when hovering over aspirant / tile
         // else

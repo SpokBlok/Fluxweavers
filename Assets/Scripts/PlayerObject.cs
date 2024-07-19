@@ -161,10 +161,16 @@ public class PlayerObject : MonoBehaviour
                 else
                 {
                     // Deselect currently selected player if there is any
-                    if(phaseHandler.selectedPlayer != null)
+                    if(phaseHandler.selectedPlayer != null && phaseHandler.selectedPlayer != this)
                     {
-                        if(phaseHandler.selectedPlayer != this)
-                            phaseHandler.selectedPlayer.TogglePlayerSelection();
+                        phaseHandler.selectedPlayer.TogglePlayerSelection();
+
+                        AspirantInterface aspirantUI = phaseHandler.playerAspirant.aspirantUI;
+                        aspirantUI.tooltip.SetActive(false);
+                            
+
+                        if (phaseHandler.playerAspirant.selectedAbility != "none")
+                            aspirantUI.ToggleAbilityButton(false);
                     }
 
                     phaseHandler.alliesInRange = new HashSet<Vector2Int>();
