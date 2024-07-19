@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FluxNamespace;
-using System;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.Tilemaps;
@@ -47,9 +46,15 @@ public class EnvironmentInterface : MonoBehaviour
         
         if(flux.type == Flux.Type.Environment) {
             currentFluxSprite = currentFlux.gameObject.GetComponent<Image>().sprite;
+
             hex.hexSprite.sprite = currentFluxSprite;
             hex.terrainDuration = flux.duration;
             hex.currentFlux = flux.fluxCode;
+
+            if(flux.fluxCode == FluxNames.CinderCone) {
+                MakeVolcano(hex);
+            }
+
         } else {
             flux.SpellCast(hex);
         }
@@ -98,6 +103,7 @@ public class EnvironmentInterface : MonoBehaviour
 
     // On adjacent hex click
     public void HexClicked(Hex hex){
+        Debug.Log(currentFlux.fluxCode);
         if(currentFlux.type == Flux.Type.Environment) {
             hex.hexSprite.sprite = currentFluxSprite;
             hex.terrainDuration = currentFlux.duration;
@@ -161,6 +167,9 @@ public class EnvironmentInterface : MonoBehaviour
                 break;
             case FluxNames.Wildfire:
                 fi.wildfire.GetComponent<Wildfire>().EnvironmentEffectRoundEnd(entity);
+                break;
+            case FluxNames.CinderCone:
+                fi.cinderCone.GetComponent<CinderCone>().EnvironmentEffectRoundEnd(entity);
                 break;
             default:
                 break;
@@ -239,6 +248,63 @@ public class EnvironmentInterface : MonoBehaviour
         return adjacentHexes;
 
 
+    }
+
+    private void MakeVolcano(Hex hex) {
+        hex.transform.localScale = new Vector3(3,3,3);
+        PolygonCollider2D polygonCollider2D = hex.GetComponent<PolygonCollider2D>();
+        Vector2[] newPoints = polygonCollider2D.points;
+        for(int i = 0; i < newPoints.Length; i++){
+            newPoints[i] = Vector2.Scale(newPoints[i], new Vector2(1.0f/3.0f, 1.0f/3.0f));
+        }
+        polygonCollider2D.points = newPoints;
+
+        List<Hex> volcanoHexes = new List<Hex>();
+        List<Vector2Int> volcanoCoords = new List<Vector2Int>{
+            new Vector2Int(hex.y, hex.x),
+            new Vector2Int(hex.y-1, hex.x),
+            new Vector2Int(hex.y-1, hex.x+1),
+            new Vector2Int(hex.y-2, hex.x+1),
+        };
+        foreach(Vector2Int pair in volcanoCoords){
+            try{
+                Hex newHex = tcs.Tiles[pair.x,pair.y].GetComponent<Hex>();
+                if(newHex != null) {
+                    volcanoHexes.Add(newHex);
+                }    
+            } catch {}       
+        }
+
+        foreach(Hex volcano in volcanoHexes){
+            if(volcano != hex) 
+                volcano.hexSprite.sprite = defaultSprite;
+            volcano.terrainDuration = hex.terrainDuration;
+            volcano.currentFlux = FluxNames.CinderCone;
+        }
+    }
+
+    public void BurnSurroundingTiles(Hex hex){
+        List<Hex> adjacentHexes = GetAdjacentHex(hex, 1, false);
+        List<Hex> adjacentVolcanoTiles = new List<Hex>(); 
+        foreach(Hex surroundingTiles in adjacentHexes){
+            if(surroundingTiles.currentFlux == FluxNames.CinderCone) {
+                adjacentVolcanoTiles.Add(surroundingTiles);
+            }
+        }
+        foreach(Hex volcanoTile in adjacentVolcanoTiles){
+            if(adjacentHexes.Contains(volcanoTile))
+                adjacentHexes.Remove(volcanoTile);
+        }
+        Hex burnTile = adjacentHexes[(int)(Random.Range(0,1.0f)*(float)adjacentHexes.Count)];
+        burnTile.hexSprite.sprite = fi.wildfire.GetComponent<Image>().sprite;
+        burnTile.currentFlux = FluxNames.Wildfire;
+        burnTile.terrainDuration = 2;
+    }
+
+    public void VolcanoRemnant(Hex hex){
+        hex.hexSprite.sprite = fi.wildfire.GetComponent<Image>().sprite;
+        hex.currentFlux = FluxNames.Wildfire;
+        hex.terrainDuration = 2;
     }
 
     private void RoundEnd(){

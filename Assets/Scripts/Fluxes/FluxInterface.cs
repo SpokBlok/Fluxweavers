@@ -106,7 +106,7 @@ public class FluxInterface : MonoBehaviour
     }
 
     void Update() {
-        led.color = Color.Lerp(color1, color2, Mathf.Sin(Time.time));
+        led.color = Color.Lerp(color1, color2, Mathf.Sin(Time.time)/2.0f+0.5f);
     }
     /*
         THE GENERAL FLOW:
@@ -121,9 +121,9 @@ public class FluxInterface : MonoBehaviour
         bool castable = true;
         if(!rs.playerAbilityUseCheck(castedFlux.manaCost))
             castable = false;
-        if(ei.castDisplaceThisRound)
-            castable = false;
         if((castedFlux.fluxCode == FluxNames.Gust || castedFlux.fluxCode == FluxNames.Tornado) && hex.HexOccupant() == null)
+            castable = false;
+        if(hex.currentFlux == FluxNames.CinderCone)
             castable = false;
         if(castable) {
             rs.playerAbilityUseManaUpdate(castedFlux.manaCost);
@@ -143,6 +143,9 @@ public class FluxInterface : MonoBehaviour
         }
     }
     
+
+
+
     public void Clear(){
         currentElements.Clear();
         ElementsChanged();
