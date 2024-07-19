@@ -1,0 +1,36 @@
+fileFormatVersion: 2
+guid: 11b9ceba4f2e09048a0fa943bea93a26
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - musicSource: {instanceID: 0}
+  - sfxSource: {instanceID: 0}
+  - bgMusic: {instanceID: 0}
+  - fluxSelect: {instanceID: 0}
+  - fluxDrop: {instanceID: 0}
+  - citrineBasicAttack: {instanceID: 0}
+  - citrineSkill: {instanceID: 0}
+  - citrineUltActivation: {instanceID: 0}
+  - citrineUltCast: {fileID: 8300000, guid: 760409da0afdd1c40b8707f4fc77d9d1, type: 3}
+  - citrineHurt: {instanceID: 0}
+  - citrineDeath: {instanceID: 0}
+  - dedraBasicAttack: {instanceID: 0}
+  - dedraEnhancedBasicAttack: {instanceID: 0}
+  - dedraSkill: {instanceID: 0}
+  - dedraUltActivation: {instanceID: 0}
+  - dedraUltCast: {instanceID: 0}
+  - dedraHurt: {instanceID: 0}
+  - dedraDeath: {instanceID: 0}
+  - maikoBasicAttack: {instanceID: 0}
+  - maikoSkill: {instanceID: 0}
+  - maikoUltActivation: {instanceID: 0}
+  - maikoUltCast: {instanceID: 0}
+  - maikoHurt: {instanceID: 0}
+  - maikoDeath: {instanceID: 0}
+  - buttonClickSound: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

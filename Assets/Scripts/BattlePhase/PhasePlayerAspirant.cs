@@ -19,6 +19,14 @@ public class PhasePlayerAspirant : PhaseBase
     public String selectedAbility;
     private bool isRangeCalculated;
 
+    public string objectName;
+    // AudioManager audioManager;
+
+    void Start(){
+        //Voicelines
+        // audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     public override void EnterState(PhaseHandler ph)
     {
         nextState = ph.enemyAspirant;
@@ -57,7 +65,7 @@ public class PhasePlayerAspirant : PhaseBase
 
             if (aspirantMovement == null)
                 Debug.LogError("AspirantMovement script not found on PlayerObject.");
-            
+
             // Get current position indices from AspirantMovement script
             int currentXIndex = aspirantMovement.currentXIndex;
             int currentYIndex = aspirantMovement.currentYIndex;

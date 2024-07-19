@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -69,12 +70,23 @@ public class PlayerObject : MonoBehaviour
     // Phase Handler Script
     public PhaseHandler phaseHandler;
 
+    //Animation related things
+    public Animator myAnimator;
+    public GameObject splashArt;
+
+    public string objectName;
+
+    public AudioManager audioManager;
+
     // Start is called before the first frame update
     void Start()
     {
         level = 1;
         maxHealth = health;
         attackStat = 20;
+
+        //Voicelines
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     // Update is called once per frame
@@ -99,6 +111,7 @@ public class PlayerObject : MonoBehaviour
         {
             if (CompareTag("Player"))
             {
+                StartCoroutine(DestroyObject());
                 phaseHandler.playerPositions.Remove(this);
                 phaseHandler.players.Remove(this);
             }
@@ -107,9 +120,6 @@ public class PlayerObject : MonoBehaviour
                 phaseHandler.enemyPositions.Remove(this);
                 phaseHandler.enemies.Remove(this);
             }
-
-            Destroy(gameObject); // Assuming there is no resurrection mechanics. Needs revision if there is.
-            //Death Animation plays
         }
     }
 
@@ -122,6 +132,7 @@ public class PlayerObject : MonoBehaviour
 
         else 
         {
+            // this.myAnimator.SetTrigger("HurtAnimation");
             health -= opponentDamage;
             IsDead();
         } 
@@ -159,19 +170,49 @@ public class PlayerObject : MonoBehaviour
 
     public void OnMouseDown()
     {
+        // IsAttacked(1000);
+
         if(this.gameObject.CompareTag("Player"))
         {   
             if (phaseHandler.currentState == phaseHandler.playerAspirant)
             {
                 if(phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
+                    if(phaseHandler.selectedPlayer.objectName == "Citrine")
+                    {
+                        audioManager.PlaySFX(audioManager.citrineSkill);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        audioManager.PlaySFX(audioManager.dedraSkill);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Maiko")
+                    {
+                        audioManager.PlaySFX(audioManager.maikoSkill);
+                    }
+
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 else if(phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
+                    if(phaseHandler.selectedPlayer.objectName == "Citrine")
+                    {
+                        audioManager.PlaySFX(audioManager.citrineUltCast);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        audioManager.PlaySFX(audioManager.dedraUltCast);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Maiko")
+                    {
+                        // audioManager.PlaySFX(audioManager.maikoUltActivation);
+                        audioManager.PlaySFX(audioManager.maikoUltCast);
+                    }
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
@@ -220,19 +261,58 @@ public class PlayerObject : MonoBehaviour
 
                 if (phaseHandler.playerAspirant.selectedAbility == "Skill")
                 {
+                    if(phaseHandler.selectedPlayer.objectName == "Citrine")
+                    {
+                        audioManager.PlaySFX(audioManager.citrineSkill);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        audioManager.PlaySFX(audioManager.dedraSkill);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Maiko")
+                    {
+                        audioManager.PlaySFX(audioManager.maikoSkill);
+                    }
                     phaseHandler.playerAspirant.SkillAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SkillAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "BasicAttack")
                 {
+                    if(phaseHandler.selectedPlayer.objectName == "Citrine")
+                    {
+                        audioManager.PlaySFX(audioManager.citrineBasicAttack);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        audioManager.PlaySFX(audioManager.dedraBasicAttack);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Maiko")
+                    {
+                        audioManager.PlaySFX(audioManager.maikoBasicAttack);
+                    }
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");
                     phaseHandler.playerAspirant.BasicAttackDamage(phaseHandler);
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
 
                 if (phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
                 {
+                    if(phaseHandler.selectedPlayer.objectName == "Citrine")
+                    {
+                        audioManager.PlaySFX(audioManager.citrineUltCast);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Dedra")
+                    {
+                        audioManager.PlaySFX(audioManager.dedraUltCast);
+                    }
+                    else if(phaseHandler.selectedPlayer.objectName == "Maiko")
+                    {
+                        audioManager.PlaySFX(audioManager.maikoUltCast);
+                    }
                     phaseHandler.playerAspirant.SignatureMoveAttackDamage(phaseHandler);
+                    phaseHandler.selectedPlayer.myAnimator.SetTrigger("SignatureMoveAttackUsed");
                     MoveCheck(phaseHandler.selectedPlayer);
                 }
                 
@@ -288,4 +368,47 @@ public class PlayerObject : MonoBehaviour
 
         phaseHandler.playerAspirant.selectedAbility = "none";
     }
+
+    public IEnumerator SplashArtDisplay()
+    {
+        phaseHandler.selectedPlayer.splashArt.SetActive(true);
+        yield return new WaitForSeconds(1);
+        phaseHandler.selectedPlayer.splashArt.SetActive(false);
+    }
+
+    public void DisplaySplashArt()
+    {
+        //Voicelines
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        Debug.Log("AudioManager initialized: " + (audioManager != null));
+        if (phaseHandler.selectedPlayer.objectName == "Maiko")
+        {
+            audioManager.PlaySFX(audioManager.maikoUltActivation);
+        }
+        else if (phaseHandler.selectedPlayer.objectName == "Citrine")
+        {
+            audioManager.PlaySFX(audioManager.citrineUltActivation);
+        }
+        if (phaseHandler.selectedPlayer.objectName == "Dedra")
+        {
+            audioManager.PlaySFX(audioManager.dedraUltActivation);
+        }
+        StartCoroutine(SplashArtDisplay());
+    }
+
+    public IEnumerator DestroyObject()
+    {
+        AnimatorStateInfo stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+
+        this.myAnimator.SetTrigger("DeathAnimation");
+        yield return new WaitForEndOfFrame();
+        while (stateInfo.IsName("DeathAnimation") == false)
+        {
+            yield return null;
+            stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
+        }
+        yield return new WaitForSeconds(stateInfo.length);
+        Destroy(gameObject);
+    }
+
 }
