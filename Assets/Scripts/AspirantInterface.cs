@@ -27,6 +27,10 @@ public class AspirantInterface : MonoBehaviour
 
     private List<Sprite> currentButtons; // for current list of button sprites
 
+    // HEALTH SLIDER
+    // (mana bar is updated in RS)
+    private Slider healthBar;
+
     // IMAGE COMPONENT
     private Image aspirantImage;
 
@@ -70,6 +74,7 @@ public class AspirantInterface : MonoBehaviour
     // ===== end of sprites section =====
 
     // TEXT COMPONENTS
+    private TextMeshProUGUI healthText;
     [SerializeField] public TextMeshProUGUI headerText;
     [SerializeField] public TextMeshProUGUI bodyText;
     [SerializeField] public TextMeshProUGUI footerText;
@@ -104,6 +109,8 @@ public class AspirantInterface : MonoBehaviour
 
         SetActionButtons();
         SetTextObjects();
+
+        healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
 
         aspirantImage = GameObject.Find("AspirantImage").GetComponent<Image>();
 
@@ -149,13 +156,17 @@ public class AspirantInterface : MonoBehaviour
         else if (uiObject.activeSelf && phaseHandler.selectedPlayer == null)
             uiObject.SetActive(false);
 
-        // to check flux affinity and update UI accordingly
         if (phaseHandler.selectedPlayer != null)
         {
+            // to check flux affinity and update UI accordingly
             if (phaseHandler.selectedPlayer.isMeetingFluxAffinity())
                 SignatureMoveSetActive(true);
             else
                 SignatureMoveSetActive(false);
+
+            // to update health bar accordingly
+            healthText.text = phaseHandler.selectedPlayer.health + " / " + phaseHandler.selectedPlayer.maxHealth;
+            healthBar.value = phaseHandler.selectedPlayer.health / phaseHandler.selectedPlayer.maxHealth;
         }
     }
 
@@ -178,6 +189,10 @@ public class AspirantInterface : MonoBehaviour
 
     void SetTextObjects()
     {
+        // health bar text
+        healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
+
+        // tooltip text
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
         footerText = GameObject.Find("FooterText").GetComponent<TextMeshProUGUI>();

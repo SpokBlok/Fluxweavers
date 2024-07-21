@@ -36,6 +36,7 @@ public class Dedra : PlayerObject
         control = 2; // All players have control over 2 hexes
 
         // Health Related Stuff
+        maxHealth = 120;
         health = 120;
 
         //Attack Stats
@@ -167,11 +168,6 @@ public class Dedra : PlayerObject
             isSignatureMoveActive = true;
             resourceScript.playerAbilityUseManaUpdate(signatureMoveMana);
         }
-
-        else if (!isMeetingFluxAffinity())
-            Debug.Log("nice");
-        else
-            Debug.Log("uhh");
     }
 
     public override bool isMeetingFluxAffinity()

@@ -48,6 +48,7 @@ public class Citrine : PlayerObject
         signatureMoveStatusAffectsAOE = true;  
 
         // Health Related Stuff
+        maxHealth = 250;
         health = 250;
 
         //Attack Stats

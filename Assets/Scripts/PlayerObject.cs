@@ -18,7 +18,7 @@ public class PlayerObject : MonoBehaviour
     public int movement;
     public int control; // All players have control over 2 hexes
 
-    public float maxHealth; // Needed for Dedra
+    public float maxHealth; // Needed for Dedra and health bar
     public float health;
     public int shield;
 

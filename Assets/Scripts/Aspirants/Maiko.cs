@@ -33,6 +33,7 @@ public class MaikoScript : PlayerObject
         control = 2; // All players have control over 2 hexes
 
         // Health Related Stuff
+        maxHealth = 200;
         health = 200;
 
         //Attack Stats
@@ -168,10 +169,6 @@ public class MaikoScript : PlayerObject
             effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
             Handler.addStatusEffect(effect);
             //Range code here when implemented
-        }
-        else
-        {
-            //Message here not enough mana
         }
         //range code here when implemented
     }
