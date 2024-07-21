@@ -31,8 +31,9 @@ public class AspirantInterface : MonoBehaviour
     // (mana bar is updated in RS)
     private Slider healthBar;
 
-    // IMAGE COMPONENT
+    // IMAGE COMPONENTS
     private Image aspirantImage;
+    private Image nameTag;
 
     // SPRITES (only stuff needed to be referenced; others are taken care of below)
     // for Action Buttons
@@ -63,6 +64,11 @@ public class AspirantInterface : MonoBehaviour
     public Sprite dedraPfp;
     public Sprite citrinePfp;
 
+    // for Aspirant NameTags
+    public Sprite maikoNameTag;
+    public Sprite dedraNameTag;
+    public Sprite citrineNameTag;
+
     // for Image Borders
     public Sprite inactiveBorder;
     public Sprite maikoBorder;
@@ -76,8 +82,9 @@ public class AspirantInterface : MonoBehaviour
     // TEXT COMPONENTS
     private TextMeshProUGUI healthText;
     [SerializeField] public TextMeshProUGUI headerText;
+    [SerializeField] public TextMeshProUGUI subText;
+    [SerializeField] public TextMeshProUGUI subText2;
     [SerializeField] public TextMeshProUGUI bodyText;
-    [SerializeField] public TextMeshProUGUI footerText;
 
     // TEXTS
     // for ability descriptions / definitions
@@ -85,6 +92,7 @@ public class AspirantInterface : MonoBehaviour
     private string traverseAbilityDef;
 
     // for each aspirant's other abilities
+    // (for each ability: name, then description, then next ability)
     // Maiko's abilities
     private List<string> maikoAbilityDefs;
 
@@ -113,28 +121,38 @@ public class AspirantInterface : MonoBehaviour
         healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
 
         aspirantImage = GameObject.Find("AspirantImage").GetComponent<Image>();
+        nameTag = GameObject.Find("NameTag").GetComponent<Image>();
 
-        traverseAbilityDef = "Traverse is the ability to move from one tile to another. The distance traveled (in tiles) is determined by the Aspirant’s Movement stat. Traversing can only be done once per round per Aspirant.";
+        traverseAbilityDef = "• Traverse is the ability to move from one tile to another.\n• The distance traveled (in tiles) is determined by the Aspirant’s Movement stat.\n• Traversing can only be done once per round per Aspirant.";
 
         maikoAbilityDefs = new List<string>
         {
-            "\nDeal Physical DMG equal to 5% of Maiko's Max HP + 60% of Maiko's Combined Armor and Magic Res to a target enemy.",
-            "\nDeal Magic DMG equal to 10% of Maiko's Max HP + 100% of his ATK and Slow the target for 1 Round.",
-            "Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP\nat Round End.\nMaiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a 2 tile radius. Lasts 3 Rounds."
+            "Riptide",
+            "Deal Physical DMG equal to 5% of Maiko's Max HP + 60% of Maiko's Combined Armor and Magic Res to a target enemy.",
+            "Blessing of Thalasenatha",
+            "Deal Magic DMG equal to 10% of Maiko's Max HP + 100% of his ATK and Slow the target for 1 Round.",
+            "Ocean's Pride",
+            "• Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP at Round End.\n• Maiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a 2 tile radius.\n• Lasts 3 Rounds."
         };
 
         dedraAbilityDefs = new List<string>
         {
-            "\nDeal Physical DMG equal to 100% of Dedra's ATK to a target enemy.",
-            "\nDedra's next 3 Basic Attacks deal 185% of her ATK instead and she gains +14% Armor Pen. This bonus increases to 225% of ATK for targets below 35% of their Max HP. Lasts 3 Rounds.",
-            "\nDedra's gains + 1 Control, and her next basic attack costs -2 Mana and has +1 Range. If the target dies, this effect is refreshed."
+            "Hush",
+            "Deal Physical DMG equal to 100% of Dedra's ATK to a target enemy.",
+            "Eyes on the Hunt",
+            "• Dedra's next 3 Basic Attacks deal 185% of her ATK instead and she gains +14% Armor Pen.\n• This bonus increases to 225% of ATK for targets below 35% of their Max HP.\n• Lasts 3 Rounds.",
+            "Shadow among the Trees",
+            "• Dedra's next basic attack costs -2 Mana and has +1 Range.\n• If the target dies, this effect is refreshed."
         };
 
         citrineAbilityDefs = new List<string>
         {
-            "\nDeal Magic DMG equal to 120% of Citrine's ATK to a target enemy.",
-            "\nIncreases all allies' Armor Pen. and Magic Res. Pen. by 12 for 2 Rounds.",
-            "\nShield all allies negating the next instance of damage. Increase all allies ATK by 50% for 2 Rounds."
+            "Holo Earth",
+            "Deal Magic DMG equal to 120% of Citrine's ATK to a target enemy.",
+            "Dazzle!",
+            "Increases all allies' Armor Pen. and Magic Pen. by 12 for 2 Rounds.",
+            "Sacred Shards",
+            "• Shield all allies negating the next instance of damage.\n• Increase all allies ATK by 50% for 2 Rounds."
         };
         
         aspirantStats.SetActive(false);
@@ -194,8 +212,9 @@ public class AspirantInterface : MonoBehaviour
 
         // tooltip text
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
+        subText = GameObject.Find("SubText").GetComponent<TextMeshProUGUI>();
+        subText2 = GameObject.Find("SubText2").GetComponent<TextMeshProUGUI>();
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
-        footerText = GameObject.Find("FooterText").GetComponent<TextMeshProUGUI>();
     }
 
     public void SetupButtonsAndImages()
@@ -206,18 +225,21 @@ public class AspirantInterface : MonoBehaviour
         {
             currentButtons = maikoButtons;
             aspirantImage.sprite = maikoPfp;
+            nameTag.sprite = maikoNameTag;
             currentActiveBorder = maikoBorder;
         }
         else if (name.Equals("Dedra"))
         {
             currentButtons = dedraButtons;
             aspirantImage.sprite = dedraPfp;
+            nameTag.sprite = dedraNameTag;
             currentActiveBorder = dedraBorder;
         }
         else if (name.Equals("Citrine"))
         {
             currentButtons = citrineButtons;
             aspirantImage.sprite = citrinePfp;
+            nameTag.sprite = citrineNameTag;
             currentActiveBorder = citrineBorder;
         }
         
@@ -359,59 +381,72 @@ public class AspirantInterface : MonoBehaviour
     {
         if (!phaseHandler.playerAspirant.selectedAbility.Equals("none"))
         {
-            if (phaseHandler.playerAspirant.selectedAbility.Equals("BasicAttack"))
-                headerText.text = "Basic Attack";
-            else if (phaseHandler.playerAspirant.selectedAbility.Equals("SignatureMove"))
-                headerText.text = "Signature Move";
-            else
-                headerText.text = phaseHandler.playerAspirant.selectedAbility;
-
             int index = actionsInOrder.IndexOf(phaseHandler.playerAspirant.selectedAbility);
             string name = phaseHandler.selectedPlayer.name;
 
             if (lastClickedAbility == traverseButton)
             {
-                bodyText.text = traverseAbilityDef;
+                headerText.text = "Traverse";
 
                 // show movement stat of selected player
-                footerText.text = "Movement stat: " + phaseHandler.selectedPlayer.movement;
+                subText.text = "Mana Cost: 0";
+                subText2.text = "Range: " + phaseHandler.selectedPlayer.movement;
+
+                bodyText.text = traverseAbilityDef;
             }
 
             else
             {
                 int range = 0;
 
-                if (name.Equals("Maiko"))
-                {
-                    if (index == 2)
-                        bodyText.fontSize = 14; // sig text too long, so made font size smaller
-
-                    bodyText.text = maikoAbilityDefs[index];
-                }
-
-                else if (name.Equals("Dedra"))
-                    bodyText.text = dedraAbilityDefs[index];
-                
-                else if (name.Equals("Citrine"))
-                    bodyText.text = citrineAbilityDefs[index];
-
                 if (index == 0)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.basicAttackMana;
+
                     range = (int) phaseHandler.selectedPlayer.basicAttackRange;
+                }
                 else if (index == 1)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.skillMana;
+                    
                     range = (int) phaseHandler.selectedPlayer.skillRange;
+                }
                 else if (index == 2)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.signatureMoveMana;
+                    
                     range = (int) phaseHandler.selectedPlayer.signatureMoveRange;
+                }
 
                 if (range > 0)
                 {
                     range += phaseHandler.playerAspirant.additionalRange;
 
-                    footerText.text = "Ability range: " + range;
+                    subText2.text = "Range: " + range;
                 }
                 else if (range == 0)
-                    footerText.text = "Ability range: Self (0)";
+                    subText2.text = "Range: Self (0)";
                 else
-                    footerText.text = "Ability range: Global";
+                    subText2.text = "Range: Global";
+
+
+                if (name.Equals("Maiko"))
+                {
+                    headerText.text = maikoAbilityDefs[index*2];
+                    bodyText.text = maikoAbilityDefs[index*2+1];
+                }
+
+                else if (name.Equals("Dedra"))
+                {
+                    headerText.text = dedraAbilityDefs[index*2];
+                    bodyText.text = dedraAbilityDefs[index*2+1];
+                }
+                
+                else if (name.Equals("Citrine"))
+                {
+                    headerText.text = citrineAbilityDefs[index*2];
+                    bodyText.text = citrineAbilityDefs[index*2+1];
+                }
             }
 
             aspirantStats.SetActive(false);
@@ -419,9 +454,10 @@ public class AspirantInterface : MonoBehaviour
 
         else
         {
-            headerText.text = phaseHandler.selectedPlayer.name;
+            headerText.text = "STATS"; // TEMP
+            subText.text = "";
+            subText2.text = "";
             bodyText.text = "";
-            footerText.text = "";
 
             List<float> stats = GetAspirantStats();
 
@@ -442,8 +478,6 @@ public class AspirantInterface : MonoBehaviour
 
         // open tooltip
         tooltip.SetActive(true);
-
-        bodyText.fontSize = 18;
     }
 
     List<float> GetAspirantStats()

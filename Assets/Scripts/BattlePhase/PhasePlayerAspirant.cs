@@ -109,7 +109,8 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nMovement is already locked for this turn";
-                    aspirantUI.footerText.text = "";
+                    aspirantUI.subText.text = "";
+                    aspirantUI.subText2.text = "";
                 }
             }
 
@@ -140,7 +141,8 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to do basic attack";
-                    aspirantUI.footerText.text = "";
+                    aspirantUI.subText.text = "";
+                    aspirantUI.subText2.text = "";
                 }
             }
                 
@@ -188,7 +190,8 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to cast skill";
-                    aspirantUI.footerText.text = "";
+                    aspirantUI.subText.text = "";
+                    aspirantUI.subText2.text = "";
                 }
             }
 
@@ -236,7 +239,8 @@ public class PhasePlayerAspirant : PhaseBase
                     aspirantUI.OpenTooltip();
                     aspirantUI.headerText.text = "NOTICE";
                     aspirantUI.bodyText.text = "\nNot enough mana to cast signature move";
-                    aspirantUI.footerText.text = "";
+                    aspirantUI.subText.text = "";
+                    aspirantUI.subText2.text = "";
                 }
             }
         }
