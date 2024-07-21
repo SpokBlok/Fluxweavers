@@ -6,7 +6,7 @@ using UnityEngine;
 public class TilesCreationScript : MonoBehaviour
 {
     public const int rowCount = 11;
-    public const int colCount = 25; // 19 + 2 * 3
+    public const int colCount = 17; // 11 + 2 * 3
     public GameObject[,] Tiles = new GameObject[rowCount, colCount];
 
     private HashSet<Vector2Int> AdjacentTiles;
