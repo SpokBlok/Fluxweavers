@@ -30,7 +30,7 @@ public class AspirantInterface : MonoBehaviour
     // IMAGE COMPONENT
     private Image aspirantImage;
 
-    // SPRITES
+    // SPRITES (only stuff needed to be referenced; others are taken care of below)
     // for Action Buttons
     // traverse
     public Sprite traverseUnclicked;
@@ -398,6 +398,8 @@ public class AspirantInterface : MonoBehaviour
                 else
                     footerText.text = "Ability range: Global";
             }
+
+            aspirantStats.SetActive(false);
         }
 
         else
