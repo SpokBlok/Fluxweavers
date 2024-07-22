@@ -10,6 +10,8 @@ public class PlayerNexus : PlayerObject
 
     public int x;
     public int y;
+    private TilesCreationScript tiles;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,8 @@ public class PlayerNexus : PlayerObject
         armor = 5;
         magicResistance = 5;
 
+        tiles = GameObject.Find("Hextile Map").GetComponent<TilesCreationScript>();
+        this.gameObject.transform.position = tiles.Tiles[y, x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
     }
 
     // Update is called once per frame

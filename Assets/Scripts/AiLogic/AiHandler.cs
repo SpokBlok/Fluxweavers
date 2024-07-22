@@ -90,6 +90,7 @@ public class AiHandler : MonoBehaviour
                 while (manaAllocated >= raccoon.skillMana) {
                     raccoon.skillStatus(raccoons);
                     manaAllocated -= raccoon.skillMana;
+                    raccoon.myAnimator.SetTrigger("SkillAttackUsed");
                 }
             }   
         }
@@ -109,6 +110,7 @@ public class AiHandler : MonoBehaviour
             if (manaAllocated - raccoon.skillMana >= raccoon.basicAttackMana) {
                 raccoon.skillStatus(raccoons);
                 manaAllocated -= raccoon.skillMana;
+                raccoon.myAnimator.SetTrigger("SkillAttackUsed");
             }
             
             // Keep basic attacking as long as mana allotted still allows for it
@@ -116,6 +118,7 @@ public class AiHandler : MonoBehaviour
                 damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
                 aspirantStats.IsAttacked(damageDealt);
                 manaAllocated -= raccoon.basicAttackMana;
+                raccoon.myAnimator.SetTrigger("BasicAttackUsed");
             }
         }
     }
