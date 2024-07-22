@@ -21,6 +21,7 @@ public class Nexus : PlayerObject
         armor = 5;
         magicResistance = 5;
 
+        myAnimator = GetComponent<Animator>();
         tiles = GameObject.Find("Hextile Map").GetComponent<TilesCreationScript>();
         this.gameObject.transform.position = tiles.Tiles[y, x].transform.position + new Vector3(0.0f, 0.22f, 0.0f);
     }
@@ -45,6 +46,7 @@ public class Nexus : PlayerObject
         else 
         {
             health -= opponentDamage;
+            this.myAnimator.SetTrigger("HurtAnimation");
         } 
         if (health <= 0)
         {
