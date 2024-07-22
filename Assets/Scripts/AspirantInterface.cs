@@ -19,6 +19,7 @@ public class AspirantInterface : MonoBehaviour
     // SERIALIZED IS JUST FOR CHECKING
     private List<string> actionsInOrder;
     private List<string> statsInOder;
+    private List<string> statAbbreviations;
 
     // BUTTONS
     [SerializeField] private Button lastClickedAbility;
@@ -28,6 +29,7 @@ public class AspirantInterface : MonoBehaviour
     private Button signatureMoveButton;
     private Button infoButton;
 
+    // LOCAL SPRITE STORAGE
     private List<Sprite> currentButtons; // for current list of button sprites
     private Sprite currentActiveBorder; // border sprite to be used
                                         // if the current selected player's flux affinity is met
@@ -92,8 +94,9 @@ public class AspirantInterface : MonoBehaviour
     [SerializeField] public TextMeshProUGUI subText;
     [SerializeField] public TextMeshProUGUI subText2;
     [SerializeField] public TextMeshProUGUI bodyText;
+    private TextMeshProUGUI effectsText;
 
-    // TEXTS
+    // TEXTS (strings)
     // for ability descriptions / definitions
     // traverse
     private string traverseAbilityDef;
@@ -124,6 +127,7 @@ public class AspirantInterface : MonoBehaviour
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
         statsInOder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration"};
+        statAbbreviations = new List<string>{"ATK", "ARMOR", "MAGIC RES.", "ARMOR PEN.", "MAGIC PEN."};
 
         SetActionButtons();
         SetTextObjects();
@@ -226,11 +230,14 @@ public class AspirantInterface : MonoBehaviour
         subText = GameObject.Find("SubText").GetComponent<TextMeshProUGUI>();
         subText2 = GameObject.Find("SubText2").GetComponent<TextMeshProUGUI>();
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
+
+        // for active effects displayed in tooltip
+        effectsText = GameObject.Find("EffectsText").GetComponent<TextMeshProUGUI>();
     }
 
     public void SetupButtonsAndImages()
     {
-        string name = phaseHandler.selectedPlayer.name;
+        string name = phaseHandler.selectedPlayer.objectName;
 
         if (name.Equals("Maiko"))
         {
@@ -405,7 +412,7 @@ public class AspirantInterface : MonoBehaviour
         if (!phaseHandler.playerAspirant.selectedAbility.Equals("none"))
         {
             int index = actionsInOrder.IndexOf(phaseHandler.playerAspirant.selectedAbility);
-            string name = phaseHandler.selectedPlayer.name;
+            string name = phaseHandler.selectedPlayer.objectName;
 
             if (lastClickedAbility == traverseButton)
             {
@@ -481,11 +488,15 @@ public class AspirantInterface : MonoBehaviour
             headerText.text = "";
             subText.text = "";
             subText2.text = "";
-            bodyText.text = "";
+            bodyText.text = "ACTIVE EFFECTS";
 
             List<float> stats = GetAspirantStats();
 
             List<float> originalStats = GetAspirantStats();
+
+            effectsText.text = "";
+
+            bool hasEffects = false;
 
             for (int i = effectHandler.effectList.Count - 1; i >= 0; i--)
             {
@@ -496,15 +507,28 @@ public class AspirantInterface : MonoBehaviour
                     int index = statsInOder.IndexOf(effect.statusEffectName);
 
                     if (effect.isAdditive)
+                    {
                         originalStats[index] = originalStats[index] - effect.statusEffect;
+
+                        effectsText.text += "\n• [INSERT NAME] | +" + effect.statusEffect + " " + statAbbreviations[index];
+                    }
                     else
+                    {
                         originalStats[index] = originalStats[index] / effect.statusEffect;
+                        
+                        effectsText.text += "\n• [INSERT NAME] | +" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
+                    }
+
+                    hasEffects = true;
                 }
             }
 
+            if (!hasEffects)
+                effectsText.text += "\n• None";
+
             for (int i = 0; i < stats.Count; i++)
             {
-                Transform stat = aspirantStats.transform.GetChild(i);
+                Transform stat = aspirantStats.transform.GetChild(i+1);
 
                 TextMeshProUGUI textField = stat.GetChild(0).GetComponent<TextMeshProUGUI>();
                 textField.text = (Math.Round(stats[i],1)).ToString();
@@ -526,7 +550,7 @@ public class AspirantInterface : MonoBehaviour
                 }
             }
 
-            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 50);
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 58);
             aspirantStats.SetActive(true);
         }
     }
