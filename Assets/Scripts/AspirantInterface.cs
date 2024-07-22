@@ -19,7 +19,7 @@ public class AspirantInterface : MonoBehaviour
 
     // SERIALIZED IS JUST FOR CHECKING
     private List<string> actionsInOrder;
-    private List<string> statsInOder;
+    private List<string> statsInOrder;
     private List<string> statAbbreviations;
 
     // BUTTONS
@@ -87,6 +87,9 @@ public class AspirantInterface : MonoBehaviour
     // (for each stat, base, then stat up, then stat down, then next stat)
     public List<Sprite> statIcons;
 
+    // for Windswept Woods
+    public Sprite windsweptWoods;
+
     // ===== end of sprites section =====
 
     // TEXT COMPONENTS
@@ -128,8 +131,8 @@ public class AspirantInterface : MonoBehaviour
         eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
-        statsInOder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration"};
-        statAbbreviations = new List<string>{"ATK", "ARMOR", "MAGIC RES.", "ARMOR PEN.", "MAGIC PEN."};
+        statsInOrder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration", "movement"};
+        statAbbreviations = new List<string>{"ATK", "ARMOR", "MAGIC RES.", "ARMOR PEN.", "MAGIC PEN.", "MOVEMENT"};
 
         SetActionButtons();
         SetTextObjects();
@@ -252,7 +255,8 @@ public class AspirantInterface : MonoBehaviour
             textField.text = "";
 
             // blank sprite that camouflages to the background
-            Image effectImage = textField.gameObject.transform.GetChild(0).GetComponent<Image>();
+            Transform textFieldTransform = textField.gameObject.transform;
+            Image effectImage = textFieldTransform.GetChild(textFieldTransform.childCount-1).GetComponent<Image>();
             effectImage.sprite = null;
             effectImage.color = new Color32(158, 160, 173, 255);
         }
@@ -525,45 +529,67 @@ public class AspirantInterface : MonoBehaviour
             bool hasEffects = false;
             ResetEffectDisplays();
 
-            int offset = Math.Min(effectHandler.effectList.Count, aspirantStats.transform.childCount-5);
+            int offset = effectHandler.effectList.Count-1;
 
-            for (int i = 0; i < Math.Min(effectHandler.effectList.Count, aspirantStats.transform.childCount-5); i++)
+            for (int i = effectHandler.effectList.Count-1; i >= 0; i--)
             {
-                StatusEffect effect = effectHandler.effectList[offset-i];
+                if (offset-i >= effectTexts.Count-1)
+                {
+                    effectTexts[9].text = "\t(And more..)";
+                    break;
+                }
+
+                StatusEffect effect = effectHandler.effectList[i];
 
                 if (effect.targets.Contains(phaseHandler.selectedPlayer))
                 {
-                    int index = statsInOder.IndexOf(effect.statusEffectName);
+                    int index = statsInOrder.IndexOf(effect.statusEffectName);
 
                     if (index >= 0)
                     {
                         if (effect.isAdditive)
                         {
-                            originalStats[index] = originalStats[index] - effect.statusEffect;
+                            if (index < 5)
+                                originalStats[index] = originalStats[index] - effect.statusEffect;
 
-                            effectTexts[i].text = "\t+" + effect.statusEffect + " " + statAbbreviations[index];
+                            effectTexts[offset-i].text = "\t+" + effect.statusEffect + " " + statAbbreviations[index];
                         }
                         else
                         {
-                            originalStats[index] = originalStats[index] / effect.statusEffect;
+                            if (index < 5)
+                                originalStats[index] = originalStats[index] / effect.statusEffect;
                             
-                            effectTexts[i].text = "\t+" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
+                            effectTexts[offset-i].text = "\t+" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
                         }
 
-                        Image effectImage = effectTexts[i].transform.GetChild(0).GetComponent<Image>();
+                        Transform effectTransform = effectTexts[offset-i].transform;
+                        Image effectImage = effectTransform.GetChild(effectTransform.childCount-1).GetComponent<Image>();
                         effectImage.color = Color.white;
 
                         string[] sourceDetails = effect.statusEffectSource.Split(" ");
                         int j = actionsInOrder.IndexOf(sourceDetails[1]);
 
-                        if (sourceDetails[0].Equals("Maiko"))
-                            effectImage.sprite = maikoButtons[j*3+1];
+                        RectTransform rt = effectImage.GetComponent<RectTransform>();
 
-                        else if (sourceDetails[0].Equals("Dedra"))
-                            effectImage.sprite = dedraButtons[j*3+1];
+                        if (sourceDetails[0].Equals("Tile"))
+                        {
+                            effectImage.sprite = windsweptWoods;
 
-                        else if (sourceDetails[0].Equals("Citrine"))
-                            effectImage.sprite = citrineButtons[j*3+1];
+                            rt.localScale = new Vector3(0.2f, 0.5f, rt.localScale.y);
+                        }
+                        else
+                        {
+                            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.y);
+
+                            if (sourceDetails[0].Equals("Maiko"))
+                                effectImage.sprite = maikoButtons[j*3+1];
+
+                            else if (sourceDetails[0].Equals("Dedra"))
+                                effectImage.sprite = dedraButtons[j*3+1];
+
+                            else if (sourceDetails[0].Equals("Citrine"))
+                                effectImage.sprite = citrineButtons[j*3+1];
+                        }
 
                         hasEffects = true;
                     }
@@ -572,10 +598,8 @@ public class AspirantInterface : MonoBehaviour
 
             if (!hasEffects)
                 effectTexts[0].text = "\t  • None";
-            else if (effectHandler.effectList.Count > aspirantStats.transform.childCount-5)
-                effectTexts[9].text = "\t(And more..)";
 
-            for (int i = 0; i < stats.Count - 1; i++)
+            for (int i = 0; i < stats.Count; i++)
             {
                 Transform stat = aspirantStats.transform.GetChild(i);
 
