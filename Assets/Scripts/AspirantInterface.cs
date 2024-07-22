@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using FluxNamespace;
 
 public class AspirantInterface : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class AspirantInterface : MonoBehaviour
     private PhaseHandler phaseHandler;
     private StatusEffectHandlerScript effectHandler;
     private EventSystem eventSystem;
+    private ResourceScript resourceScript;
 
     // SERIALIZED IS JUST FOR CHECKING
     private List<string> actionsInOrder;
@@ -94,6 +96,7 @@ public class AspirantInterface : MonoBehaviour
 
     // TEXT COMPONENTS
     private TextMeshProUGUI healthText;
+    private TextMeshProUGUI manaText;
     [SerializeField] public TextMeshProUGUI headerText;
     [SerializeField] public TextMeshProUGUI subText;
     [SerializeField] public TextMeshProUGUI subText2;
@@ -129,6 +132,7 @@ public class AspirantInterface : MonoBehaviour
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
         effectHandler = GameObject.Find("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+        resourceScript = GameObject.Find("ResourceManager").GetComponent<ResourceScript>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
         statsInOrder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration", "movement"};
@@ -205,6 +209,8 @@ public class AspirantInterface : MonoBehaviour
             // to update health bar accordingly
             healthText.text = phaseHandler.selectedPlayer.health + " / " + phaseHandler.selectedPlayer.maxHealth;
             healthBar.value = phaseHandler.selectedPlayer.health / phaseHandler.selectedPlayer.maxHealth;
+
+            manaText.text = resourceScript.playerManaCount + " / " + resourceScript.playerMaxMana;
         }
     }
 
@@ -229,6 +235,7 @@ public class AspirantInterface : MonoBehaviour
     {
         // health bar text
         healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
+        manaText = GameObject.Find("ManaText2").GetComponent<TextMeshProUGUI>();
 
         // tooltip text
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
@@ -259,6 +266,9 @@ public class AspirantInterface : MonoBehaviour
             Image effectImage = textFieldTransform.GetChild(textFieldTransform.childCount-1).GetComponent<Image>();
             effectImage.sprite = null;
             effectImage.color = new Color32(158, 160, 173, 255);
+
+            RectTransform rt = effectImage.GetComponent<RectTransform>();
+            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.z);
         }
 
         // empty text for last text (might be And more..)
@@ -526,16 +536,40 @@ public class AspirantInterface : MonoBehaviour
             subText2.text = "";
             bodyText.text = "ACTIVE EFFECTS";
 
-            List<float> stats = GetAspirantStats();
-
-            List<float> originalStats = GetAspirantStats();
-
             bool hasEffects = false;
             ResetEffectDisplays();
+            int effectsInTooltip = 0;
+
+            Hex currentHex = GetCurrentHex();
+            int additionalRange = GetAdditionalRange(currentHex);
+
+            // check if current tile has effects on range
+            if (additionalRange != 0)
+            {
+                effectsInTooltip = 1;
+                
+                if (additionalRange < 0)
+                    effectTexts[0].text = "\t-1 range";
+                else
+                    effectTexts[0].text = "\t+1 range";
+
+                Transform effectTransform = effectTexts[0].transform;
+                Image effectImage = effectTransform.GetChild(effectTransform.childCount-1).GetComponent<Image>();
+
+                RectTransform rt = effectImage.GetComponent<RectTransform>();
+                rt.localScale = new Vector3(0.2f, 0.5f, rt.localScale.z);
+
+                effectImage.sprite = currentHex.hexSprite.sprite;
+
+                hasEffects = true;
+            }
+
+            List<float> stats = GetAspirantStats();
+            List<float> originalStats = GetAspirantStats();
 
             int offset = effectHandler.effectList.Count-1;
 
-            for (int i = effectHandler.effectList.Count-1; i >= 0; i--)
+            for (int i = (effectHandler.effectList.Count-1) - effectsInTooltip; i >= 0; i--)
             {
                 if (offset-i >= effectTexts.Count-1)
                 {
@@ -577,13 +611,14 @@ public class AspirantInterface : MonoBehaviour
 
                         if (sourceDetails[0].Equals("Tile"))
                         {
-                            effectImage.sprite = windsweptWoods;
+                            if (sourceDetails[1].Equals("WindsweptWoods"))
+                                effectImage.sprite = windsweptWoods;
 
-                            rt.localScale = new Vector3(0.2f, 0.5f, rt.localScale.y);
+                            rt.localScale = new Vector3(0.2f, 0.5f, rt.localScale.z);
                         }
                         else
                         {
-                            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.y);
+                            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.z);
 
                             if (sourceDetails[0].Equals("Maiko"))
                                 effectImage.sprite = maikoButtons[j*3+1];
@@ -652,5 +687,22 @@ public class AspirantInterface : MonoBehaviour
         stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 4
 
         return stats;
+    }
+
+    Hex GetCurrentHex()
+    {
+        AspirantMovement aspirant = phaseHandler.selectedPlayer.GetComponent<AspirantMovement>();
+
+        return phaseHandler.playerAspirant.tiles.Tiles[aspirant.currentYIndex, aspirant.currentXIndex].GetComponent<Hex>();
+    }
+
+    int GetAdditionalRange(Hex currentHex)
+    {
+        if (phaseHandler.mountainMakingFluxes.Contains(currentHex.currentFlux)) // if aspirant is currently on a mountain
+            return 1; // there is an additional 1 range for abilities
+        else if (currentHex.currentFlux == FluxNames.Sandstorm) // if aspirant is currently in a sandstorm
+            return -1; // there is an additonal -1 range for abilties
+
+        return 0;
     }
 }
