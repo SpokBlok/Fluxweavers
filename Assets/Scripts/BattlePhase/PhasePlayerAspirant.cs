@@ -14,6 +14,7 @@ public class PhasePlayerAspirant : PhaseBase
     private Dictionary<Vector2Int, int> CheckedTiles;
 
     public AspirantInterface aspirantUI;
+    public Hex currentHex;
 
     public int additionalRange;
     public String selectedAbility;
@@ -71,7 +72,7 @@ public class PhasePlayerAspirant : PhaseBase
             int currentYIndex = aspirantMovement.currentYIndex;
 
             additionalRange = 0;
-            Hex currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
+            currentHex = tiles.Tiles[currentYIndex, currentXIndex].GetComponent<Hex>();
             
             if (ph.mountainMakingFluxes.Contains(currentHex.currentFlux)) // if aspirant is currently on a mountain
                 additionalRange = 1; // there is an additional 1 range for abilities
