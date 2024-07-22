@@ -18,7 +18,7 @@ public class PlayerObject : MonoBehaviour
     public int movement;
     public int control; // All players have control over 2 hexes
 
-    public float maxHealth; // Needed for Dedra
+    public float maxHealth; // Needed for Dedra and health bar
     public float health;
     public int shield;
 
@@ -148,6 +148,7 @@ public class PlayerObject : MonoBehaviour
             }
             else if (CompareTag("Enemy"))
             {
+                StartCoroutine(DestroyObject());
                 phaseHandler.enemyPositions.Remove(this);
                 phaseHandler.enemies.Remove(this);
             }
@@ -155,13 +156,13 @@ public class PlayerObject : MonoBehaviour
     }
 
     public virtual void IsAttacked(float opponentDamage)
-    {  
-        if (shield == 1) 
+    {
+        if (shield == 1)
         {
             shield = 0;
         }
 
-        else 
+        else
         {
             try
             {
@@ -193,18 +194,19 @@ public class PlayerObject : MonoBehaviour
                     {
                         this.myAnimator.SetTrigger("HurtAnimation");
                     }
-
-                    health -= opponentDamage;
-                    IsDead();
                 }
-            }
-            
-            catch
-            {
+                this.myAnimator.SetTrigger("HurtAnimation");
                 health -= opponentDamage;
                 IsDead();
             }
-        } 
+
+            catch
+            {
+                this.myAnimator.SetTrigger("HurtAnimation");
+                health -= opponentDamage;
+                IsDead();
+            }
+        }
     }
 
     public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)
@@ -561,7 +563,7 @@ public class PlayerObject : MonoBehaviour
     {
         AnimatorStateInfo stateInfo = myAnimator.GetCurrentAnimatorStateInfo(0);
 
-        if (phaseHandler.selectedPlayer != null)
+/*        if (phaseHandler.selectedPlayer != null)
         {
             if (phaseHandler.selectedPlayer.objectName == "Dedra")
             {
@@ -624,10 +626,10 @@ public class PlayerObject : MonoBehaviour
                     yield return new WaitForSeconds(stateInfo.length);
                     Destroy(gameObject);
                 }
-            }
+            }*/
 
-            else
-            {
+            
+            
             this.myAnimator.SetTrigger("DeathAnimation");
             yield return new WaitForEndOfFrame();
 
@@ -639,7 +641,7 @@ public class PlayerObject : MonoBehaviour
 
             yield return new WaitForSeconds(stateInfo.length);
             Destroy(gameObject);
-            }
-        }
+            
+        
     }
 }

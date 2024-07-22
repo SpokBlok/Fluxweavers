@@ -9,7 +9,8 @@ public class ResourceScript : MonoBehaviour
     public int playerManaCount;
     public int enemyManaCount;
     public int playerMaxMana;
-    [SerializeField] Slider manaBar;
+    [SerializeField] private Slider fluxPhaseManaBar;
+    [SerializeField] private Slider aspirantPhaseManaBar;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +21,8 @@ public class ResourceScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        manaBar.value = (float)playerManaCount/(float)playerMaxMana;
+        fluxPhaseManaBar.value = (float)playerManaCount/(float)playerMaxMana;
+        aspirantPhaseManaBar.value = (float)playerManaCount/(float)playerMaxMana;
     }
 
     public void roundStart(int roundCount)

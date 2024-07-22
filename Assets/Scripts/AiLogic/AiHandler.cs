@@ -28,6 +28,8 @@ public class AiHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
+        aiComrades = new Vector2Int[aiEntities.Count()];
         // if (Input.GetKeyDown(KeyCode.C)) {
         //     // foreach (AiMovementLogic ai in aiEntities) {
         //     //     ai.enabled = true;
@@ -38,7 +40,7 @@ public class AiHandler : MonoBehaviour
         //     //StartCoroutine(nameof(MoveAi)); 
         //     aiEntities[2].Move(new(16,4), new Vector2Int[]{new(4,13), new(5,13)});
         // }
-            
+
     }
 
     public IEnumerator MoveAi (HashSet<PlayerObject> aspirants) {
@@ -55,6 +57,9 @@ public class AiHandler : MonoBehaviour
             
             UpdateObstacles();
             target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
+            if (target == null) {
+                yield break;
+            }
             Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
 
             // Move Ai First
@@ -90,6 +95,7 @@ public class AiHandler : MonoBehaviour
                 while (manaAllocated >= raccoon.skillMana) {
                     raccoon.skillStatus(raccoons);
                     manaAllocated -= raccoon.skillMana;
+                    raccoon.myAnimator.SetTrigger("SkillAttackUsed");
                 }
             }   
         }
@@ -98,9 +104,15 @@ public class AiHandler : MonoBehaviour
         }
 
         foreach (Raccoon raccoon in AiWithEnemyInRange) {
+            //if (aspirants.Count > 0)
             AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
             int manaAllocated = manaPerRaccon; // Important
             target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
+
+            if (target == null) {
+                yield break;
+            }
+
             aspirantStats = target.gameObject.GetComponent<PlayerObject>();
             // Debug.Log(aspirantStats.gameObject.name);
             
@@ -109,6 +121,7 @@ public class AiHandler : MonoBehaviour
             if (manaAllocated - raccoon.skillMana >= raccoon.basicAttackMana) {
                 raccoon.skillStatus(raccoons);
                 manaAllocated -= raccoon.skillMana;
+                raccoon.myAnimator.SetTrigger("SkillAttackUsed");
             }
             
             // Keep basic attacking as long as mana allotted still allows for it
@@ -116,6 +129,7 @@ public class AiHandler : MonoBehaviour
                 damageDealt = raccoon.basicAttack(aspirantStats.armor, aspirantStats.health, aspirantStats.maxHealth);
                 aspirantStats.IsAttacked(damageDealt);
                 manaAllocated -= raccoon.basicAttackMana;
+                raccoon.myAnimator.SetTrigger("BasicAttackUsed");
             }
         }
     }

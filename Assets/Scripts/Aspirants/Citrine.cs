@@ -48,6 +48,7 @@ public class Citrine : PlayerObject
         signatureMoveStatusAffectsAOE = true;  
 
         // Health Related Stuff
+        maxHealth = 250;
         health = 250;
 
         //Attack Stats
@@ -111,11 +112,11 @@ public class Citrine : PlayerObject
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("magicPenetration", 10, 2, targets);
+            effect.instantiateAddIntEffect("magicPenetration", 10, 2, targets, "Citrine Skill");
             Handler.addStatusEffect(effect);
 
             effect = new StatusEffect();
-            effect.instantiateAddIntEffect("armorPenetration", 10, 2, targets);
+            effect.instantiateAddIntEffect("armorPenetration", 10, 2, targets, "Citrine Skill");
             Handler.addStatusEffect(effect);
 
         }
@@ -137,7 +138,7 @@ public class Citrine : PlayerObject
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, phaseHandler.players);
+            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, phaseHandler.players, "Citrine SignatureMove");
             Handler.addStatusEffect(effect);
             
             foreach (PlayerObject player in phaseHandler.players) 

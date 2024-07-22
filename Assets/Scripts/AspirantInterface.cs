@@ -10,12 +10,17 @@ public class AspirantInterface : MonoBehaviour
 {
     private GameObject uiObject;
     [SerializeField] public GameObject tooltip;
-    public GameObject aspirantStats;
+    [SerializeField] public RectTransform divider;
+    [SerializeField] public GameObject aspirantStats;
 
     private PhaseHandler phaseHandler;
+    private StatusEffectHandlerScript effectHandler;
+    private EventSystem eventSystem;
 
     // SERIALIZED IS JUST FOR CHECKING
-    [SerializeField] private List<string> actionsInOrder;
+    private List<string> actionsInOrder;
+    private List<string> statsInOrder;
+    private List<string> statAbbreviations;
 
     // BUTTONS
     [SerializeField] private Button lastClickedAbility;
@@ -25,19 +30,27 @@ public class AspirantInterface : MonoBehaviour
     private Button signatureMoveButton;
     private Button infoButton;
 
+    // LOCAL SPRITE STORAGE
     private List<Sprite> currentButtons; // for current list of button sprites
+    private Sprite currentActiveBorder; // border sprite to be used
+                                        // if the current selected player's flux affinity is met
 
-    // IMAGE COMPONENT
+    // HEALTH SLIDER
+    // (mana bar is updated in RS)
+    private Slider healthBar;
+
+    // IMAGE COMPONENTS
     private Image aspirantImage;
+    private Image nameTag;
 
-    // SPRITES
+    // SPRITES (only stuff needed to be referenced; others are taken care of below)
     // for Action Buttons
     // traverse
     public Sprite traverseUnclicked;
     public Sprite traverseClicked;
 
     // for Aspirants' other buttons
-    // (for each action: unclicked, then clicked, then next action)
+    // (for each action: hover, then unclicked, then clicked, then next action)
     // Maiko's actions
     public List<Sprite> maikoButtons;
 
@@ -59,27 +72,41 @@ public class AspirantInterface : MonoBehaviour
     public Sprite dedraPfp;
     public Sprite citrinePfp;
 
+    // for Aspirant Name Tags
+    public Sprite maikoNameTag;
+    public Sprite dedraNameTag;
+    public Sprite citrineNameTag;
+
     // for Image Borders
     public Sprite inactiveBorder;
     public Sprite maikoBorder;
     public Sprite dedraBorder;
     public Sprite citrineBorder;
 
-    private Sprite currentActiveBorder;
+    // for Stat Icons
+    // (for each stat, base, then stat up, then stat down, then next stat)
+    public List<Sprite> statIcons;
+
+    // for Windswept Woods
+    public Sprite windsweptWoods;
 
     // ===== end of sprites section =====
 
     // TEXT COMPONENTS
+    private TextMeshProUGUI healthText;
     [SerializeField] public TextMeshProUGUI headerText;
+    [SerializeField] public TextMeshProUGUI subText;
+    [SerializeField] public TextMeshProUGUI subText2;
     [SerializeField] public TextMeshProUGUI bodyText;
-    [SerializeField] public TextMeshProUGUI footerText;
+    private List<TextMeshProUGUI> effectTexts;
 
-    // TEXTS
+    // TEXTS (strings)
     // for ability descriptions / definitions
     // traverse
     private string traverseAbilityDef;
 
     // for each aspirant's other abilities
+    // (for each ability: name, then description, then next ability)
     // Maiko's abilities
     private List<string> maikoAbilityDefs;
 
@@ -96,38 +123,55 @@ public class AspirantInterface : MonoBehaviour
     {
         uiObject = GameObject.Find("AspirantPhaseUI");
         tooltip = GameObject.Find("TooltipContainer");
+        divider = GameObject.Find("Divider").GetComponent<RectTransform>();
         aspirantStats = GameObject.Find("AspirantStats");
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
+        effectHandler = GameObject.Find("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
+        statsInOrder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration", "movement"};
+        statAbbreviations = new List<string>{"ATK", "ARMOR", "MAGIC RES.", "ARMOR PEN.", "MAGIC PEN.", "MOVEMENT"};
 
         SetActionButtons();
         SetTextObjects();
 
-        aspirantImage = GameObject.Find("AspirantImage").GetComponent<Image>();
+        healthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
 
-        traverseAbilityDef = "Traverse is the ability to move from one tile to another. The distance traveled (in tiles) is determined by the Aspirant’s Movement stat. Traversing can only be done once per round per Aspirant.";
+        aspirantImage = GameObject.Find("AspirantImage").GetComponent<Image>();
+        nameTag = GameObject.Find("NameTag").GetComponent<Image>();
+
+        traverseAbilityDef = "• Traverse is the ability to move from one tile to another.\n• The distance traveled (in tiles) is determined by the Aspirant’s Movement stat.\n• Traversing can only be done once per round per Aspirant.";
 
         maikoAbilityDefs = new List<string>
         {
-            "\nDeal Physical DMG equal to 5% of Maiko's Max HP + 60% of Maiko's Combined Armor and Magic Res to a target enemy.",
-            "\nDeal Magic DMG equal to 10% of Maiko's Max HP + 100% of his ATK and Slow the target for 1 Round.",
-            "Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP\nat Round End.\nMaiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a 2 tile radius. Lasts 3 Rounds."
+            "Riptide",
+            "Deal Physical DMG equal to 5% of Maiko's Max HP + 60% of Maiko's Combined Armor and Magic Res to a target enemy.",
+            "Blessing of Thalasenatha",
+            "Deal Magic DMG equal to 10% of Maiko's Max HP + 100% of his ATK and Slow the target for 1 Round.",
+            "Ocean's Pride",
+            "• Passive: While Maiko is in a Aqua environment, he regenerates 3% of his missing HP at Round End.\n• Maiko gains +1 Movement this Round. Then, Maiko increases his Armor and Magic Res. by 35% and lowers enemy ATK by 20% in a 2 tile radius.\n• Lasts 3 Rounds."
         };
 
         dedraAbilityDefs = new List<string>
         {
-            "\nDeal Physical DMG equal to 100% of Dedra's ATK to a target enemy.",
-            "\nDedra's next 3 Basic Attacks deal 185% of her ATK instead and she gains +14% Armor Pen. This bonus increases to 225% of ATK for targets below 35% of their Max HP. Lasts 3 Rounds.",
-            "\nDedra's gains + 1 Control, and her next basic attack costs -2 Mana and has +1 Range. If the target dies, this effect is refreshed."
+            "Hush",
+            "Deal Physical DMG equal to 100% of Dedra's ATK to a target enemy.",
+            "Eyes on the Hunt",
+            "• Dedra's next 3 Basic Attacks deal 185% of her ATK instead and she gains +14% Armor Pen.\n• This bonus increases to 225% of ATK for targets below 35% of their Max HP.\n• Lasts 3 Rounds.",
+            "Shadow among the Trees",
+            "• Dedra's next basic attack costs -2 Mana and has +1 Range.\n• If the target dies, this effect is refreshed."
         };
 
         citrineAbilityDefs = new List<string>
         {
-            "\nDeal Magic DMG equal to 120% of Citrine's ATK to a target enemy.",
-            "\nIncreases all allies' Armor Pen. and Magic Res. Pen. by 12 for 2 Rounds.",
-            "\nShield all allies negating the next instance of damage. Increase all allies ATK by 50% for 2 Rounds."
+            "Holo Earth",
+            "Deal Magic DMG equal to 120% of Citrine's ATK to a target enemy.",
+            "Dazzle!",
+            "Increases all allies' Armor Pen. and Magic Pen. by 12 for 2 Rounds.",
+            "Sacred Shards",
+            "• Shield all allies negating the next instance of damage.\n• Increase all allies ATK by 50% for 2 Rounds."
         };
         
         aspirantStats.SetActive(false);
@@ -143,19 +187,24 @@ public class AspirantInterface : MonoBehaviour
             uiObject.SetActive(true);
             SetupButtonsAndImages();
             aspirantStats.SetActive(false);
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 90);
             tooltip.SetActive(false);
         }
 
         else if (uiObject.activeSelf && phaseHandler.selectedPlayer == null)
             uiObject.SetActive(false);
 
-        // to check flux affinity and update UI accordingly
         if (phaseHandler.selectedPlayer != null)
         {
+            // to check flux affinity and update UI accordingly
             if (phaseHandler.selectedPlayer.isMeetingFluxAffinity())
                 SignatureMoveSetActive(true);
             else
                 SignatureMoveSetActive(false);
+
+            // to update health bar accordingly
+            healthText.text = phaseHandler.selectedPlayer.health + " / " + phaseHandler.selectedPlayer.maxHealth;
+            healthBar.value = phaseHandler.selectedPlayer.health / phaseHandler.selectedPlayer.maxHealth;
         }
     }
 
@@ -178,40 +227,88 @@ public class AspirantInterface : MonoBehaviour
 
     void SetTextObjects()
     {
+        // health bar text
+        healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
+
+        // tooltip text
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
+        subText = GameObject.Find("SubText").GetComponent<TextMeshProUGUI>();
+        subText2 = GameObject.Find("SubText2").GetComponent<TextMeshProUGUI>();
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
-        footerText = GameObject.Find("FooterText").GetComponent<TextMeshProUGUI>();
+
+        // for active effects displayed in tooltip
+        effectTexts = new List<TextMeshProUGUI>();
+
+        for (int i = 5; i < aspirantStats.transform.childCount; i++)
+            effectTexts.Add(aspirantStats.transform.GetChild(i).GetComponent<TextMeshProUGUI>());
+
+        ResetEffectDisplays();
+    }
+
+    void ResetEffectDisplays()
+    {
+        for (int i = 5; i < aspirantStats.transform.childCount-1; i++)
+        {
+            TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetComponent<TextMeshProUGUI>();
+
+            // empty text
+            textField.text = "";
+
+            // blank sprite that camouflages to the background
+            Transform textFieldTransform = textField.gameObject.transform;
+            Image effectImage = textFieldTransform.GetChild(textFieldTransform.childCount-1).GetComponent<Image>();
+            effectImage.sprite = null;
+            effectImage.color = new Color32(158, 160, 173, 255);
+        }
+
+        // empty text for last text (might be And more..)
+        effectTexts[9].text = "";
     }
 
     public void SetupButtonsAndImages()
     {
-        string name = phaseHandler.selectedPlayer.name;
+        string name = phaseHandler.selectedPlayer.objectName;
 
         if (name.Equals("Maiko"))
         {
             currentButtons = maikoButtons;
             aspirantImage.sprite = maikoPfp;
+            nameTag.sprite = maikoNameTag;
             currentActiveBorder = maikoBorder;
         }
         else if (name.Equals("Dedra"))
         {
             currentButtons = dedraButtons;
             aspirantImage.sprite = dedraPfp;
+            nameTag.sprite = dedraNameTag;
             currentActiveBorder = dedraBorder;
         }
         else if (name.Equals("Citrine"))
         {
             currentButtons = citrineButtons;
             aspirantImage.sprite = citrinePfp;
+            nameTag.sprite = citrineNameTag;
             currentActiveBorder = citrineBorder;
         }
         
-        // get unclicked buttons that contain aspirant's abilities
         for(int i = 0; i < actionButtons.Count-1; i++)
-            actionButtons[i].GetComponent<Image>().sprite = currentButtons[i*2];
+        {
+            // set the hover sprite to their respective buttons
+            SpriteState newSpriteState = new SpriteState();
+            newSpriteState.highlightedSprite = currentButtons[i*3];
+            actionButtons[i].spriteState = newSpriteState;
+
+            // set each sprite to their unclicked states
+            actionButtons[i].GetComponent<Image>().sprite = currentButtons[i*3+1];
+        }
 
         // (by default) set sig to inactive
         actionButtons[actionButtons.Count-1].GetComponent<Image>().sprite = sigInactive;
+
+        // set up highlighted sprite for the signature move
+        SpriteState sigSpriteState = new SpriteState();
+        sigSpriteState.highlightedSprite = currentButtons[6];
+        actionButtons[actionButtons.Count-1].spriteState = sigSpriteState;
 
         // set other buttons to unclicked
         traverseButton.GetComponent<Image>().sprite = traverseUnclicked;
@@ -229,7 +326,7 @@ public class AspirantInterface : MonoBehaviour
 
         if (isActive)
         {
-            signatureMoveButton.GetComponent<Image>().sprite = currentButtons[4];
+            signatureMoveButton.GetComponent<Image>().sprite = currentButtons[7];
 
             border.sprite = currentActiveBorder;
         }
@@ -302,11 +399,17 @@ public class AspirantInterface : MonoBehaviour
 
                 // select ability
                 phaseHandler.playerAspirant.selectedAbility = button.name;
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
+                {
+                    phaseHandler.selectedPlayer.DisplaySplashArt();
+                }
             }
 
             // setup tooltip
             SetupTooltip();
         }
+
+        eventSystem.SetSelectedGameObject(null);
     }
 
     public void ToggleAbilityButton(bool isSelected)
@@ -319,7 +422,7 @@ public class AspirantInterface : MonoBehaviour
             {
                 int index = actionsInOrder.IndexOf(lastClickedAbility.name);
 
-                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 2 + 1];
+                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 3 + 2];
             }
         }
         else
@@ -330,7 +433,7 @@ public class AspirantInterface : MonoBehaviour
             {
                 int index = actionsInOrder.IndexOf(lastClickedAbility.name);
 
-                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 2];
+                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 3 + 1];
             }
 
             lastClickedAbility = null;
@@ -344,76 +447,187 @@ public class AspirantInterface : MonoBehaviour
     {
         if (!phaseHandler.playerAspirant.selectedAbility.Equals("none"))
         {
-            if (phaseHandler.playerAspirant.selectedAbility.Equals("BasicAttack"))
-                headerText.text = "Basic Attack";
-            else if (phaseHandler.playerAspirant.selectedAbility.Equals("SignatureMove"))
-                headerText.text = "Signature Move";
-            else
-                headerText.text = phaseHandler.playerAspirant.selectedAbility;
-
             int index = actionsInOrder.IndexOf(phaseHandler.playerAspirant.selectedAbility);
-            string name = phaseHandler.selectedPlayer.name;
+            string name = phaseHandler.selectedPlayer.objectName;
 
             if (lastClickedAbility == traverseButton)
             {
-                bodyText.text = traverseAbilityDef;
+                headerText.text = "Traverse";
 
                 // show movement stat of selected player
-                footerText.text = "Movement stat: " + phaseHandler.selectedPlayer.movement;
+                subText.text = "Mana Cost: 0";
+                subText2.text = "Range: " + phaseHandler.selectedPlayer.movement;
+
+                bodyText.text = traverseAbilityDef;
             }
 
             else
             {
                 int range = 0;
 
-                if (name.Equals("Maiko"))
-                {
-                    if (index == 2)
-                        bodyText.fontSize = 14; // sig text too long, so made font size smaller
-
-                    bodyText.text = maikoAbilityDefs[index];
-                }
-
-                else if (name.Equals("Dedra"))
-                    bodyText.text = dedraAbilityDefs[index];
-                
-                else if (name.Equals("Citrine"))
-                    bodyText.text = citrineAbilityDefs[index];
-
                 if (index == 0)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.basicAttackMana;
+
                     range = (int) phaseHandler.selectedPlayer.basicAttackRange;
+                }
                 else if (index == 1)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.skillMana;
+                    
                     range = (int) phaseHandler.selectedPlayer.skillRange;
+                }
                 else if (index == 2)
+                {
+                    subText.text = "Mana Cost: " + phaseHandler.selectedPlayer.signatureMoveMana;
+                    
                     range = (int) phaseHandler.selectedPlayer.signatureMoveRange;
+                }
 
                 if (range > 0)
                 {
                     range += phaseHandler.playerAspirant.additionalRange;
 
-                    footerText.text = "Ability range: " + range;
+                    subText2.text = "Range: " + range;
                 }
                 else if (range == 0)
-                    footerText.text = "Ability range: Self (0)";
+                    subText2.text = "Range: Self (0)";
                 else
-                    footerText.text = "Ability range: Global";
+                    subText2.text = "Range: Global";
+
+
+                if (name.Equals("Maiko"))
+                {
+                    headerText.text = maikoAbilityDefs[index*2];
+                    bodyText.text = maikoAbilityDefs[index*2+1];
+                }
+
+                else if (name.Equals("Dedra"))
+                {
+                    headerText.text = dedraAbilityDefs[index*2];
+                    bodyText.text = dedraAbilityDefs[index*2+1];
+                }
+                
+                else if (name.Equals("Citrine"))
+                {
+                    headerText.text = citrineAbilityDefs[index*2];
+                    bodyText.text = citrineAbilityDefs[index*2+1];
+                }
             }
+
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 90);
+            aspirantStats.SetActive(false);
         }
 
         else
         {
-            headerText.text = phaseHandler.selectedPlayer.name;
-            bodyText.text = "";
-            footerText.text = "";
+            headerText.text = "";
+            subText.text = "";
+            subText2.text = "";
+            bodyText.text = "ACTIVE EFFECTS";
 
             List<float> stats = GetAspirantStats();
 
-            for (int i = 0; i < stats.Count; i++)
+            List<float> originalStats = GetAspirantStats();
+
+            bool hasEffects = false;
+            ResetEffectDisplays();
+
+            int offset = effectHandler.effectList.Count-1;
+
+            for (int i = effectHandler.effectList.Count-1; i >= 0; i--)
             {
-                TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
-                textField.text = (Math.Round(stats[i],1)).ToString();
+                if (offset-i >= effectTexts.Count-1)
+                {
+                    effectTexts[9].text = "\t(And more..)";
+                    break;
+                }
+
+                StatusEffect effect = effectHandler.effectList[i];
+
+                if (effect.targets.Contains(phaseHandler.selectedPlayer))
+                {
+                    int index = statsInOrder.IndexOf(effect.statusEffectName);
+
+                    if (index >= 0)
+                    {
+                        if (effect.isAdditive)
+                        {
+                            if (index < 5)
+                                originalStats[index] = originalStats[index] - effect.statusEffect;
+
+                            effectTexts[offset-i].text = "\t+" + effect.statusEffect + " " + statAbbreviations[index];
+                        }
+                        else
+                        {
+                            if (index < 5)
+                                originalStats[index] = originalStats[index] / effect.statusEffect;
+                            
+                            effectTexts[offset-i].text = "\t+" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
+                        }
+
+                        Transform effectTransform = effectTexts[offset-i].transform;
+                        Image effectImage = effectTransform.GetChild(effectTransform.childCount-1).GetComponent<Image>();
+                        effectImage.color = Color.white;
+
+                        string[] sourceDetails = effect.statusEffectSource.Split(" ");
+                        int j = actionsInOrder.IndexOf(sourceDetails[1]);
+
+                        RectTransform rt = effectImage.GetComponent<RectTransform>();
+
+                        if (sourceDetails[0].Equals("Tile"))
+                        {
+                            effectImage.sprite = windsweptWoods;
+
+                            rt.localScale = new Vector3(0.2f, 0.5f, rt.localScale.y);
+                        }
+                        else
+                        {
+                            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.y);
+
+                            if (sourceDetails[0].Equals("Maiko"))
+                                effectImage.sprite = maikoButtons[j*3+1];
+
+                            else if (sourceDetails[0].Equals("Dedra"))
+                                effectImage.sprite = dedraButtons[j*3+1];
+
+                            else if (sourceDetails[0].Equals("Citrine"))
+                                effectImage.sprite = citrineButtons[j*3+1];
+                        }
+
+                        hasEffects = true;
+                    }
+                }
             }
 
+            if (!hasEffects)
+                effectTexts[0].text = "\t  • None";
+
+            for (int i = 0; i < stats.Count; i++)
+            {
+                Transform stat = aspirantStats.transform.GetChild(i);
+
+                TextMeshProUGUI textField = stat.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textField.text = (Math.Round(stats[i],1)).ToString();
+
+                if (stats[i] == originalStats[i])
+                {
+                    // neutral
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3];
+                }
+                else if (stats[i] > originalStats[i])
+                {
+                    // up
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3+1];
+                }
+                else if (stats[i] < originalStats[i])
+                {
+                    // down
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3+2];
+                }
+            }
+
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 58);
             aspirantStats.SetActive(true);
         }
     }
@@ -425,22 +639,17 @@ public class AspirantInterface : MonoBehaviour
 
         // open tooltip
         tooltip.SetActive(true);
-
-        bodyText.fontSize = 18;
     }
 
     List<float> GetAspirantStats()
     {
         List<float> stats = new List<float>();
 
-        stats.Add(phaseHandler.selectedPlayer.health);            // 0
-        stats.Add(phaseHandler.selectedPlayer.attackStat);        // 1
-        stats.Add(phaseHandler.selectedPlayer.control);           // 2
-        stats.Add(phaseHandler.selectedPlayer.armor);             // 3
-        stats.Add(phaseHandler.selectedPlayer.magicResistance);   // 4
-        stats.Add(phaseHandler.selectedPlayer.movement);          // 5
-        stats.Add(phaseHandler.selectedPlayer.armorPenetration);  // 6
-        stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 7
+        stats.Add(phaseHandler.selectedPlayer.attackStat);        // 0
+        stats.Add(phaseHandler.selectedPlayer.armor);             // 1
+        stats.Add(phaseHandler.selectedPlayer.magicResistance);   // 2
+        stats.Add(phaseHandler.selectedPlayer.armorPenetration);  // 3
+        stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 4
 
         return stats;
     }

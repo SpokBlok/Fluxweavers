@@ -46,7 +46,7 @@ public class WindsweptWoods : Flux
         StatusEffect effect = new StatusEffect();
         HashSet<PlayerObject> targets = new HashSet<PlayerObject>();
         targets.Add(aspirant);
-        effect.instantiateAddIntEffect("movement", 1, 1, targets);
+        effect.instantiateAddIntEffect("movement", 1, 1, targets, "Tile WindsweptWoods");
 
         StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         Handler.addStatusEffect(effect);
