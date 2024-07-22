@@ -155,13 +155,13 @@ public class PlayerObject : MonoBehaviour
     }
 
     public virtual void IsAttacked(float opponentDamage)
-    {  
-        if (shield == 1) 
+    {
+        if (shield == 1)
         {
             shield = 0;
         }
 
-        else 
+        else
         {
             try
             {
@@ -193,18 +193,18 @@ public class PlayerObject : MonoBehaviour
                     {
                         this.myAnimator.SetTrigger("HurtAnimation");
                     }
-
-                    health -= opponentDamage;
-                    IsDead();
                 }
+
+                health -= opponentDamage;
+                IsDead();
             }
-            
+
             catch
             {
                 health -= opponentDamage;
                 IsDead();
             }
-        } 
+        }
     }
 
     public virtual float basicAttack(float armor, float enemyCurrentHealth, float enemyMaximumHealth)

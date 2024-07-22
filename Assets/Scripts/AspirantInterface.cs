@@ -302,6 +302,10 @@ public class AspirantInterface : MonoBehaviour
 
                 // select ability
                 phaseHandler.playerAspirant.selectedAbility = button.name;
+                if (phaseHandler.playerAspirant.selectedAbility == "SignatureMove")
+                {
+                    phaseHandler.selectedPlayer.DisplaySplashArt();
+                }
             }
 
             // setup tooltip
