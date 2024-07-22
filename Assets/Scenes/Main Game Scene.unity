@@ -403,6 +403,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7674364127464217735, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: audioManager
+      value: 
+      objectReference: {fileID: 617364248}
+    - target: {fileID: 7674364127464217735, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
       propertyPath: phaseHandler
       value: 
       objectReference: {fileID: 106829296}
@@ -410,6 +414,42 @@ PrefabInstance:
       propertyPath: resourceScript
       value: 
       objectReference: {fileID: 1753433710}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_Size.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.border.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 3.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172454823461015322, guid: 4cce0480f7b7b724da131dfb0ab5393b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4342,6 +4382,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1663016169354361771, guid: 0d577e22747872449a0dbeec924a96e0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1482828803}
+    - targetCorrespondingSourceObject: {fileID: 1663016169354361771, guid: 0d577e22747872449a0dbeec924a96e0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1482828807}
+    - targetCorrespondingSourceObject: {fileID: 1663016169354361771, guid: 0d577e22747872449a0dbeec924a96e0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1482828806}
   m_SourcePrefab: {fileID: 100100000, guid: 0d577e22747872449a0dbeec924a96e0, type: 3}
 --- !u!4 &1482828801 stripped
 Transform:
@@ -4419,6 +4465,45 @@ MonoBehaviour:
   audioManager: {fileID: 0}
   x: 0
   y: 5
+--- !u!95 &1482828806
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482828802}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1482828807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482828802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4207ee1f207b3d489af47fd207b3e67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tiles: {fileID: 1481221385}
+  currentYIndex: 5
+  currentXIndex: 0
+  originalYIndex: 0
+  originalXIndex: 0
+  movementSpeed: 0
 --- !u!1 &1485518726
 GameObject:
   m_ObjectHideFlags: 0

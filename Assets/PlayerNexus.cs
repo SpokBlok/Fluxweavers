@@ -48,8 +48,11 @@ public class PlayerNexus : PlayerObject
         else 
         {
             health -= opponentDamage;
-            SceneManager.LoadScene("LoseScreen");
         } 
+        if (health <= 0)
+        {
+            SceneManager.LoadScene("LoseScreen");
+        }
     }
 
 }

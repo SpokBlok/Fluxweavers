@@ -382,7 +382,7 @@ public class PlayerObject : MonoBehaviour
                     }
                     else if(phaseHandler.selectedPlayer.objectName == "Maiko")
                     {
-                        //audioManager.PlaySFX(audioManager.maikoBasicAttack);
+                        audioManager.PlaySFX(audioManager.maikoBasicAttack);
                         phaseHandler.selectedPlayer.myAnimator.SetTrigger("BasicAttackUsed");                        
                     }
                     //If aspirant is Dedra, go through her various statuses
