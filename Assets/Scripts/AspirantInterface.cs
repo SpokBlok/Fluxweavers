@@ -521,9 +521,9 @@ public class AspirantInterface : MonoBehaviour
             bool hasEffects = false;
             ResetEffectDisplays();
 
-            int offset = aspirantStats.transform.childCount-5;
+            int offset = Math.Min(effectHandler.effectList.Count, aspirantStats.transform.childCount-5);
 
-            for (int i = 0; i < aspirantStats.transform.childCount-5; i++)
+            for (int i = 0; i < Math.Min(effectHandler.effectList.Count, aspirantStats.transform.childCount-5); i++)
             {
                 StatusEffect effect = effectHandler.effectList[offset-i];
 
