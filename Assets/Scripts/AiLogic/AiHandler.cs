@@ -57,6 +57,9 @@ public class AiHandler : MonoBehaviour
             
             UpdateObstacles();
             target = GetClosestAspirant(ai, aspirants).gameObject.GetComponent<AspirantMovement>();
+            if (target == null) {
+                yield break;
+            }
             Vector2Int targetPosition = new(target.currentXIndex, target.currentYIndex);
 
             // Move Ai First
@@ -105,6 +108,11 @@ public class AiHandler : MonoBehaviour
             AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
             int manaAllocated = manaPerRaccon; // Important
             target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
+
+            if (target == null) {
+                yield break;
+            }
+
             aspirantStats = target.gameObject.GetComponent<PlayerObject>();
             // Debug.Log(aspirantStats.gameObject.name);
             
