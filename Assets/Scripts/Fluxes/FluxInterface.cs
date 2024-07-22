@@ -67,6 +67,7 @@ public class FluxInterface : MonoBehaviour
 
     [SerializeField] ResourceScript rs;
     private TextMeshProUGUI manaText;
+    public GameObject fluxUI;
     /*  
 
         The Start function does the following:
@@ -106,6 +107,8 @@ public class FluxInterface : MonoBehaviour
         color2 = highlight2.color;
 
         manaText = GameObject.Find("ManaText").GetComponent<TextMeshProUGUI>();
+        fluxUI = GameObject.Find("FluxPhaseUI");
+        fluxUI.SetActive(false);
     }
 
     void Update() {
