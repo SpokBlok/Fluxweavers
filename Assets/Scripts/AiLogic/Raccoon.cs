@@ -35,7 +35,7 @@ public class Raccoon : PlayerObject
         if (resourceScript.enemyAbilityUseCheck(basicAttackMana)) {
             resourceScript.enemyAbilityUseManaUpdate(basicAttackMana);
             
-            float damageOutput = attackStat * 1.5f / armor;
+            float damageOutput = attackStat * 1.2f / armor;
             return damageOutput;
         }
 
@@ -51,8 +51,8 @@ public class Raccoon : PlayerObject
             StatusEffect effect = new();
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
-            
-            effect.instantiateMultiFloatEffect("attackStat", 1.6f, 2, targets, "Raccoon Skill");
+            health += 10;
+            effect.instantiateMultiFloatEffect("attackStat", 1.1f, 2, targets, "Raccoon Skill");
             Handler.addStatusEffect(effect);
         }
     }

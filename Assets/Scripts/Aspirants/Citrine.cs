@@ -28,7 +28,7 @@ public class Citrine : PlayerObject
         armorPenetration = 0;
         magicResistance = 12;
         magicPenetration = 0;
-        attackStat = 10;
+        attackStat = 20;
         movement = 2;
         control = 2; // All players have control over 2 hexes
         isBasicAttackPhysical = false;
@@ -54,9 +54,9 @@ public class Citrine : PlayerObject
         //Attack Stats
         
         basicAttackMana = 4;
-        basicAttackRange = 1;
+        basicAttackRange = 2;
         
-        skillMana = 10;
+        skillMana = 16;
         skillRange = 3;
 
         signatureMoveMana = 20;

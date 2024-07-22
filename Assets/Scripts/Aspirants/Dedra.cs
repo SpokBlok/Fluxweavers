@@ -28,10 +28,10 @@ public class Dedra : PlayerObject
 
     //Player Stats
         armor = 9;
-        armorPenetration = 5;
+        armorPenetration = 4;
         magicResistance = 9;
         magicPenetration = 0;
-        attackStat = 40;
+        attackStat = 30;
         movement = 2;
         control = 2; // All players have control over 2 hexes
 
@@ -44,9 +44,9 @@ public class Dedra : PlayerObject
         basicAttackMana = 4;
         basicAttackRange = 3;
 
-        skillMana = 5;
+        skillMana = 10;
         skillRange = 0;
-        signatureMoveMana = 12;
+        signatureMoveMana = 14;
 
         //checkers
         // basic attacks

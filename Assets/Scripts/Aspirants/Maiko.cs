@@ -45,7 +45,7 @@ public class MaikoScript : PlayerObject
         skillRange = 1;
 
         signatureMoveDamage = 1;
-        signatureMoveMana = 16;
+        signatureMoveMana = 25;
         signatureMoveRange = 2;
 
 
