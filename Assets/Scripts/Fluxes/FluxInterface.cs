@@ -66,6 +66,7 @@ public class FluxInterface : MonoBehaviour
     public bool isClickable;
 
     [SerializeField] ResourceScript rs;
+    private TextMeshProUGUI manaText;
     /*  
 
         The Start function does the following:
@@ -103,10 +104,14 @@ public class FluxInterface : MonoBehaviour
         currentFlux = FluxNames.None;
         color1 = highlight1.color;
         color2 = highlight2.color;
+
+        manaText = GameObject.Find("ManaText").GetComponent<TextMeshProUGUI>();
     }
 
     void Update() {
         led.color = Color.Lerp(color1, color2, Mathf.Sin(Time.time)/2.0f+0.5f);
+
+        manaText.text = rs.playerManaCount + " / " + rs.playerMaxMana;
     }
     /*
         THE GENERAL FLOW:

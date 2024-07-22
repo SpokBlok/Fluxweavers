@@ -17,6 +17,7 @@ public class AspirantInterface : MonoBehaviour
     private PhaseHandler phaseHandler;
     private StatusEffectHandlerScript effectHandler;
     private EventSystem eventSystem;
+    private ResourceScript resourceScript;
 
     // SERIALIZED IS JUST FOR CHECKING
     private List<string> actionsInOrder;
@@ -95,6 +96,7 @@ public class AspirantInterface : MonoBehaviour
 
     // TEXT COMPONENTS
     private TextMeshProUGUI healthText;
+    private TextMeshProUGUI manaText;
     [SerializeField] public TextMeshProUGUI headerText;
     [SerializeField] public TextMeshProUGUI subText;
     [SerializeField] public TextMeshProUGUI subText2;
@@ -130,6 +132,7 @@ public class AspirantInterface : MonoBehaviour
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
         effectHandler = GameObject.Find("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+        resourceScript = GameObject.Find("ResourceManager").GetComponent<ResourceScript>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
         statsInOrder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration", "movement"};
@@ -206,6 +209,8 @@ public class AspirantInterface : MonoBehaviour
             // to update health bar accordingly
             healthText.text = phaseHandler.selectedPlayer.health + " / " + phaseHandler.selectedPlayer.maxHealth;
             healthBar.value = phaseHandler.selectedPlayer.health / phaseHandler.selectedPlayer.maxHealth;
+
+            manaText.text = resourceScript.playerManaCount + " / " + resourceScript.playerMaxMana;
         }
     }
 
@@ -230,6 +235,7 @@ public class AspirantInterface : MonoBehaviour
     {
         // health bar text
         healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
+        manaText = GameObject.Find("ManaText2").GetComponent<TextMeshProUGUI>();
 
         // tooltip text
         headerText = GameObject.Find("HeaderText").GetComponent<TextMeshProUGUI>();
