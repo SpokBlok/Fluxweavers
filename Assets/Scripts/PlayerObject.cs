@@ -193,10 +193,10 @@ public class PlayerObject : MonoBehaviour
                     {
                         this.myAnimator.SetTrigger("HurtAnimation");
                     }
-
-                    health -= opponentDamage;
-                    IsDead();
                 }
+                
+                health -= opponentDamage;
+                IsDead();
             }
             
             catch

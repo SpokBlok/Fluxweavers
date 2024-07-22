@@ -134,7 +134,7 @@ public class MaikoScript : PlayerObject
         //No need to check mana since mana is already checked in skillAttack
         StatusEffect effect = new StatusEffect();
         //Target Calculation Goes Here
-        effect.instantiateAddIntEffect("movement", -1, 1, targets);
+        effect.instantiateAddIntEffect("movement", -1, 1, targets, "Maiko Skill");
         StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
         Handler.addStatusEffect(effect);
 
@@ -150,23 +150,23 @@ public class MaikoScript : PlayerObject
 
             //Buff Maiko Movement
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("movement", 1, 1, maikoSelf);
+            effect.instantiateAddIntEffect("movement", 1, 1, maikoSelf, "Maiko SignatureMove");
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(effect);
 
             //Buff Maiko armor
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("armor", 1.45f, 2, maikoSelf);
+            effect.instantiateMultiFloatEffect("armor", 1.45f, 2, maikoSelf, "Maiko SignatureMove");
             Handler.addStatusEffect(effect);
 
             //Buff Maiko magicRes
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("magicResistance", 1.45f, 2, maikoSelf);
+            effect.instantiateMultiFloatEffect("magicResistance", 1.45f, 2, maikoSelf, "Maiko SignatureMove");
             Handler.addStatusEffect(effect);
 
             //Enemy Debuff
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
+            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets, "Maiko SignatureMove");
             Handler.addStatusEffect(effect);
             //Range code here when implemented
         }

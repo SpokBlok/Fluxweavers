@@ -94,7 +94,7 @@ public class AspirantInterface : MonoBehaviour
     [SerializeField] public TextMeshProUGUI subText;
     [SerializeField] public TextMeshProUGUI subText2;
     [SerializeField] public TextMeshProUGUI bodyText;
-    private TextMeshProUGUI effectsText;
+    private List<TextMeshProUGUI> effectTexts;
 
     // TEXTS (strings)
     // for ability descriptions / definitions
@@ -232,7 +232,31 @@ public class AspirantInterface : MonoBehaviour
         bodyText = GameObject.Find("BodyText").GetComponent<TextMeshProUGUI>();
 
         // for active effects displayed in tooltip
-        effectsText = GameObject.Find("EffectsText").GetComponent<TextMeshProUGUI>();
+        effectTexts = new List<TextMeshProUGUI>();
+
+        for (int i = 5; i < aspirantStats.transform.childCount; i++)
+            effectTexts.Add(aspirantStats.transform.GetChild(i).GetComponent<TextMeshProUGUI>());
+
+        ResetEffectDisplays();
+    }
+
+    void ResetEffectDisplays()
+    {
+        for (int i = 5; i < aspirantStats.transform.childCount-1; i++)
+        {
+            TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetComponent<TextMeshProUGUI>();
+
+            // empty text
+            textField.text = "";
+
+            // blank sprite that camouflages to the background
+            Image effectImage = textField.gameObject.transform.GetChild(0).GetComponent<Image>();
+            effectImage.sprite = null;
+            effectImage.color = new Color32(158, 160, 173, 255);
+        }
+
+        // empty text for last text (might be And more..)
+        effectTexts[9].text = "";
     }
 
     public void SetupButtonsAndImages()
@@ -494,41 +518,62 @@ public class AspirantInterface : MonoBehaviour
 
             List<float> originalStats = GetAspirantStats();
 
-            effectsText.text = "";
-
             bool hasEffects = false;
+            ResetEffectDisplays();
 
-            for (int i = effectHandler.effectList.Count - 1; i >= 0; i--)
+            int offset = aspirantStats.transform.childCount-5;
+
+            for (int i = 0; i < aspirantStats.transform.childCount-5; i++)
             {
-                StatusEffect effect = effectHandler.effectList[i];
+                StatusEffect effect = effectHandler.effectList[offset-i];
 
                 if (effect.targets.Contains(phaseHandler.selectedPlayer))
                 {
                     int index = statsInOder.IndexOf(effect.statusEffectName);
 
-                    if (effect.isAdditive)
+                    if (index >= 0)
                     {
-                        originalStats[index] = originalStats[index] - effect.statusEffect;
+                        if (effect.isAdditive)
+                        {
+                            originalStats[index] = originalStats[index] - effect.statusEffect;
 
-                        effectsText.text += "\n• [INSERT NAME] | +" + effect.statusEffect + " " + statAbbreviations[index];
-                    }
-                    else
-                    {
-                        originalStats[index] = originalStats[index] / effect.statusEffect;
-                        
-                        effectsText.text += "\n• [INSERT NAME] | +" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
-                    }
+                            effectTexts[i].text = "\t+" + effect.statusEffect + " " + statAbbreviations[index];
+                        }
+                        else
+                        {
+                            originalStats[index] = originalStats[index] / effect.statusEffect;
+                            
+                            effectTexts[i].text = "\t+" + ((effect.statusEffect-1)*100) + "% " + statAbbreviations[index];
+                        }
 
-                    hasEffects = true;
+                        Image effectImage = effectTexts[i].transform.GetChild(0).GetComponent<Image>();
+                        effectImage.color = Color.white;
+
+                        string[] sourceDetails = effect.statusEffectSource.Split(" ");
+                        int j = actionsInOrder.IndexOf(sourceDetails[1]);
+
+                        if (sourceDetails[0].Equals("Maiko"))
+                            effectImage.sprite = maikoButtons[j*3+1];
+
+                        else if (sourceDetails[0].Equals("Dedra"))
+                            effectImage.sprite = dedraButtons[j*3+1];
+
+                        else if (sourceDetails[0].Equals("Citrine"))
+                            effectImage.sprite = citrineButtons[j*3+1];
+
+                        hasEffects = true;
+                    }
                 }
             }
 
             if (!hasEffects)
-                effectsText.text += "\n• None";
+                effectTexts[0].text = "\t  • None";
+            else if (effectHandler.effectList.Count > aspirantStats.transform.childCount-5)
+                effectTexts[9].text = "\t(And more..)";
 
-            for (int i = 0; i < stats.Count; i++)
+            for (int i = 0; i < stats.Count - 1; i++)
             {
-                Transform stat = aspirantStats.transform.GetChild(i+1);
+                Transform stat = aspirantStats.transform.GetChild(i);
 
                 TextMeshProUGUI textField = stat.GetChild(0).GetComponent<TextMeshProUGUI>();
                 textField.text = (Math.Round(stats[i],1)).ToString();

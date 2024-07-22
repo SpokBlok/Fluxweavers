@@ -151,7 +151,7 @@ public class Dedra : PlayerObject
 
             StatusEffect armorPenetrationEffect = new StatusEffect();
             //Target Calculation Goes Here
-            armorPenetrationEffect.instantiateMultiIntEffect("armorPenetration", 1.2f, 3, dedraSelf);
+            armorPenetrationEffect.instantiateMultiIntEffect("armorPenetration", 1.2f, 3, dedraSelf, "Dedra Skill");
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(armorPenetrationEffect);
         } 
