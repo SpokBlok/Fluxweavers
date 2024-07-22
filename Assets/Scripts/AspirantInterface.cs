@@ -15,6 +15,7 @@ public class AspirantInterface : MonoBehaviour
 
     private PhaseHandler phaseHandler;
     private StatusEffectHandlerScript effectHandler;
+    private EventSystem eventSystem;
 
     // SERIALIZED IS JUST FOR CHECKING
     private List<string> actionsInOrder;
@@ -124,6 +125,7 @@ public class AspirantInterface : MonoBehaviour
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
         effectHandler = GameObject.Find("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
         statsInOder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration"};
@@ -398,6 +400,8 @@ public class AspirantInterface : MonoBehaviour
             // setup tooltip
             SetupTooltip();
         }
+
+        eventSystem.SetSelectedGameObject(null);
     }
 
     public void ToggleAbilityButton(bool isSelected)
