@@ -28,10 +28,10 @@ public class Dedra : PlayerObject
 
     //Player Stats
         armor = 9;
-        armorPenetration = 5;
+        armorPenetration = 4;
         magicResistance = 9;
         magicPenetration = 0;
-        attackStat = 40;
+        attackStat = 30;
         movement = 2;
         control = 2; // All players have control over 2 hexes
 
@@ -43,9 +43,9 @@ public class Dedra : PlayerObject
         basicAttackMana = 4;
         basicAttackRange = 3;
 
-        skillMana = 5;
+        skillMana = 10;
         skillRange = 0;
-        signatureMoveMana = 12;
+        signatureMoveMana = 14;
 
         //checkers
         // basic attacks
@@ -101,13 +101,13 @@ public class Dedra : PlayerObject
             // if opponents health is <35%, basic attacks deal 200% of the attackStat
             if (enemyCurrentHealth < enemyMaximumHealth * 0.35f)
             {
-                skillDamage = attackStat * 2f;
+                skillDamage = attackStat * 2.25f;
             }
 
             // else,  basic attacks deal 165% of the attackStat
             else if (enemyCurrentHealth > enemyMaximumHealth * 0.35f)
             {
-                skillDamage = attackStat * 1.65f;
+                skillDamage = attackStat * 1.85f;
             }
             calculatedBasicAttackDamage = skillDamage * (100 - enemyArmor + armorPenetration) / 100;
             skillCounter --;
@@ -150,7 +150,7 @@ public class Dedra : PlayerObject
 
             StatusEffect armorPenetrationEffect = new StatusEffect();
             //Target Calculation Goes Here
-            armorPenetrationEffect.instantiateMultiIntEffect("armorPenetration", 1.2f, 3, dedraSelf);
+            armorPenetrationEffect.instantiateMultiIntEffect("armorPenetration", 1.14f, 3, dedraSelf);
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
             Handler.addStatusEffect(armorPenetrationEffect);
         } 

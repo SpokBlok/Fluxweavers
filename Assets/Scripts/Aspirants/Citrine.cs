@@ -28,7 +28,7 @@ public class Citrine : PlayerObject
         armorPenetration = 0;
         magicResistance = 12;
         magicPenetration = 0;
-        attackStat = 10;
+        attackStat = 20;
         movement = 2;
         control = 2; // All players have control over 2 hexes
         isBasicAttackPhysical = false;
@@ -53,7 +53,7 @@ public class Citrine : PlayerObject
         //Attack Stats
         
         basicAttackMana = 4;
-        basicAttackRange = 1;
+        basicAttackRange = 2;
         
         skillMana = 10;
         skillRange = 3;
@@ -61,7 +61,7 @@ public class Citrine : PlayerObject
         signatureMoveMana = 20;
         signatureMoveRange = -1; // global attack
 
-        basicAttackDamage = attackStat * 1.1f;
+        basicAttackDamage = attackStat * 1.2f;
 
         //Animation Stuff
         myAnimator = GetComponent<Animator>();
@@ -111,11 +111,11 @@ public class Citrine : PlayerObject
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
             StatusEffect effect = new StatusEffect();
-            effect.instantiateAddIntEffect("magicPenetration", 10, 2, targets);
+            effect.instantiateAddIntEffect("magicPenetration", 12, 2, targets);
             Handler.addStatusEffect(effect);
 
             effect = new StatusEffect();
-            effect.instantiateAddIntEffect("armorPenetration", 10, 2, targets);
+            effect.instantiateAddIntEffect("armorPenetration", 12, 2, targets);
             Handler.addStatusEffect(effect);
 
         }
@@ -137,7 +137,7 @@ public class Citrine : PlayerObject
             StatusEffectHandlerScript Handler = GameObject.FindGameObjectWithTag("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
             StatusEffect effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 1.4f, 2, phaseHandler.players);
+            effect.instantiateMultiFloatEffect("attackStat", 1.5f, 2, phaseHandler.players);
             Handler.addStatusEffect(effect);
             
             foreach (PlayerObject player in phaseHandler.players) 

@@ -24,11 +24,11 @@ public class MaikoScript : PlayerObject
 
         //Player Stats
         level = 1;
-        armor = 16;
+        armor = 18;
         armorPenetration = 0;
-        magicResistance = 11;
+        magicResistance = 13;
         magicPenetration = 0;
-        attackStat = 6;
+        attackStat = 8;
         movement = 2;
         control = 2; // All players have control over 2 hexes
 
@@ -44,12 +44,12 @@ public class MaikoScript : PlayerObject
         skillRange = 1;
 
         signatureMoveDamage = 1;
-        signatureMoveMana = 16;
+        signatureMoveMana = 25;
         signatureMoveRange = 2;
 
 
-        basicAttackDamage = (health * 0.08f) + ((armor + magicResistance) * 0.7f); // 8% of Maiko HP + 70% of armor + magic resistance
-        skillDamage = (health * 0.18f) + (attackStat); // 18% of Maiko HP + attackStat
+        basicAttackDamage = (health * 0.05f) + ((armor + magicResistance) * 0.6f); // 8% of Maiko HP + 70% of armor + magic resistance
+        skillDamage = (health * 0.10f) + (attackStat); // 18% of Maiko HP + attackStat
 
         isBasicAttackPhysical = true;
 
@@ -155,17 +155,17 @@ public class MaikoScript : PlayerObject
 
             //Buff Maiko armor
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("armor", 1.45f, 2, maikoSelf);
+            effect.instantiateMultiFloatEffect("armor", 1.35f, 2, maikoSelf);
             Handler.addStatusEffect(effect);
 
             //Buff Maiko magicRes
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("magicResistance", 1.45f, 2, maikoSelf);
+            effect.instantiateMultiFloatEffect("magicResistance", 1.35f, 2, maikoSelf);
             Handler.addStatusEffect(effect);
 
             //Enemy Debuff
             effect = new StatusEffect();
-            effect.instantiateMultiFloatEffect("attackStat", 0.7f, 2, targets);
+            effect.instantiateMultiFloatEffect("attackStat", 0.8f, 3, targets);
             Handler.addStatusEffect(effect);
             //Range code here when implemented
         }
