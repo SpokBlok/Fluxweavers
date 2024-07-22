@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6907109434058060624}
   - component: {fileID: 214922820529873827}
   - component: {fileID: 1613688765089709544}
+  - component: {fileID: 4194054602120537663}
   m_Layer: 5
   m_Name: Waterfall
   m_TagString: Untagged
@@ -160,3 +161,26 @@ MonoBehaviour:
   duration: 0
   tileLength: 0
   manaCost: 0
+  canvasGroup: {fileID: 0}
+  rectTransform: {fileID: 0}
+--- !u!95 &4194054602120537663
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992005526990138681}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4f2487605cbccd7408b4fe6115c3452b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
