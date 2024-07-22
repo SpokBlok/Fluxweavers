@@ -260,6 +260,9 @@ public class AspirantInterface : MonoBehaviour
             Image effectImage = textFieldTransform.GetChild(textFieldTransform.childCount-1).GetComponent<Image>();
             effectImage.sprite = null;
             effectImage.color = new Color32(158, 160, 173, 255);
+
+            RectTransform rt = effectImage.GetComponent<RectTransform>();
+            rt.localScale = new Vector3(0.28f, 0.28f, rt.localScale.z);
         }
 
         // empty text for last text (might be And more..)
