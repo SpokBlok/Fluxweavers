@@ -27,7 +27,7 @@ public class CameraControl : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        maxOrthographicSize = 10;
+        maxOrthographicSize = 15;
         InitializeTiles(); // Initialize Tiles here
         CalculateCameraConstraints();
     }
