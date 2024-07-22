@@ -10,12 +10,15 @@ public class AspirantInterface : MonoBehaviour
 {
     private GameObject uiObject;
     [SerializeField] public GameObject tooltip;
-    public GameObject aspirantStats;
+    [SerializeField] public RectTransform divider;
+    [SerializeField] public GameObject aspirantStats;
 
     private PhaseHandler phaseHandler;
+    private StatusEffectHandlerScript effectHandler;
 
     // SERIALIZED IS JUST FOR CHECKING
-    [SerializeField] private List<string> actionsInOrder;
+    private List<string> actionsInOrder;
+    private List<string> statsInOder;
 
     // BUTTONS
     [SerializeField] private Button lastClickedAbility;
@@ -26,6 +29,8 @@ public class AspirantInterface : MonoBehaviour
     private Button infoButton;
 
     private List<Sprite> currentButtons; // for current list of button sprites
+    private Sprite currentActiveBorder; // border sprite to be used
+                                        // if the current selected player's flux affinity is met
 
     // HEALTH SLIDER
     // (mana bar is updated in RS)
@@ -42,7 +47,7 @@ public class AspirantInterface : MonoBehaviour
     public Sprite traverseClicked;
 
     // for Aspirants' other buttons
-    // (for each action: unclicked, then clicked, then next action)
+    // (for each action: hover, then unclicked, then clicked, then next action)
     // Maiko's actions
     public List<Sprite> maikoButtons;
 
@@ -64,7 +69,7 @@ public class AspirantInterface : MonoBehaviour
     public Sprite dedraPfp;
     public Sprite citrinePfp;
 
-    // for Aspirant NameTags
+    // for Aspirant Name Tags
     public Sprite maikoNameTag;
     public Sprite dedraNameTag;
     public Sprite citrineNameTag;
@@ -75,7 +80,9 @@ public class AspirantInterface : MonoBehaviour
     public Sprite dedraBorder;
     public Sprite citrineBorder;
 
-    private Sprite currentActiveBorder;
+    // for Stat Icons
+    // (for each stat, base, then stat up, then stat down, then next stat)
+    public List<Sprite> statIcons;
 
     // ===== end of sprites section =====
 
@@ -109,11 +116,14 @@ public class AspirantInterface : MonoBehaviour
     {
         uiObject = GameObject.Find("AspirantPhaseUI");
         tooltip = GameObject.Find("TooltipContainer");
+        divider = GameObject.Find("Divider").GetComponent<RectTransform>();
         aspirantStats = GameObject.Find("AspirantStats");
 
         phaseHandler = GameObject.Find("PhaseHandler").GetComponent<PhaseHandler>();
+        effectHandler = GameObject.Find("StatusEffectHandler").GetComponent<StatusEffectHandlerScript>();
 
         actionsInOrder = new List<string>{"BasicAttack", "Skill", "SignatureMove"};
+        statsInOder = new List<string>{"attackStat", "armor", "magicResistance", "armorPenetration", "magicPenetration"};
 
         SetActionButtons();
         SetTextObjects();
@@ -168,6 +178,7 @@ public class AspirantInterface : MonoBehaviour
             uiObject.SetActive(true);
             SetupButtonsAndImages();
             aspirantStats.SetActive(false);
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 90);
             tooltip.SetActive(false);
         }
 
@@ -243,12 +254,24 @@ public class AspirantInterface : MonoBehaviour
             currentActiveBorder = citrineBorder;
         }
         
-        // get unclicked buttons that contain aspirant's abilities
         for(int i = 0; i < actionButtons.Count-1; i++)
-            actionButtons[i].GetComponent<Image>().sprite = currentButtons[i*2];
+        {
+            // set the hover sprite to their respective buttons
+            SpriteState newSpriteState = new SpriteState();
+            newSpriteState.highlightedSprite = currentButtons[i*3];
+            actionButtons[i].spriteState = newSpriteState;
+
+            // set each sprite to their unclicked states
+            actionButtons[i].GetComponent<Image>().sprite = currentButtons[i*3+1];
+        }
 
         // (by default) set sig to inactive
         actionButtons[actionButtons.Count-1].GetComponent<Image>().sprite = sigInactive;
+
+        // set up highlighted sprite for the signature move
+        SpriteState sigSpriteState = new SpriteState();
+        sigSpriteState.highlightedSprite = currentButtons[6];
+        actionButtons[actionButtons.Count-1].spriteState = sigSpriteState;
 
         // set other buttons to unclicked
         traverseButton.GetComponent<Image>().sprite = traverseUnclicked;
@@ -266,7 +289,7 @@ public class AspirantInterface : MonoBehaviour
 
         if (isActive)
         {
-            signatureMoveButton.GetComponent<Image>().sprite = currentButtons[4];
+            signatureMoveButton.GetComponent<Image>().sprite = currentButtons[7];
 
             border.sprite = currentActiveBorder;
         }
@@ -356,7 +379,7 @@ public class AspirantInterface : MonoBehaviour
             {
                 int index = actionsInOrder.IndexOf(lastClickedAbility.name);
 
-                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 2 + 1];
+                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 3 + 2];
             }
         }
         else
@@ -367,7 +390,7 @@ public class AspirantInterface : MonoBehaviour
             {
                 int index = actionsInOrder.IndexOf(lastClickedAbility.name);
 
-                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 2];
+                lastClickedAbility.GetComponent<Image>().sprite = currentButtons[index * 3 + 1];
             }
 
             lastClickedAbility = null;
@@ -449,24 +472,61 @@ public class AspirantInterface : MonoBehaviour
                 }
             }
 
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 90);
             aspirantStats.SetActive(false);
         }
 
         else
         {
-            headerText.text = "STATS"; // TEMP
+            headerText.text = "";
             subText.text = "";
             subText2.text = "";
             bodyText.text = "";
 
             List<float> stats = GetAspirantStats();
 
-            for (int i = 0; i < stats.Count; i++)
+            List<float> originalStats = GetAspirantStats();
+
+            for (int i = effectHandler.effectList.Count - 1; i >= 0; i--)
             {
-                TextMeshProUGUI textField = aspirantStats.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
-                textField.text = (Math.Round(stats[i],1)).ToString();
+                StatusEffect effect = effectHandler.effectList[i];
+
+                if (effect.targets.Contains(phaseHandler.selectedPlayer))
+                {
+                    int index = statsInOder.IndexOf(effect.statusEffectName);
+
+                    if (effect.isAdditive)
+                        originalStats[index] = originalStats[index] - effect.statusEffect;
+                    else
+                        originalStats[index] = originalStats[index] / effect.statusEffect;
+                }
             }
 
+            for (int i = 0; i < stats.Count; i++)
+            {
+                Transform stat = aspirantStats.transform.GetChild(i);
+
+                TextMeshProUGUI textField = stat.GetChild(0).GetComponent<TextMeshProUGUI>();
+                textField.text = (Math.Round(stats[i],1)).ToString();
+
+                if (stats[i] == originalStats[i])
+                {
+                    // neutral
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3];
+                }
+                else if (stats[i] > originalStats[i])
+                {
+                    // up
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3+1];
+                }
+                else if (stats[i] < originalStats[i])
+                {
+                    // down
+                    stat.gameObject.GetComponent<Image>().sprite = statIcons[i*3+2];
+                }
+            }
+
+            divider.anchoredPosition = new Vector2(divider.anchoredPosition.x, 50);
             aspirantStats.SetActive(true);
         }
     }
@@ -484,14 +544,11 @@ public class AspirantInterface : MonoBehaviour
     {
         List<float> stats = new List<float>();
 
-        stats.Add(phaseHandler.selectedPlayer.health);            // 0
-        stats.Add(phaseHandler.selectedPlayer.attackStat);        // 1
-        stats.Add(phaseHandler.selectedPlayer.control);           // 2
-        stats.Add(phaseHandler.selectedPlayer.armor);             // 3
-        stats.Add(phaseHandler.selectedPlayer.magicResistance);   // 4
-        stats.Add(phaseHandler.selectedPlayer.movement);          // 5
-        stats.Add(phaseHandler.selectedPlayer.armorPenetration);  // 6
-        stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 7
+        stats.Add(phaseHandler.selectedPlayer.attackStat);        // 0
+        stats.Add(phaseHandler.selectedPlayer.armor);             // 1
+        stats.Add(phaseHandler.selectedPlayer.magicResistance);   // 2
+        stats.Add(phaseHandler.selectedPlayer.armorPenetration);  // 3
+        stats.Add(phaseHandler.selectedPlayer.magicPenetration);  // 4
 
         return stats;
     }

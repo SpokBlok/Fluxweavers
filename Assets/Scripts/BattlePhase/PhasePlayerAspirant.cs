@@ -104,6 +104,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.divider.anchoredPosition = new Vector2(aspirantUI.divider.anchoredPosition.x, 90);
                     aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
@@ -136,6 +137,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.divider.anchoredPosition = new Vector2(aspirantUI.divider.anchoredPosition.x, 90);
                     aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
@@ -185,6 +187,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.divider.anchoredPosition = new Vector2(aspirantUI.divider.anchoredPosition.x, 90);
                     aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();
@@ -234,6 +237,7 @@ public class PhasePlayerAspirant : PhaseBase
                 else
                 {
                     aspirantUI.ToggleAbilityButton(false);
+                    aspirantUI.divider.anchoredPosition = new Vector2(aspirantUI.divider.anchoredPosition.x, 90);
                     aspirantUI.aspirantStats.SetActive(false);
 
                     aspirantUI.OpenTooltip();

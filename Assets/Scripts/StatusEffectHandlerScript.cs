@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 public class StatusEffectHandlerScript : MonoBehaviour
 {
     [SerializeField]
-    List<StatusEffect> effectList;
+    public List<StatusEffect> effectList;
     // Start is called before the first frame update
     void Start()
     {
