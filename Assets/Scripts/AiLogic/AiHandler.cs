@@ -28,6 +28,8 @@ public class AiHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        aiEntities = gameObject.GetComponentsInChildren<AiMovementLogic>();
+        aiComrades = new Vector2Int[aiEntities.Count()];
         // if (Input.GetKeyDown(KeyCode.C)) {
         //     // foreach (AiMovementLogic ai in aiEntities) {
         //     //     ai.enabled = true;
@@ -38,7 +40,7 @@ public class AiHandler : MonoBehaviour
         //     //StartCoroutine(nameof(MoveAi)); 
         //     aiEntities[2].Move(new(16,4), new Vector2Int[]{new(4,13), new(5,13)});
         // }
-            
+
     }
 
     public IEnumerator MoveAi (HashSet<PlayerObject> aspirants) {
@@ -99,6 +101,7 @@ public class AiHandler : MonoBehaviour
         }
 
         foreach (Raccoon raccoon in AiWithEnemyInRange) {
+            //if (aspirants.Count > 0)
             AiMovementLogic raccoonMovement = raccoon.GetComponent<AiMovementLogic>();
             int manaAllocated = manaPerRaccon; // Important
             target = GetClosestAspirant(raccoonMovement, aspirants).gameObject.GetComponent<AspirantMovement>();
