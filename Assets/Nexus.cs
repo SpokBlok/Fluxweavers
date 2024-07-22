@@ -45,8 +45,11 @@ public class Nexus : PlayerObject
         else 
         {
             health -= opponentDamage;
-            SceneManager.LoadScene("WinScreen");
         } 
+        if (health <= 0)
+        {
+            SceneManager.LoadScene("WinScreen");
+        }
     }
 
 }
